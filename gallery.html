@@ -408,7 +408,8 @@
       </div>
 
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
-        <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
+        <!-- 🔥 دکمه آپلود اصلاح شد (onclick مستقیم) -->
+        <button id="uploadBtn" class="btn-primary" onclick="document.getElementById('uploadModal').classList.remove('hidden')" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
         <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; font-size: 0.85rem; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.color='var(--turquoise)'" onmouseout="this.style.color='#fff'">
           <span id="userGreeting" class="user-greeting"></span>
         </a>
