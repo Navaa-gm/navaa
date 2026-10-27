@@ -299,9 +299,11 @@
 
     // گوش دادن به تغییرات دیتابیس
     onSnapshot(docRef, (docSnap) => {
+      // 🔥 این خط کلید حل مشکل است! وقتی در حال آپلود هستیم، دیتا رو آپدیت نکن
+      if (window.isUploading) return; 
+
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
-        // اگر تعداد آثار ابری بیشتر بود، با لوکال جایگزین میکنیم تا چیزی پاک نشه
         if (cloudItems.length > 0 || window.DB.items.length === 0) {
           window.DB.items = cloudItems;
           localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
