@@ -201,7 +201,7 @@
 
     /* بدنه شیشه‌ای مودال */
     .modal-content {
-      background: rgba(20, 24, 28, 0.35) !important; /* شفافیت بالا */
+      background: rgba(20, 24, 28, 0.35) !important; 
       backdrop-filter: blur(40px) saturate(180%) !important; 
       -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -213,6 +213,10 @@
       overflow-y: auto;
       margin: 0 auto;
       position: relative;
+      
+      /* 🔥 جلوگیری از انتخاب شدن متن با کلیک */
+      user-select: none; 
+      -webkit-user-select: none;
     }
 
     /* 🔥 دکمه ضربدر (کاملاً شفاف، واضح و کارا) */
@@ -234,6 +238,7 @@
       z-index: 9999 !important; /* تضمین کلیک شدن */
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: auto !important; /* تضمین کلیک پذیری */
     }
     .modal-close:hover {
       background: rgba(255, 46, 77, 0.9) !important;
@@ -292,7 +297,6 @@
       background: linear-gradient(135deg, rgba(255, 201, 60, 0.1), rgba(255, 140, 0, 0.05)) !important;
       border: 1.5px solid rgba(255, 201, 60, 0.4) !important;
     }
-    
   </style>
 </head>
 <body>
@@ -348,7 +352,7 @@
   <!-- مودال نمایش اثر -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <button class="modal-close" id="modalClose">✕</button>
+      <button class="modal-close" onclick="document.getElementById('modal').classList.add('hidden')">✕</button>
       <div class="modal-media">
         <img id="modalImg" src="" alt="">
         <div id="modalAudioWrap" class="audio-wrap hidden">
@@ -373,7 +377,8 @@
   <!-- مودال آپلود اثر -->
   <div id="uploadModal" class="modal hidden">
     <div class="modal-content upload-content">
-      <button class="modal-close" id="uploadClose">✕</button>
+      <!-- 🔥 اضافه کردن onclick مستقیم به دکمه ضربدر -->
+      <button class="modal-close" onclick="document.getElementById('uploadModal').classList.add('hidden')">✕</button>
 
       <div class="upload-header" style="padding-top: 2rem; text-align: center;">
         <div class="upload-header-icon">✨</div>
@@ -471,7 +476,9 @@
   <!-- مودال اشتراک -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
-      <button class="modal-close" id="subClose">✕</button>
+      <!-- 🔥 اضافه کردن onclick مستقیم به دکمه ضربدر اشتراک -->
+      <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
+      
       <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
       <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
       <p class="sub-desc" style="text-align:center; margin-bottom: 2rem;">پلن مناسب خودت رو انتخاب کن</p>
@@ -581,7 +588,18 @@
         setTimeout(() => clearInterval(injectAvatarToNav), 3000);
       }
 
-      // 3. بررسی پارامترهای خرید اشتراک
+      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه تیره
+      document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+      });
+      document.getElementById('uploadModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+      });
+      document.getElementById('subModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+      });
+
+      // 4. بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
