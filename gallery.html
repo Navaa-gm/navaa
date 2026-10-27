@@ -6,33 +6,126 @@
   <title>گالری | Navaa</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 🌟 تنظیمات جدید برای ساختار صفحه */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
+    main#gallery {
+      flex: 1 0 auto; /* این باعث میشه گالری فضای خالی رو پر کنه */
+      padding-bottom: 2rem;
+    }
+    footer {
+      flex-shrink: 0;
+      margin-top: auto; /* فوتر رو همیشه به پایین می‌چسبونه */
+      padding: 2rem 1rem 100px 1rem; /* فاصله از پایین برای اینکه با منوی پایین تداخل نکنه */
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--black-2);
+    }
+
+    /* 🌟 استایل هدر جدید */
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .logo-name-sm {
+      font-size: 2.2rem !important; /* بزرگتر شدن لوگو */
+      font-weight: 900 !important;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo-icon-sm {
+      font-size: 2.2rem !important;
+    }
+
+    /* 🌟 استایل کادر سرچ شیشه‌ای */
+    .topbar-wrap {
+      padding: 0.5rem 2rem 1.5rem 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .topbar {
+      width: 100%;
+      max-width: 600px; /* کوچک‌تر شدن کادر سرچ */
+    }
+    .search-box {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      height: 46px;
+      transition: all 0.3s ease;
+    }
+    .search-box:focus-within {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(0, 240, 212, 0.5);
+      box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
+    }
+    .search-box input {
+      background: transparent !important;
+      border: none !important;
+      color: #fff;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding-right: 0.5rem;
+    }
+    .search-box input::placeholder {
+      color: #777;
+    }
+  </style>
 </head>
 <body>
 
   <header>
     <div class="header-inner">
-      <a href="home.html" class="logo-small" title="صفحه اصلی">
-        <span class="logo-icon-sm">🎵</span>
-        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
-      </a>
-
-      <div class="header-actions" style="display:flex; align-items:center; gap:1rem;">
-        <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: .85rem; font-weight: 700; display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-radius: 8px; transition: .2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.color='var(--text-dim)'; this.style.background='transparent'">
+      
+      <!-- سمت راست: لوگوی Navaa و لینک صفحه اصلی زیر آن -->
+      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.4rem;">
+        <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
+          <span class="logo-icon-sm" style="font-size: 2rem;">🎵</span>
+          <span class="logo-name-sm">Navaa<span class="dot" style="color: var(--gold);">.</span></span>
+        </a>
+        <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
           🏠 صفحه اصلی
         </a>
-        <a href="profile.html" class="user-greeting" id="userGreeting" title="پروفایل"></a>
       </div>
+
+      <!-- وسط: تاریخ شمسی -->
+      <div id="shamsiDate" style="font-size: 0.95rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.5rem 1.5rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap; box-shadow: 0 0 15px rgba(0,240,212,0.1);"></div>
+
+      <!-- سمت چپ: دکمه آپلود و اسم کاربر -->
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+        <button id="uploadBtn" class="btn-primary" style="padding: 0.65rem 1.2rem; border-radius: 12px; font-size: 0.85rem; font-weight: 800;">➕ آپلود اثر</button>
+        <a href="profile.html" class="user-greeting" id="userGreeting" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;"></a>
+      </div>
+
     </div>
   </header>
   
+  <!-- کادر جستجوی شیشه‌ای (وسط چین) -->
   <div class="topbar-wrap">
     <div class="topbar">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon" style="opacity: 0.7; font-size: 1rem; margin-left: 0.5rem;">🔍</span>
         <input type="text" id="searchInput" placeholder="جستجو در عنوان، هنرمند و تگ‌ها...">
-      </div>
-      <div class="topbar-actions">
-        <button id="uploadBtn" class="btn-primary">➕ آپلود اثر</button>
       </div>
     </div>
   </div>
@@ -41,6 +134,12 @@
 
   <main id="gallery" class="gallery"></main>
 
+  <!-- فوتر که همیشه پایین می‌مونه -->
+  <footer>
+    <p>🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
+  </footer>
+
+  <!-- مودال‌ها (بدون تغییر) -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">✕</button>
@@ -246,14 +345,17 @@
     </div>
   </div>
 
-  <footer>
-    <p>🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
-  </footer>
-
   <nav class="bottom-nav" id="bottomNav"></nav>
 
   <script>
+    // 🌟 تنظیم تاریخ شمسی
     window.addEventListener('load', function() {
+      const dateEl = document.getElementById('shamsiDate');
+      if (dateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
+      }
+
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
