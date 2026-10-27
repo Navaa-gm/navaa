@@ -90,16 +90,16 @@
     }
 
     /* ==========================================
-       🔥 اصلاح اساسی گالری (وسط‌چین کردن مطلق)
+       🔥 اصلاح گالری (راست‌چین کردن کارت‌ها)
        ========================================== */
     #gallery.gallery {
       display: flex !important;
       flex-wrap: wrap !important;
-      justify-content: center !important;
+      justify-content: flex-start !important; /* 🔥 تغییر به راست‌چین */
       align-items: flex-start !important;
       gap: 1.5rem !important;
       width: 100% !important;
-      min-height: 60vh; /* فضا برای وسط چین شدن پیام خالی بودن */
+      min-height: 60vh;
     }
 
     /* سایز کارت‌ها */
@@ -111,14 +111,14 @@
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
-      margin: 0 !important; /* حذف مارجین‌های مزاحم */
+      margin: 0 !important;
     }
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
-    /* 🔥 زور زدن به پیام "هنوز اثری نیست" که دقیقاً وسط باشه */
+    /* 🔥 پیام "هنوز اثری نیست" باز هم وسط‌چین می‌مونه */
     .gallery > .empty {
       width: 100% !important;
       display: flex !important;
@@ -126,7 +126,7 @@
       align-items: center !important;
       justify-content: center !important;
       text-align: center !important;
-      margin: auto !important; /* این خط باعث میشه دقیقا وسط افقی و عمودی قرار بگیره */
+      margin: auto !important;
       padding: 2rem !important;
       color: var(--text-dim);
     }
@@ -148,7 +148,7 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      z-index: 1000 !important; /* 🔥 لایه پایین‌تر از مودال‌ها */
+      z-index: 1000 !important;
       background: var(--black-2) !important;
       margin: 0 !important;
     }
@@ -212,14 +212,14 @@
     }
 
     /* ==========================================
-       🌟 افکت شیشه‌ای مودال‌ها (اصلاح Z-index)
+       🌟 افکت شیشه‌ای مودال‌ها
        ========================================== */
     .modal {
       background: rgba(0, 0, 0, 0.6) !important;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       position: fixed; inset: 0; 
-      z-index: 2000 !important; /* 🔥 بالاتر از نوار پایین */
+      z-index: 2000 !important;
       display: flex; align-items: center; justify-content: center;
     }
 
@@ -254,7 +254,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 2100 !important; /* بالاتر از خود مودال */
+      z-index: 2100 !important;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       pointer-events: auto !important;
@@ -348,14 +348,13 @@
 
   <nav class="sub-nav hidden" id="subNav"></nav>
 
-  <!-- گالری اصلی (توسط app.js پر می‌شود) -->
   <main id="gallery" class="gallery"></main>
 
   <footer>
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- 🔥 نوار پایین با کدهای پیش‌فرض (اگر app.js ارور داد، این غیب نمیشه) -->
+  <!-- نوار پایین -->
   <nav class="bottom-nav" id="bottomNav">
     <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
       <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
@@ -497,7 +496,7 @@
     </div>
   </div>
 
-  <!-- مودال اشتراک (دکمه ضربدر برای اطمینان) -->
+  <!-- مودال اشتراک -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
@@ -572,21 +571,19 @@
 
   <script>
     window.addEventListener('load', function() {
-      // 1. تنظیم تاریخ شمسی
       const dateEl = document.getElementById('shamsiDate');
       if (dateEl) {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
       }
 
-      // 2. آپدیت مداوم عکس پروفایل در نوار پایین (حتی بعد از اینکه app.js نوار رو بازنویسی کرد)
+      // آپدیت مداوم عکس پروفایل در نوار پایین
       setInterval(() => {
         const navCenter = document.querySelector('.nav-center-profile');
         const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
         if (navCenter && currentUser && currentUser.email) {
           const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
           if (avatarData) {
-            // چک میکنه که آیا عکس قبلا تزریق شده یا نه
             if (!navCenter.querySelector('.profile-btn-avatar')) {
               navCenter.innerHTML = `
                 <div class="profile-btn-avatar" style="background-image: url('${avatarData}');"></div>
@@ -595,9 +592,8 @@
             }
           }
         }
-      }, 500); // هر نیم ثانیه چک میکنه
+      }, 500);
 
-      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه
       const modal = document.getElementById('modal');
       if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
       
@@ -607,7 +603,6 @@
       const subModal = document.getElementById('subModal');
       if (subModal) subModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
 
-      // 4. بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
@@ -629,7 +624,6 @@
   
   <script src="js/app.js"></script>
 
-  <!-- 🔥 اتصال به Firebase با قابلیت سینک کامل و دوطرفه -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -648,7 +642,6 @@
     const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // 1. تابعی که موقع آپلود از app.js صدا زده میشه
     window.saveItemsToCloud = async function(items) {
       try {
         await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
@@ -663,7 +656,6 @@
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
     };
 
-    // 2. لود کردن اولیه اطلاعات از سرور
     async function loadInitialData() {
       try {
         const snap = await getDoc(docRefItems);
@@ -682,7 +674,6 @@
     }
     loadInitialData();
 
-    // 3. گوش دادن به تغییرات سرور (برای وقتی که کاربر دیگه‌ای فایل آپلود میکنه)
     onSnapshot(docRefItems, (docSnap) => {
       if (window.isUploading) return; 
       
