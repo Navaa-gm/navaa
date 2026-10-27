@@ -80,8 +80,6 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ITEMS_KEY = 'navaa_items_v3';
-    const REQUESTS_KEY = 'navaa_payment_requests';
-    const WITHDRAW_KEY = 'navaa_withdraw_requests';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     const adminData = { 
@@ -92,6 +90,7 @@
     
     localStorage.setItem(CURRENT_KEY, JSON.stringify(adminData));
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    // اطمینان از وجود مدیر با اطلاعات درست
     users = users.filter(u => u.email !== ADMIN_EMAIL);
     users.push(adminData);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -102,23 +101,14 @@
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
-    // ✅ تب‌ها (دکمه‌های بالا)
     document.querySelectorAll('.admin-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
         tab.classList.add('active');
         document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
-        
-        if (tab.dataset.tab === 'items') renderItems();
-        if (tab.dataset.tab === 'payments') renderPayments();
-        if (tab.dataset.tab === 'withdraws') renderWithdraws();
-        if (tab.dataset.tab === 'settings') renderSettings();
       });
     });
-
-    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
-    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
 
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
@@ -163,41 +153,15 @@
       });
     }
 
-    function renderItems(search = '') {
-      const adminItems = document.getElementById('adminItems');
-      let list = [...items].sort((a, b) => b.time - a.time);
-      if (search) list = list.filter(i => i.title.toLowerCase().includes(search));
-      if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
-      adminItems.innerHTML = '';
-      list.forEach(item => {
-        const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
-        const card = document.createElement('div'); card.className = 'item-card';
-        card.innerHTML = `
-          <div class="item-thumb"><img src="${item.image}" alt=""></div>
-          <div class="item-info"><p class="item-title">${escapeHtml(item.title)}</p><p class="item-artist">👤 ${escapeHtml(uploader ? uploader.fullname : 'ناشناس')}</p></div>`;
-        adminItems.appendChild(card);
-      });
-    }
-
-    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
-    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
-    function renderSettings() { /* لود کردن تنظیمات */ }
-
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      const isAdminUser = adminData.email === ADMIN_EMAIL || adminData.role === 'admin';
-      const isSuperUser = adminData.email === ADMIN_EMAIL;
-      const subActive = adminData.hasSubscription ? 'is-active' : '';
-      const adminActive = isAdminUser ? 'is-admin' : '';
-      
       let savedAvatar = localStorage.getItem('navaa_avatar_' + adminData.email);
       const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
-
       nav.innerHTML = `
         <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
-        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn"><span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک فعال</span></button>
+        <button class="nav-pill-btn sub-pill is-active" id="subNavBtn"><span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک فعال</span></button>
         <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">${profileContent}<span class="nav-center-label">پروفایل</span></a>
-        <button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیر کل</span></button>
+        <button class="nav-pill-btn admin-pill is-admin" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیر کل</span></button>
         <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>
       `;
       nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
@@ -206,18 +170,20 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
+    // 🔥 دریافت زنده دیتا از فایربیس (هر لحظه کاربر جدیدی اضافه شد، نشون بده)
     window.renderUsersFromCloud = function(cloudUsers) {
       let updatedUsers = cloudUsers.filter(u => u.email !== ADMIN_EMAIL);
-      updatedUsers.push(adminData);
+      updatedUsers.push(adminData); // اضافه کردن اجباری مدیر
+      
       users = updatedUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      renderUsers(); updateStats();
+      renderUsers();
+      updateStats();
     };
 
     renderUsers(); updateStats(); renderBottomNav();
   </script>
 
-  <!-- 🔥 اتصال زنده به Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
