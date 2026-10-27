@@ -62,8 +62,8 @@
       width: 100%; 
       max-width: 420px; 
       box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(0,240,212,0.1); 
-      max-height: 90vh; /* جلوگیری از بیرون زدن در موبایل */
-      overflow-y: auto; /* اسکرول در صورت نیاز */
+      max-height: 90vh; 
+      overflow-y: auto; 
       animation: popIn 0.4s ease-out;
     }
 
@@ -159,7 +159,6 @@
 
   <div class="auth-container">
     <div class="auth-tabs">
-      <!-- 🔥 type="button" اضافه شد تا در آینده مشکل ایجاد نکنه -->
       <button type="button" class="auth-tab active" data-target="login">ورود</button>
       <button type="button" class="auth-tab" data-target="signup">ساخت حساب</button>
     </div>
@@ -208,7 +207,7 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
-    const WELCOME_GIFT = 10000; // 🔥 مبلغ هدیه خوش‌آمدگویی
+    const WELCOME_GIFT = 10000; 
 
     window.switchTab = function(tabName) {
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -271,11 +270,10 @@
       const isAdminSignup = email === ADMIN_EMAIL;
       let welcomeMsg = '';
 
-      // 🔥 هدیه خوش‌آمدگویی
+      // 🔥 هدیه خوش‌آمدگویی (اتمیک)
       if (!isAdminSignup) {
         const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
         if (adminIdx !== -1) {
-          // اطمینان از اینکه موجودی ادمین منفی نمیشه (هرچند ادمین ۵ میلیون داره)
           if ((users[adminIdx].balance || 0) >= WELCOME_GIFT) {
             users[adminIdx].balance -= WELCOME_GIFT;
             welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
