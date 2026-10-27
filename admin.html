@@ -186,14 +186,12 @@
           <button class="plan-btn">🎁 هدیه</button>
         </div>
 
-        <!-- ✅ طلایی ۱۲ ماهه (365 روز) -->
         <div class="plan plan-silver" onclick="applyGift('silver', 100000, 365)">
           <div class="plan-header"><span class="plan-name">🥈 طلایی</span><div class="plan-duration">۱۲ ماهه (۱ ساله)</div></div>
           <div class="plan-price"><span class="price-num">۱۰۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <button class="plan-btn">🎁 هدیه</button>
         </div>
 
-        <!-- ✅ الماسی ۳ سال و ۶ ماهه (1260 روز) -->
         <div class="plan plan-diamond" onclick="applyGift('diamond', 250000, 1260)">
           <div class="plan-header"><span class="plan-name">💎 الماسی</span><div class="plan-duration">۳ سال و ۶ ماهه</div></div>
           <div class="plan-price"><span class="price-num">۲۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
@@ -215,6 +213,7 @@
     const ITEMS_KEY = 'navaa_items_v3';
     const WITHDRAW_KEY = 'navaa_withdraw_requests';
     const PURCHASES_KEY = 'navaa_purchases';
+    const SETTINGS_KEY = 'navaa_settings';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
@@ -226,7 +225,7 @@
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     
-    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+    function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
@@ -245,7 +244,7 @@
 
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
-      document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
+      document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin' || u.email === ADMIN_EMAIL).length;
       document.getElementById('statItems').textContent = items.length;
       
       const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
@@ -274,9 +273,14 @@
 
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
+      if (!grid) return;
       grid.innerHTML = '';
+      
       let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
-      if (search) sorted = sorted.filter(u => u.fullname.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
+      if (search) {
+          const q = search.toLowerCase();
+          sorted = sorted.filter(u => (u.fullname || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
+      }
       
       if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid">کاربری پیدا نشد</div>'; return; }
 
@@ -342,7 +346,6 @@
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
 
-      // 🔥 خواندن اطلاعات جدید از سرور قبل از تغییر موجودی
       if (window.getUsersFromCloud) {
           try {
               const freshUsers = await window.getUsersFromCloud();
@@ -393,7 +396,6 @@
       if (!user) return;
       if (!confirm(`اشتراک ${user.fullname} لغو شود؟`)) return;
       
-      // 🔥 سینک با سرور
       if (window.getUsersFromCloud) {
           try {
               const freshUsers = await window.getUsersFromCloud();
@@ -441,8 +443,12 @@
       const grid = document.getElementById('adminItems');
       if (!grid) return;
       grid.innerHTML = '';
+      
       let list = [...items].sort((a, b) => b.time - a.time);
-      if (search) list = list.filter(i => i.title.toLowerCase().includes(search) || (i.artist || '').toLowerCase().includes(search));
+      if (search) {
+          const q = search.toLowerCase();
+          list = list.filter(i => (i.title || '').toLowerCase().includes(q) || (i.artist || '').toLowerCase().includes(q));
+      }
       
       if (list.length === 0) { grid.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
 
@@ -563,7 +569,6 @@
       if (!req || req.status !== 'pending') return;
       if (!confirm(`رد برداشت ${formatMoney(req.amount)} تومان؟\nمبلغ به کیف پول کاربر برگردانده می‌شود.`)) return;
 
-      // 🔥 خواندن از سرور برای برگرداندن پول
       if (window.getUsersFromCloud) {
           try {
               const freshUsers = await window.getUsersFromCloud();
@@ -582,10 +587,34 @@
       
       localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
       await saveUsersToCloud();
+      
       alert('❌ درخواست رد شد و مبلغ به کاربر بازگشت داده شد.');
       renderWithdraws();
       updateStats();
+      renderUsers(); // 🔥 آپدیت لیست کاربران برای نمایش موجودی جدید
     };
+
+    // 🌟 تنظیمات (ذخیره در فایربیس)
+    async function loadSettings() {
+        if (window.getUsersFromCloud) {} // only for init
+        try {
+            const snap = await window.getSettingsFromCloud();
+            if (snap) {
+                document.getElementById('commissionInput').value = snap.commissionRate || 15;
+                document.getElementById('maxPriceInput').value = snap.maxItemPrice || 500000;
+            }
+        } catch(e) { console.error("خطا در لود تنظیمات:", e); }
+    }
+    
+    document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
+        const commission = parseInt(document.getElementById('commissionInput').value) || 15;
+        const maxPrice = parseInt(document.getElementById('maxPriceInput').value) || 500000;
+        
+        if (window.saveSettingsToCloud) {
+            await window.saveSettingsToCloud({ commissionRate: commission, maxItemPrice: maxPrice });
+            alert('✅ تنظیمات با موفقیت ذخیره شد.');
+        }
+    });
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
@@ -619,7 +648,9 @@
           localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
       }
       
-      renderUsers(); updateStats();
+      renderUsers(); 
+      updateStats();
+      renderBottomNav(); // 🔥 آپدیت عکس پروفایل در نوار پایین
     };
 
     window.renderItemsFromCloud = function(cloudItems) {
@@ -632,6 +663,7 @@
     document.getElementById('itemSearch')?.addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
 
     renderUsers(); renderItems(); updateStats(); renderBottomNav();
+    loadSettings();
   </script>
 
   <!-- 🔥 اتصال به Firebase -->
@@ -657,6 +689,16 @@
       const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_items_v3'));
       if (snap.exists()) return JSON.parse(snap.data().value);
       return [];
+    };
+
+    window.getSettingsFromCloud = async function() {
+        const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_settings'));
+        if (snap.exists()) return JSON.parse(snap.data().value);
+        return null;
+    };
+
+    window.saveSettingsToCloud = async function(settings) {
+        await setDoc(doc(db, 'navaa_storage', 'navaa_settings'), { value: JSON.stringify(settings), updatedAt: Date.now() });
     };
 
     // سینک زنده کاربران
