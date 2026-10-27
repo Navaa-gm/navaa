@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 تنظیمات جدید برای ساختار صفحه */
+    /* 🌟 تنظیمات ساختار صفحه */
     body {
       display: flex;
       flex-direction: column;
@@ -15,13 +15,13 @@
       margin: 0;
     }
     main#gallery {
-      flex: 1 0 auto; /* این باعث میشه گالری فضای خالی رو پر کنه */
+      flex: 1 0 auto; /* پر کردن فضای خالی */
       padding-bottom: 2rem;
     }
     footer {
       flex-shrink: 0;
-      margin-top: auto; /* فوتر رو همیشه به پایین می‌چسبونه */
-      padding: 2rem 1rem 100px 1rem; /* فاصله از پایین برای اینکه با منوی پایین تداخل نکنه */
+      margin-top: auto; /* چسبیدن فوتر به پایین */
+      padding: 2rem 1rem 100px 1rem; 
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--black-2);
@@ -40,7 +40,7 @@
     }
     
     .logo-name-sm {
-      font-size: 2.2rem !important; /* بزرگتر شدن لوگو */
+      font-size: 2.2rem !important;
       font-weight: 900 !important;
       letter-spacing: -0.5px;
     }
@@ -57,7 +57,7 @@
     }
     .topbar {
       width: 100%;
-      max-width: 600px; /* کوچک‌تر شدن کادر سرچ */
+      max-width: 600px;
     }
     .search-box {
       background: rgba(255, 255, 255, 0.03);
@@ -90,6 +90,37 @@
     .search-box input::placeholder {
       color: #777;
     }
+
+    /* 🌟 افکت شیشه‌ای برای مودال‌ها (گالری و آپلود) */
+    .modal {
+      background: rgba(0, 0, 0, 0.6) !important;
+      backdrop-filter: blur(8px); /* محو کردن پس‌زمینه */
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-content {
+      background: rgba(20, 24, 28, 0.65) !important; /* بدنه نیمه شفاف */
+      backdrop-filter: blur(24px) !important; /* افکت شیشه */
+      -webkit-backdrop-filter: blur(24px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 0 50px rgba(0, 240, 212, 0.15), 0 20px 60px rgba(0, 0, 0, 0.8) !important;
+      border-radius: 24px !important;
+    }
+
+    /* اصلاح استایل داخلی برای خوانایی بهتر روی پس‌زمینه شیشه‌ای */
+    .upload-section {
+      background: rgba(0, 0, 0, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 16px;
+    }
+    .upload-field input, .upload-field textarea, .upload-field select {
+      background: rgba(10, 10, 10, 0.8) !important; /* اینپوت‌ها کمی تیره‌تر بشن تا خوانا باشن */
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .upload-field input:focus, .upload-field textarea:focus, .upload-field select:focus {
+      border-color: var(--turquoise) !important;
+      box-shadow: 0 0 0 3px rgba(0, 240, 212, 0.2) !important;
+    }
   </style>
 </head>
 <body>
@@ -97,10 +128,10 @@
   <header>
     <div class="header-inner">
       
-      <!-- سمت راست: لوگوی Navaa و لینک صفحه اصلی زیر آن -->
+      <!-- سمت راست: لوگو و لینک صفحه اصلی -->
       <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.4rem;">
         <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
-          <span class="logo-icon-sm" style="font-size: 2rem;">🎵</span>
+          <span class="logo-icon-sm">🎵</span>
           <span class="logo-name-sm">Navaa<span class="dot" style="color: var(--gold);">.</span></span>
         </a>
         <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
@@ -120,7 +151,7 @@
     </div>
   </header>
   
-  <!-- کادر جستجوی شیشه‌ای (وسط چین) -->
+  <!-- کادر جستجوی شیشه‌ای -->
   <div class="topbar-wrap">
     <div class="topbar">
       <div class="search-box">
@@ -134,12 +165,12 @@
 
   <main id="gallery" class="gallery"></main>
 
-  <!-- فوتر که همیشه پایین می‌مونه -->
+  <!-- فوتر -->
   <footer>
     <p>🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- مودال‌ها (بدون تغییر) -->
+  <!-- مودال نمایش اثر -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">✕</button>
@@ -164,6 +195,7 @@
     </div>
   </div>
 
+  <!-- مودال آپلود اثر -->
   <div id="uploadModal" class="modal hidden">
     <div class="modal-content upload-content">
       <button class="modal-close" id="uploadClose">✕</button>
@@ -299,7 +331,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- ✅ پلن طلایی ۱۲ ماهه (365 روز) -->
         <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="365">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
           <div class="plan-header">
@@ -320,7 +351,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
         <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
@@ -348,7 +378,6 @@
   <nav class="bottom-nav" id="bottomNav"></nav>
 
   <script>
-    // 🌟 تنظیم تاریخ شمسی
     window.addEventListener('load', function() {
       const dateEl = document.getElementById('shamsiDate');
       if (dateEl) {
@@ -377,7 +406,6 @@
   
   <script src="js/app.js"></script>
 
-  <!-- 🔥 اتصال به Firebase برای ذخیره دائمی آثار و کاربران -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -396,24 +424,17 @@
     const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // ✅ تابع ذخیره آثار در دیتابیس ابری
     window.saveItemsToCloud = async function(items) {
       await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
-      console.log('✅ اثر در دیتابیس ابری ذخیره شد.');
     };
 
-    // ✅ تابع ذخیره کاربران در دیتابیس ابری (برای ۵۰ فایل رایگان و ۱۰,۰۰۰ تومن)
     window.saveUsersToCloud = async function() {
       const users = JSON.parse(localStorage.getItem('navaa_users')) || [];
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
-      console.log('✅ کاربران در دیتابیس ابری ذخیره شدند.');
     };
 
-    // گوش دادن به تغییرات دیتابیس آثار
     onSnapshot(docRefItems, (docSnap) => {
-      // 🔥 وقتی در حال آپلود هستیم، دیتا رو آپدیت نکن
       if (window.isUploading) return; 
-
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
         if (cloudItems.length > 0 || window.DB.items.length === 0) {
