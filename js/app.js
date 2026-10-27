@@ -42,6 +42,17 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
+// 🔥 سینک کردن اطلاعات کاربر با آرایه کاربران و دیتابیس ابری
+function syncCurrentUserToArray() {
+    const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    const idx = users.findIndex(u => u.email === currentUser.email);
+    if (idx !== -1) {
+        users[idx] = { ...users[idx], ...currentUser };
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        if (window.saveUsersToCloud) window.saveUsersToCloud();
+    }
+}
+
 // 🎁 هدیه آپلود
 function giveUploadReward(uploaderEmail) {
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -75,6 +86,7 @@ function checkUploadPermission(fileSize) {
     currentUser.monthlyUploads = 0;
     currentUser.lastUploadMonth = currentMonth;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+    syncCurrentUserToArray();
   }
   
   if ((currentUser.monthlyUploads || 0) >= 50) {
@@ -115,7 +127,7 @@ function makeSVG(color1, color2, emoji, label) {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-// ================== بخش‌های مربوط به قیمت‌گذاری ==================
+// ================== قیمت‌گذاری ==================
 function botPriceItem(itemData) {
   const details = []; let basePrice = 10000; details.push({ label: 'قیمت پایه', value: basePrice });
   if (itemData.hasAudio) { basePrice += 30000; details.push({ label: '🎵 فایل صوتی', value: 30000 }); }
@@ -215,7 +227,7 @@ function initPremiumSection() {
   });
 }
 
-// ================== مودال نمایش جزئیات (اصلاح شده) ==================
+// ================== مودال نمایش جزئیات ==================
 function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
   if (!item) return;
@@ -272,7 +284,7 @@ function bindDetailModal() {
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
-// ✅ گالری (با قابلیت کلیک برای باز کردن مودال)
+// ✅ گالری
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -415,16 +427,7 @@ function bindUploadModal() {
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-        
-        // سینک کردن شمارنده با دیتابیس
-        const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-        const uIdx = users.findIndex(u => u.email === currentUser.email);
-        if (uIdx !== -1) {
-            users[uIdx].monthlyUploads = currentUser.monthlyUploads;
-            users[uIdx].lastUploadMonth = currentUser.lastUploadMonth;
-            localStorage.setItem(USERS_KEY, JSON.stringify(users));
-            if (window.saveUsersToCloud) window.saveUsersToCloud();
-        }
+        syncCurrentUserToArray(); // 🔥 سینک با دیتابیس
       }
 
       if (window.saveItemsToCloud) { try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } }
