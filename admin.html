@@ -4,21 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>پنل مدیریت | Navaa</title>
+  
   <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .admin-header { position: relative; background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%), radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%); padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,240,212,.15); z-index: 10; }
-    .admin-header::after { content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 2px; background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent); box-shadow: 0 0 12px var(--turquoise); }
+    /* 🌟 استایل‌های اختصاصی پنل مدیریت */
+    html { font-size: 14px; }
+    
+    .admin-header { 
+      position: relative; 
+      background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%), radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%); 
+      padding: 1.2rem 1.5rem; 
+      border-bottom: 1px solid rgba(0,240,212,.15); 
+      z-index: 10; 
+    }
+    .admin-header::after { 
+      content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 2px; 
+      background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent); 
+      box-shadow: 0 0 12px var(--turquoise); 
+    }
     .admin-header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .admin-logo-box { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
     .admin-badge-large { display: inline-flex; align-items: center; gap: .4rem; background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1)); border: 1px solid rgba(255,201,60,.5); color: var(--gold); padding: .5rem 1.1rem; border-radius: 999px; font-size: .82rem; font-weight: 800; box-shadow: 0 0 16px rgba(255,201,60,.3); }
     .admin-back-btn { display: inline-flex; align-items: center; gap: .5rem; background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c !important; text-decoration: none; padding: .8rem 1.5rem; border-radius: 999px; font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5); transition: all .25s; }
     .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); }
-    .admin-main { padding-bottom: 120px !important; }
-    .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
+    
+    .admin-main { padding-bottom: 120px !important; max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+    .admin-section { background: rgba(20,24,28,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; max-width: 600px; margin: 0 auto; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
     
     .user-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
@@ -28,13 +43,69 @@
     .btn-action.danger:hover { background: var(--red); color: #fff; border-color: var(--red); }
     .btn-action.success { color: var(--gold); border-color: rgba(255,201,60,0.3); }
     .btn-action.success:hover { background: var(--gold); color: #1a1100; border-color: var(--gold); }
+
+    /* 🌟 نوار پایین و اصلاح دایره عکس پروفایل */
+    .bottom-nav {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 64px !important;
+      padding: 0.2rem 3% !important;
+      border-radius: 16px 16px 0 0 !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      z-index: 1000 !important;
+      background: var(--black-2) !important;
+    }
+    .nav-pill-btn { padding: 0.3rem 0.8rem !important; font-size: 0.75rem !important; gap: 0.3rem !important; border-radius: 10px !important; }
+    .nav-pill-icon { font-size: 1rem !important; }
+
+    /* 🔥 دایره وسط */
+    .nav-center-profile {
+      position: relative !important; width: 56px !important; height: 56px !important;
+      min-width: 56px !important; min-height: 56px !important;
+      flex: 0 0 56px !important; border-radius: 50% !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      padding: 0 !important; margin-top: -18px !important; box-sizing: border-box !important;
+    }
+    .profile-btn-avatar {
+      width: 100% !important; height: 100% !important; border-radius: 50% !important;
+      background-size: cover !important; background-position: center !important;
+      box-sizing: border-box !important; border: 3px solid var(--black-2) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important;
+    }
+    .nav-center-profile .nav-icon {
+      width: 100% !important; height: 100% !important; border-radius: 50% !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      color: #001a1c !important; font-size: 1.2rem !important; box-sizing: border-box !important;
+    }
+    .nav-center-label {
+      position: absolute !important; bottom: -18px !important; left: 50% !important;
+      transform: translateX(-50%) !important; font-size: 0.65rem !important; white-space: nowrap !important; color: #fff !important;
+    }
+
+    /* 🌟 افکت شیشه‌ای مودال هدیه */
+    .modal { background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(8px); }
+    .modal-content { 
+      background: rgba(20, 24, 28, 0.7) !important; 
+      backdrop-filter: blur(24px) !important; 
+      border: 1px solid rgba(255,255,255,0.15) !important; 
+      border-radius: 20px !important; 
+    }
   </style>
 </head>
 <body>
 
   <header class="admin-header">
     <div class="admin-header-inner">
-      <a href="gallery.html" class="admin-logo-box"><span class="logo-icon-sm">🎵</span><span class="logo-name-sm">Navaa<span class="dot">.</span></span></a>
+      <a href="gallery.html" class="admin-logo-box">
+        <span class="logo-icon-sm">🎵</span>
+        <span class="logo-name-sm">Navaa</span>
+      </a>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <span class="admin-badge-large">🛡️ پنل مدیریت</span>
         <a href="gallery.html" class="admin-back-btn"><span>رفتن به گالری</span></a>
@@ -62,19 +133,25 @@
       <button class="admin-tab" data-tab="settings">⚙️ تنظیمات</button>
     </div>
 
+    <!-- تب کاربران -->
     <section id="tab-users" class="admin-panel">
       <div class="admin-search"><input type="text" id="userSearch" placeholder="🔍 جستجو..."></div>
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
+    <!-- تب آثار -->
     <section id="tab-items" class="admin-panel hidden">
       <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
       <div class="items-grid" id="adminItems"></div>
     </section>
     
+    <!-- تب پرداخت‌ها -->
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
+    
+    <!-- تب برداشت‌ها -->
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
+    <!-- تب تنظیمات -->
     <section id="tab-settings" class="admin-panel hidden">
       <div class="admin-section">
         <h3>⚙️ تنظیمات پلتفرم</h3>
@@ -95,39 +172,22 @@
 
       <div class="plans" style="margin-top:1rem;">
         <div class="plan plan-bronze" onclick="applyGift('bronze', 50000, 30)">
-          <div class="plan-header">
-            <span class="plan-name">🥉 برنزی</span>
-            <div class="plan-duration">۱ ماهه</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
+          <div class="plan-price"><span class="price-num">۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <button class="plan-btn">🎁 هدیه</button>
         </div>
 
+        <!-- ✅ طلایی ۱۲ ماهه (365 روز) -->
         <div class="plan plan-silver" onclick="applyGift('silver', 100000, 365)">
-          <div class="plan-header">
-            <span class="plan-name">🥈 طلایی</span>
-            <div class="plan-duration">۱۲ ماهه (۱ ساله)</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۱۰۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">🥈 طلایی</span><div class="plan-duration">۱۲ ماهه (۱ ساله)</div></div>
+          <div class="plan-price"><span class="price-num">۱۰۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <button class="plan-btn">🎁 هدیه</button>
         </div>
 
-        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
+        <!-- ✅ الماسی ۳ سال و ۶ ماهه (1260 روز) -->
         <div class="plan plan-diamond" onclick="applyGift('diamond', 250000, 1260)">
-          <div class="plan-header">
-            <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۳ سال و ۶ ماهه</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۲۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">💎 الماسی</span><div class="plan-duration">۳ سال و ۶ ماهه</div></div>
+          <div class="plan-price"><span class="price-num">۲۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <button class="plan-btn">🎁 هدیه</button>
         </div>
       </div>
@@ -144,6 +204,8 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ITEMS_KEY = 'navaa_items_v3';
+    const WITHDRAW_KEY = 'navaa_withdraw_requests';
+    const PURCHASES_KEY = 'navaa_purchases';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
@@ -176,6 +238,16 @@
       document.getElementById('statUsers').textContent = users.length;
       document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
       document.getElementById('statItems').textContent = items.length;
+      
+      // آمار درخواست‌های در انتظار
+      const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+      const pending = withdraws.filter(w => w.status === 'pending').length;
+      document.getElementById('statPending').textContent = pending;
+
+      // آمار درآمد مدیر (کمیسیون)
+      const purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
+      const commission = purchases.reduce((s, p) => s + (p.adminShare || 0), 0);
+      document.getElementById('statCommission').textContent = formatMoney(commission);
     }
 
     async function saveUsersToCloud() {
@@ -252,7 +324,11 @@
       if (!user) return;
       giftTargetId = id;
       document.getElementById('giftTargetName').textContent = user.fullname;
-      document.getElementById('adminGiftBalance').textContent = formatMoney(currentUser.balance || 0);
+      
+      // گرفتن موجودی جدید خود ادمین از آرایه
+      const me = users.find(u => u.email === currentUser.email);
+      document.getElementById('adminGiftBalance').textContent = formatMoney(me ? (me.balance || 0) : 0);
+      
       document.getElementById('giftSubModal').classList.remove('hidden');
     };
 
@@ -265,23 +341,35 @@
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
 
-      if ((currentUser.balance || 0) < price) {
-        alert(`❌ موجودی کیف پول شما برای این هدیه کافی نیست!\nموجودی شما: ${formatMoney(currentUser.balance)} تومان`);
+      const gifterIdx = users.findIndex(u => u.email === currentUser.email);
+      if (gifterIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
+
+      if ((users[gifterIdx].balance || 0) < price) {
+        alert(`❌ موجودی کیف پول شما برای این هدیه کافی نیست!\nموجودی شما: ${formatMoney(users[gifterIdx].balance)} تومان`);
         return;
       }
 
       if (!confirm(`آیا مطمئن هستید که می‌خواهید پلن ${planName} را به ${targetUser.fullname} هدیه دهید؟\nمبلغ ${formatMoney(price)} تومان از کیف پول شما کسر می‌شود.`)) return;
 
-      const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
-      if (adminIdx !== -1) {
-        users[adminIdx].balance -= price;
-      }
+      // 🔥 کم کردن از حساب خود ادمینی که هدیه میده (نه فقط مدیر کل)
+      users[gifterIdx].balance -= price;
 
       const targetIdx = users.findIndex(u => u.id === giftTargetId);
       if (targetIdx !== -1) {
         users[targetIdx].hasSubscription = true;
         users[targetIdx].subscriptionPlan = planName;
         users[targetIdx].subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
+        
+        // ثبت در تاریخچه
+        if (!users[targetIdx].subscriptionHistory) users[targetIdx].subscriptionHistory = [];
+        users[targetIdx].subscriptionHistory.push({
+          plan: planName,
+          planLabel: `🎁 ${planName} (هدیه)`,
+          price: price,
+          method: 'gift',
+          giftedBy: currentUser.email,
+          time: Date.now()
+        });
       }
 
       saveUsersToCloud();
@@ -345,13 +433,130 @@
       });
     }
 
-    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
-    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
+    function renderPayments() {
+      const list = document.getElementById('paymentsList');
+      if (!list) return;
+      const purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
+
+      if (purchases.length === 0) {
+        list.innerHTML = '<div class="empty-grid">پرداختی ثبت نشده است</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      [...purchases].sort((a,b) => b.time - a.time).forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'admin-section';
+        card.style.marginBottom = '.6rem';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;">
+            <div>
+              <strong style="color:#fff;">${escapeHtml(p.itemTitle || '—')}</strong>
+              <div style="font-size:.75rem;color:#a0a0a0;margin-top:.2rem;">خریدار: <span style="direction:ltr;">${escapeHtml(p.buyerEmail || '—')}</span></div>
+              <div style="font-size:.7rem;color:#666;">${new Date(p.time).toLocaleDateString('fa-IR')}</div>
+            </div>
+            <div style="text-align:left;">
+              <div style="color:#00f0d4;font-weight:800;">${formatMoney(p.price || 0)} تومان</div>
+              <div style="font-size:.7rem;color:#ffc93c;">سهم مدیر: ${formatMoney(p.adminShare || 0)}</div>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function renderWithdraws() {
+      const list = document.getElementById('withdrawsList');
+      if (!list) return;
+      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+
+      if (requests.length === 0) {
+        list.innerHTML = '<div class="empty-grid">درخواست برداشتی وجود ندارد</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      [...requests].sort((a,b) => b.time - a.time).forEach(r => {
+        const u = users.find(x => x.email === r.userEmail);
+        const statusMap = {
+          pending: { label: '⏳ در انتظار', cls: 'badge-pending' },
+          approved: { label: '✅ تایید شده', cls: 'badge-approved' },
+          rejected: { label: '❌ رد شده', cls: 'badge-rejected' }
+        };
+        const st = statusMap[r.status] || statusMap.pending;
+
+        const card = document.createElement('div');
+        card.className = 'admin-section';
+        card.style.marginBottom = '.8rem';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;flex-wrap:wrap;">
+            <div>
+              <strong style="color:#fff;">${escapeHtml(u ? u.fullname : r.userName || 'کاربر')}</strong>
+              <div style="font-size:.75rem;color:#a0a0a0;direction:ltr;">${escapeHtml(r.userEmail)}</div>
+              <div style="font-size:.75rem;color:#a0a0a0;margin-top:.3rem;">💳 ${escapeHtml(r.cardNumber)} · ${new Date(r.time).toLocaleDateString('fa-IR')}</div>
+            </div>
+            <div style="text-align:left;">
+              <div style="color:#ffc93c;font-weight:800;font-size:1.1rem;">${formatMoney(r.amount)} تومان</div>
+              <span class="role-badge ${st.cls}">${st.label}</span>
+            </div>
+          </div>
+          ${r.status === 'pending' ? `
+            <div class="user-actions">
+              <button class="btn-action success" onclick="approveWithdraw(${r.id})">✅ تایید و پرداخت</button>
+              <button class="btn-action danger" onclick="rejectWithdraw(${r.id})">❌ رد کردن (برگرداندن پول)</button>
+            </div>
+          ` : ''}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    window.approveWithdraw = function(id) {
+      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+      const req = requests.find(r => r.id === id);
+      if (!req || req.status !== 'pending') return;
+      if (!confirm(`تایید برداشت ${formatMoney(req.amount)} تومان برای ${req.userName}؟\n(مبلغ قبلاً از حساب کاربر کسر شده است)`)) return;
+
+      req.status = 'approved';
+      req.approvedAt = Date.now();
+      req.approvedBy = currentUser.email;
+      localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
+      
+      alert('✅ برداشت تایید شد.');
+      renderWithdraws();
+      updateStats();
+    };
+
+    window.rejectWithdraw = function(id) {
+      const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+      const req = requests.find(r => r.id === id);
+      if (!req || req.status !== 'pending') return;
+      if (!confirm(`رد برداشت ${formatMoney(req.amount)} تومان؟\nمبلغ به کیف پول کاربر برگردانده می‌شود.`)) return;
+
+      const userIdx = users.findIndex(u => u.email === req.userEmail);
+      if (userIdx !== -1) {
+        users[userIdx].balance = (users[userIdx].balance || 0) + req.amount;
+      }
+
+      req.status = 'rejected';
+      req.rejectedAt = Date.now();
+      req.rejectedBy = currentUser.email;
+      
+      localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
+      saveUsersToCloud();
+      alert('❌ درخواست رد شد و مبلغ به کاربر بازگشت داده شد.');
+      renderWithdraws();
+      updateStats();
+    };
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
-      const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
+      
+      const profileContent = savedAvatar 
+        ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` 
+        : `<span class="nav-icon">👤</span>`;
+
       nav.innerHTML = `
         <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
         <button class="nav-pill-btn sub-pill is-active" id="subNavBtn"><span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک فعال</span></button>
@@ -359,6 +564,7 @@
         <button class="nav-pill-btn admin-pill is-admin" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیر کل</span></button>
         <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>
       `;
+      
       nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
       nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
       nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
