@@ -2,7 +2,6 @@
 // ══════════════════ Navaa — app.js ═════════════════════════
 // ============================================================
 
-// ================== 1. CONFIG ==================
 const CURRENT_KEY = 'navaa_current_user';
 const USERS_KEY = 'navaa_users';
 const ITEMS_KEY = 'navaa_items_v3';
@@ -12,12 +11,11 @@ const UPLOAD_REWARD = 5000;
 let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY)) || null;
 if (!currentUser) window.location.href = 'home.html';
 
-// ================== 2. PLAN LIMITS ==================
 const PLAN_LIMITS = {
-  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین', color: '#ffc93c' },
-  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی', color: '#00f0d4' },
-  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, maxDailyTotalSize: 200 * 1024 * 1024 * 1024, label: '🥈 طلایی', color: '#ffc93c' },
-  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, maxDailyTotalSize: 25 * 1024 * 1024 * 1024, label: '🥉 برنزی', color: '#cd7f32' }
+  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین' },
+  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی' },
+  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, maxDailyTotalSize: 200 * 1024 * 1024 * 1024, label: '🥈 طلایی' },
+  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, maxDailyTotalSize: 25 * 1024 * 1024 * 1024, label: '🥉 برنزی' }
 };
 
 let hasSubscription = currentUser.hasSubscription || false;
@@ -43,7 +41,7 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
-// ================== 3. REWARD & LIMITS ==================
+// 🎁 هدیه آپلود
 function giveUploadReward(uploaderEmail) {
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
@@ -67,6 +65,7 @@ function giveUploadReward(uploaderEmail) {
   return { success: true, isAdmin: isUploaderAdmin };
 }
 
+// 📊 سیستم ۵۰ فایل رایگان
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
   
@@ -83,40 +82,56 @@ function checkUploadPermission(fileSize) {
   return { allowed: true };
 }
 
-// ================== 4. SUBCATS (اضافه شدن عکس پروفایل و تبلیغاتی) ==================
+// 🗂️ دسته‌بندی‌ها
 const SUBCATS = {
   music: {
-    'music-pop':        { label: '🎵 پاپ' },
-    'music-classic':    { label: '🎼 سنتی' },
-    'music-rock':       { label: '🎸 راک' },
-    'music-electronic': { label: '🎧 الکترونیک' },
-    'music-classical':  { label: '🎻 کلاسیک' },
-    'music-rap':        { label: '🎤 رپ' }
+    'music-pop': { label: '🎵 پاپ' }, 'music-classic': { label: '🎼 سنتی' },
+    'music-rock': { label: '🎸 راک' }, 'music-electronic': { label: '🎧 الکترونیک' },
+    'music-classical': { label: '🎻 کلاسیک' }, 'music-rap': { label: '🎤 رپ' }
   },
   photo: {
-    'photo-nature':    { label: '🌿 طبیعت' },
-    'photo-arch':      { label: '🏛️ معماری' },
-    'photo-bw':        { label: '⚫ سیاه و سفید' },
-    'photo-animal':    { label: '🐾 حیوانات' },
-    'photo-nostalgic': { label: '📻 نوستالژیک' },
-    'photo-phone-bg':  { label: '📱 پس‌زمینه گوشی' },
-    'photo-pc-bg':     { label: '💻 پس‌زمینه کامپیوتر' },
-    'photo-profile':   { label: '👤 عکس پروفایل' },
-    'photo-ad':        { label: '📢 عکس تبلیغاتی' }
+    'photo-nature': { label: '🌿 طبیعت' }, 'photo-arch': { label: '🏛️ معماری' },
+    'photo-bw': { label: '⚫ سیاه و سفید' }, 'photo-animal': { label: '🐾 حیوانات' },
+    'photo-nostalgic': { label: '📻 نوستالژیک' }, 'photo-phone-bg': { label: '📱 پس‌زمینه گوشی' },
+    'photo-pc-bg': { label: '💻 پس‌زمینه کامپیوتر' }, 'photo-profile': { label: '👤 عکس پروفایل' },
+    'photo-ad': { label: '📢 عکس تبلیغاتی' }
   },
   car: {
-    'car-super':      { label: '🏎️ سوپراسپرت' },
-    'car-classic':    { label: '🚙 کلاسیک' },
-    'car-offroad':    { label: '🚙 آفرود' },
-    'car-sport':      { label: '🏁 اسپرت' },
-    'car-luxury':     { label: '💎 لوکس' },
-    'car-motorcycle': { label: '🏍️ موتور' }
+    'car-super': { label: '🏎️ سوپراسپرت' }, 'car-classic': { label: '🚙 کلاسیک' },
+    'car-offroad': { label: '🚙 آفرود' }, 'car-sport': { label: '🏁 اسپرت' },
+    'car-luxury': { label: '💎 لوکس' }, 'car-motorcycle': { label: '🏍️ موتور' }
   }
 };
 
-// ================== 5. GALLERY ==================
 function setupUserHeader() { const greeting = document.getElementById('userGreeting'); if (greeting) greeting.textContent = currentUser.fullname; }
 
+// ✅ فشرده‌سازی تصویر (بازگردانده شد)
+function compressImage(file, maxWidth = 800, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject; img.src = e.target.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+
+// ✅ ساخت SVG برای فایل‌های صوتی بدون عکس
+function makeSVG(color1, color2, emoji, label) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${color1}"/><stop offset="100%" stop-color="${color2}"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="45%" font-size="180" text-anchor="middle" dominant-baseline="middle">${emoji}</text><text x="50%" y="75%" font-size="34" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-weight="700">${label}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// ✅ گالری
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -151,15 +166,23 @@ function renderGallery() {
   });
 }
 
-// ================== 6. UPLOAD MODAL (تگ‌های چندگانه و دسته‌بندی) ==================
+// ✅ فرم آپلود (با کدهای کامل خواندن فایل)
 function bindUploadModal() {
   const modal = document.getElementById('uploadModal'); 
   const form = document.getElementById('uploadForm');
   const catSel = document.getElementById('catSelect');
+  const fileIn = document.getElementById('fileInput');
+  const audioIn = document.getElementById('audioInput');
+  const preview = document.getElementById('preview');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewRemove = document.getElementById('previewRemove');
+  const audioFileBox = document.getElementById('audioFileBox');
+  const audioFileName = document.getElementById('audioFileName');
+  const audioFileRemove = document.getElementById('audioFileRemove');
   
   if (!modal || !form) return;
 
-  // پر کردن دسته‌بندی‌ها در فرم آپلود
+  // پر کردن دسته‌بندی‌ها
   if (catSel) {
     let allSubs = [];
     Object.entries(SUBCATS).forEach(([main, subs]) => {
@@ -168,58 +191,143 @@ function bindUploadModal() {
     catSel.innerHTML = allSubs.join('');
   }
 
-  document.getElementById('uploadClose')?.addEventListener('click', () => modal.classList.add('hidden'));
+  let compressedImageData = null;
+  let currentAudioDuration = 0;
+
+  // 🔥 انتخاب عکس
+  fileIn.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    compressImage(file, 800, 0.7).then(compressed => {
+      compressedImageData = compressed;
+      preview.src = compressed;
+      previewWrap.classList.remove('hidden');
+    }).catch(err => {
+      console.error(err);
+      // اگر فشرده‌سازی نشد، به صورت دیتا یو آر ال می‌خونیم
+      const reader = new FileReader();
+      reader.onload = ev => {
+        compressedImageData = ev.target.result;
+        preview.src = ev.target.result;
+        previewWrap.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // 🔥 حذف عکس انتخاب شده
+  previewRemove?.addEventListener('click', () => {
+    fileIn.value = '';
+    preview.src = '';
+    previewWrap.classList.add('hidden');
+    compressedImageData = null;
+  });
+
+  // 🔥 انتخاب فایل صوتی
+  audioIn?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      audioFileName.textContent = file.name;
+      audioFileBox.classList.remove('hidden');
+      const audio = document.createElement('audio');
+      audio.src = URL.createObjectURL(file);
+      audio.addEventListener('loadedmetadata', () => { currentAudioDuration = audio.duration; });
+    } else {
+      audioFileBox.classList.add('hidden');
+      currentAudioDuration = 0;
+    }
+  });
+
+  // 🔥 حذف فایل صوتی
+  audioFileRemove?.addEventListener('click', () => {
+    audioIn.value = '';
+    audioFileName.textContent = '';
+    audioFileBox.classList.add('hidden');
+    currentAudioDuration = 0;
+  });
+
+  document.getElementById('uploadClose')?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    form.reset();
+    previewWrap.classList.add('hidden');
+    preview.src = '';
+    audioFileBox.classList.add('hidden');
+    compressedImageData = null;
+  });
+
   document.getElementById('uploadBtn')?.addEventListener('click', () => modal.classList.remove('hidden'));
   
+  // 🔥 ثبت فرم
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const perm = checkUploadPermission(0);
+    
+    const imageFile = fileIn.files[0];
+    const audioFile = audioIn ? audioIn.files[0] : null;
+    
+    if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
+    
+    const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
     if (!perm.allowed) return alert(perm.reason);
 
     const titleValue = form.title.value.trim();
     if(!titleValue) return alert('عنوان رو وارد کن!');
 
-    // 🔥 پردازش تگ‌ها (پشتیبانی از کامای فارسی و انگلیسی)
     const tagsInput = form.tags.value || '';
     const tagsArray = tagsInput.split(/[,،]/).map(t => t.trim()).filter(Boolean);
 
-    // ساخت آبجکت اثر جدید
-    const newItem = { 
-        id: Date.now(), 
-        image: 'https://via.placeholder.com/600', // فعلا عکس پیش‌فرض
-        title: titleValue, 
-        artist: form.artist.value.trim() || currentUser.fullname, 
-        desc: form.desc.value.trim(),
-        category: form.category.value,
-        tags: tagsArray,
-        time: Date.now(), 
-        uploadedByEmail: currentUser.email, 
-        likes: 0 
-    };
-    
-    window.isUploading = true; // جلوگیری از پاک شدن موقع رفرش
-    DB.items.push(newItem); 
-    save();
-    
-    if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
-      currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-    }
+    // تابع نهایی برای ساخت آبجکت
+    const finish = async (finalImage, audioData) => {
+      const newItem = { 
+          id: Date.now(), 
+          image: finalImage || makeSVG('#00f0d4', '#38bdf8', '🎵', 'صوتی'),
+          audio: audioData || null,
+          title: titleValue, 
+          artist: form.artist.value.trim() || currentUser.fullname, 
+          desc: form.desc.value.trim(),
+          category: form.category.value,
+          tags: tagsArray,
+          time: Date.now(), 
+          uploadedByEmail: currentUser.email, 
+          likes: 0 
+      };
+      
+      window.isUploading = true;
+      DB.items.push(newItem); 
+      save();
+      
+      if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
+        currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+      }
 
-    if (window.saveItemsToCloud) { 
-        try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } 
+      if (window.saveItemsToCloud) { 
+          try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } 
+      }
+      window.isUploading = false;
+      
+      const reward = giveUploadReward(currentUser.email);
+      modal.classList.add('hidden'); 
+      form.reset();
+      previewWrap.classList.add('hidden');
+      audioFileBox.classList.add('hidden');
+      compressedImageData = null;
+      renderGallery();
+      alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
+    };
+
+    // اگه فایل صوتی هم بود، خونده میشه
+    if (audioFile) {
+      const r = new FileReader();
+      r.onload = ev => finish(compressedImageData, ev.target.result);
+      r.readAsDataURL(audioFile);
+    } else {
+      finish(compressedImageData, null);
     }
-    window.isUploading = false;
-    
-    const reward = giveUploadReward(currentUser.email);
-    modal.classList.add('hidden'); 
-    form.reset();
-    renderGallery();
-    alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
   });
 }
 
-// ================== 7. BOTTOM NAV (اصلاح شده - دقیقا همون دکمه‌های اصلی) ==================
+// ✅ نوار پایین
 function renderBottomNav() {
   const nav = document.getElementById('bottomNav'); 
   if (!nav) return;
@@ -246,7 +354,6 @@ function renderBottomNav() {
   `;
 }
 
-// ================== 8. INIT ==================
 setupUserHeader(); 
 renderGallery(); 
 bindUploadModal(); 
