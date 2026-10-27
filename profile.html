@@ -60,7 +60,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* ============ اطلاعات ============ */
     .profile-info { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
     .info-row {
       display: flex; justify-content: space-between; align-items: center;
@@ -78,24 +77,18 @@
     }
     .edit-btn:hover { background: rgba(0,240,212,.25); }
 
-    .profile-stats {
-      display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
-      margin-top: 1rem;
-    }
+    .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
     .stat-box {
       background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
-      border: 1.5px solid rgba(0,240,212,.35);
-      border-radius: 14px; padding: 1rem;
+      border: 1.5px solid rgba(0,240,212,.35); border-radius: 14px; padding: 1rem;
       text-align: center;
     }
     .stat-box strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--turquoise); }
     .stat-box span { font-size: .75rem; color: var(--text-dim); }
 
-    /* ============ کیف پول ============ */
     .wallet-card {
       background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
-      border: 1.5px solid rgba(0,240,212,.4);
-      border-radius: 16px; padding: 1.5rem 1.2rem;
+      border: 1.5px solid rgba(0,240,212,.4); border-radius: 16px; padding: 1.5rem 1.2rem;
       text-align: center; margin-bottom: 1rem;
       box-shadow: 0 0 24px rgba(0,240,212,.15);
     }
@@ -129,7 +122,6 @@
     .btn-withdraw:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,201,60,.6); }
     .btn-withdraw:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
 
-    /* ============ آثار من ============ */
     .my-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
     @media (max-width: 420px) { .my-items-grid { grid-template-columns: 1fr; } }
     .my-item {
@@ -175,7 +167,6 @@
       background: var(--black-3); border-radius: 12px; border: 1px dashed var(--border);
     }
 
-    /* ============ خریدها/درآمدها ============ */
     .purchase-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: .7rem; background: var(--black-3); border-radius: 10px; margin-bottom: .5rem; font-size: .82rem;
@@ -203,7 +194,6 @@
     .limit-box-label { color: #a0a0a0; font-size: .7rem; margin-bottom: .2rem; }
     .limit-box-value { color: #ffc93c; font-weight: 800; }
 
-    /* ============ مودال انتقال ============ */
     .transfer-modal-wrap {
       position: fixed; inset: 0; background: rgba(0,0,0,.95); z-index: 300;
       display: flex; align-items: center; justify-content: center; padding: 1rem;
@@ -286,7 +276,6 @@
     .badge-wallet { background: rgba(0,240,212,.15); color: var(--turquoise); border: 1px solid rgba(0,240,212,.3); }
     .badge-card { background: rgba(255,201,60,.15); color: var(--gold); border: 1px solid rgba(255,201,60,.3); }
 
-    /* ============ دکمه گالری (استایل پنل مدیریت) ============ */
     .profile-back-btn {
       display: inline-flex; align-items: center; gap: .5rem;
       background: linear-gradient(135deg, var(--turquoise), var(--sky));
@@ -309,7 +298,6 @@
     .profile-back-btn-icon { font-size: 1.1rem; transition: transform .3s; }
     .profile-back-btn:hover .profile-back-btn-icon { transform: translateX(-4px) scale(1.15); }
 
-    /* ============ دکمه حذف حساب ============ */
     .btn-delete-account {
       background: rgba(255, 46, 77, 0.1);
       border: 1px solid rgba(255, 46, 77, 0.4);
@@ -436,14 +424,12 @@
       <button id="renewSubBtn" class="btn-primary full" style="margin-top:1.2rem;">✨ تمدید / ارتقای اشتراک</button>
       <button id="logoutBtn2" class="btn-ghost-sm full">🚪 خروج از حساب</button>
       
-      <!-- 🗑️ دکمه حذف کامل حساب -->
       <button id="deleteAccountBtn" class="btn-delete-account">🗑️ حذف کامل حساب کاربری</button>
     </div>
   </main>
 
   <nav class="bottom-nav" id="bottomNav"></nav>
 
-  <!-- ============ MODAL اشتراک ============ -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" id="subClose">✕</button>
@@ -491,10 +477,11 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="540">
+        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
+        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+            <div class="plan-duration">۳ سال و ۶ ماهه</div>
           </div>
           <div class="plan-price">
             <span class="price-num">۲۵۰,۰۰۰</span>
@@ -516,9 +503,6 @@
   </div>
 
   <script>
-  // ============================================================
-  // CONFIG
-  // ============================================================
   const CURRENT_KEY = 'navaa_current_user';
   const USERS_KEY = 'navaa_users';
   const ITEMS_KEY = 'navaa_items_v3';
@@ -543,7 +527,7 @@
         (_freshU.bannedReason ? `دلیل: ${_freshU.bannedReason}\n\n` : '') +
         'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.'
       );
-      window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
+      window.location.href = 'home.html';
     } else if (user && user.email) {
       const freshUser = users.find(u => u.email === user.email);
       if (freshUser) {
@@ -607,9 +591,6 @@
     });
   });
 
-  // ============================================================
-  // اطلاعات
-  // ============================================================
   function renderInfo() {
     if (!user) return;
 
@@ -720,9 +701,6 @@
     loadAvatar();
   };
 
-  // ============================================================
-  // آواتار
-  // ============================================================
   const avatarBox = document.getElementById('avatarBox');
   const avatarEmoji = document.getElementById('avatarEmoji');
   const avatarInput = document.getElementById('avatarInput');
@@ -789,9 +767,6 @@
     reader.readAsDataURL(file);
   });
 
-  // ============================================================
-  // آثار من
-  // ============================================================
   function renderMyItems() {
     if (!user) return;
     const items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
@@ -855,9 +830,6 @@
     renderWallet();
   }
 
-  // ============================================================
-  // تاریخچه اشتراک‌ها
-  // ============================================================
   function renderSubscriptions() {
     if (!user) return;
     const list = document.getElementById('subscriptionsList');
@@ -897,9 +869,6 @@
     });
   }
 
-  // ============================================================
-  // کیف پول
-  // ============================================================
   function renderWallet() {
     if (!user) return;
     document.getElementById('walletBalance').textContent = formatMoney(user.balance || 0);
@@ -965,9 +934,6 @@
     }
   }
 
-  // ============================================================
-  // 💸 انتقال وجه
-  // ============================================================
   function getRecipientByIdentifier(identifier) {
     const id = identifier.trim().toLowerCase();
     let found = users.find(u => (u.email || '').toLowerCase() === id);
@@ -1245,9 +1211,6 @@
     });
   }
 
-  // ============================================================
-  // تاریخچه انتقال‌ها
-  // ============================================================
   function renderTransfers() {
     if (!user) return;
     const list = document.getElementById('transfersList');
@@ -1286,9 +1249,6 @@
     });
   }
 
-  // ============================================================
-  // محدودیت‌های پلن
-  // ============================================================
   function renderPlanLimits() {
     if (!user) return;
     const PLAN_LIMITS = {
@@ -1320,9 +1280,6 @@
     document.getElementById('limitMaxSize').textContent = formatLimitSize(limit.maxDailyTotalSize);
   }
 
-  // ============================================================
-  // درخواست برداشت
-  // ============================================================
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     if (!user) return;
     const balance = user.balance || 0;
@@ -1367,9 +1324,6 @@
     openTransferModal();
   });
 
-  // ============================================================
-  // ✅ مودال اشتراک
-  // ============================================================
   document.getElementById('renewSubBtn').addEventListener('click', () => {
     const subModal = document.getElementById('subModal');
     if (subModal) subModal.classList.remove('hidden');
@@ -1404,11 +1358,10 @@
   document.getElementById('logoutBtn2').addEventListener('click', () => {
     if (confirm('خارج بشی؟')) {
       localStorage.removeItem(CURRENT_KEY);
-      window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
+      window.location.href = 'home.html';
     }
   });
 
-  // 🗑️ حذف کامل حساب
   document.getElementById('deleteAccountBtn').addEventListener('click', () => {
     if (isAdmin) {
       alert('❌ ادمین نمی‌تونه حسابش رو از اینجا حذف کنه!');
@@ -1427,24 +1380,18 @@
       return;
     }
 
-    // حذف از دیتابیس
     users = users.filter(u => u.email !== user.email);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
     
-    // حذف آثار
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     items = items.filter(i => i.uploadedByEmail !== user.email);
     localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
 
-    // خروج و ریدایرکت
     localStorage.removeItem(CURRENT_KEY);
     alert('✅ حساب شما با موفقیت حذف شد.');
-    window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
+    window.location.href = 'home.html';
   });
 
-  // ============================================================
-  // نوار پایین
-  // ============================================================
   function renderBottomNav() {
     if (!user) return;
     const nav = document.getElementById('bottomNav');
@@ -1496,12 +1443,11 @@
     nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => {
       if (confirm('خارج بشی؟')) {
         localStorage.removeItem(CURRENT_KEY);
-        window.location.href = 'home.html'; // ✅ به home.html تغییر کرد
+        window.location.href = 'home.html';
       }
     });
   }
 
-  // راه‌اندازی
   renderInfo();
   renderMyItems();
   renderSubscriptions();
@@ -1517,7 +1463,6 @@
   }
   </script>
 
-  <!-- 🔥 اتصال به Firebase -->
   <script type="module">
     import './js/firebase-db.js';
     await window.FirebaseStorage.init();
