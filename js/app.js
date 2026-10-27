@@ -276,11 +276,11 @@ function bindDetailModal() {
   if (!modal) return;
   
   const closeModal = () => {
-    audioEl.pause();
+    if(audioEl) audioEl.pause();
     modal.classList.add('hidden');
   };
 
-  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalClose')?.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
@@ -289,7 +289,11 @@ function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
   let list = [...DB.items].sort((a, b) => b.time - a.time);
-  if (list.length === 0) { gallery.innerHTML = `<div class="empty"><h3>🎭 هنوز اثری نیست</h3><p>اولین اثر رو آپلود کن!</p></div>`; return; }
+  
+  if (list.length === 0) { 
+    gallery.innerHTML = `<div class="empty"><h3>🎭 هنوز اثری نیست</h3><p>اولین اثر رو آپلود کن!</p></div>`; 
+    return; 
+  }
   
   list.forEach(item => {
     const card = document.createElement('div'); card.className = 'card';
@@ -389,7 +393,6 @@ function bindUploadModal() {
     const audioFile = audioIn ? audioIn.files[0] : null;
     if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
     
-    // 🔥 چک کردن سهمیه ۵۰ فایل رایگان
     const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
     if (!perm.allowed) return alert(perm.reason);
 
@@ -419,19 +422,26 @@ function bindUploadModal() {
           likes: 0 
       };
       
-      window.isUploading = true;
+      window.isUploading = true; // جلوگیری از تداخل با فایربیس
       DB.items.push(newItem); 
       save();
       
-      // 🔥 افزایش شمارنده آپلود ماهانه
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-        syncCurrentUserToArray(); // 🔥 سینک با دیتابیس
+        syncCurrentUserToArray(); 
       }
 
-      if (window.saveItemsToCloud) { try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } }
-      window.isUploading = false;
+      // ارسال به فایربیس
+      if (window.saveItemsToCloud) { 
+        try { 
+          await window.saveItemsToCloud(DB.items); 
+        } catch(err) { 
+          console.error(err); 
+        } 
+      }
+      
+      window.isUploading = false; // آزادسازی
       
       const reward = giveUploadReward(currentUser.email);
       modal.classList.add('hidden'); form.reset(); previewWrap.classList.add('hidden'); audioFileBox.classList.add('hidden'); compressedImageData = null;
@@ -459,7 +469,7 @@ function renderBottomNav() {
     <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
       <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
     </button>
-    <button class="nav-pill-btn sub-pill ${hasSubscription ? 'is-active' : ''}" onclick="window.location.href='gallery.html?subscribe=1'">
+    <button class="nav-pill-btn sub-pill ${hasSubscription ? 'is-active' : ''}" onclick="document.getElementById('subModal').classList.remove('hidden')">
       <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
     </button>
     <a href="profile.html" class="nav-center-profile">
