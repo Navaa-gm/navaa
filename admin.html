@@ -17,7 +17,6 @@
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
-    .btn-delete-user { background: linear-gradient(135deg, #ff2e4d, #8b0000); color: #fff; border: none; padding: .45rem .8rem; border-radius: 8px; font-family: inherit; font-size: .75rem; font-weight: 700; cursor: pointer; transition: .2s; flex: 1; min-width: 90px; }
   </style>
 </head>
 <body>
@@ -57,7 +56,11 @@
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
-    <section id="tab-items" class="admin-panel hidden"><div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div><div class="items-grid" id="adminItems"></div></section>
+    <section id="tab-items" class="admin-panel hidden">
+      <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
+      <div class="items-grid" id="adminItems"></div>
+    </section>
+    
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
@@ -77,9 +80,10 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ITEMS_KEY = 'navaa_items_v3';
+    const REQUESTS_KEY = 'navaa_payment_requests';
+    const WITHDRAW_KEY = 'navaa_withdraw_requests';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
-    // 🔥 اطلاعات مدیر (همون عکسی که خودت گفتی درسته)
     const adminData = { 
       id: 1, fullname: "M_Soroush_SF_86", email: ADMIN_EMAIL, phone: "09200914119", 
       role: "admin", hasSubscription: true, subscriptionPlan: "diamond", 
@@ -87,7 +91,6 @@
     };
     
     localStorage.setItem(CURRENT_KEY, JSON.stringify(adminData));
-
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
     users = users.filter(u => u.email !== ADMIN_EMAIL);
     users.push(adminData);
@@ -99,13 +102,30 @@
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
+    // ✅ تب‌ها (دکمه‌های بالا)
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+        
+        if (tab.dataset.tab === 'items') renderItems();
+        if (tab.dataset.tab === 'payments') renderPayments();
+        if (tab.dataset.tab === 'withdraws') renderWithdraws();
+        if (tab.dataset.tab === 'settings') renderSettings();
+      });
+    });
+
+    document.getElementById('userSearch').addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
+    document.getElementById('itemSearch').addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
+
     function updateStats() {
       document.getElementById('statUsers').textContent = users.length;
       document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
       document.getElementById('statItems').textContent = items.length;
     }
 
-    // ✅ کارت کاربران (با برگردوندن موجودی و پلن)
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
       grid.innerHTML = '';
@@ -143,7 +163,26 @@
       });
     }
 
-    // ✅ نوار پایین (این همون بخشی بود که من پاکش کرده بودم!)
+    function renderItems(search = '') {
+      const adminItems = document.getElementById('adminItems');
+      let list = [...items].sort((a, b) => b.time - a.time);
+      if (search) list = list.filter(i => i.title.toLowerCase().includes(search));
+      if (list.length === 0) { adminItems.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
+      adminItems.innerHTML = '';
+      list.forEach(item => {
+        const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
+        const card = document.createElement('div'); card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-thumb"><img src="${item.image}" alt=""></div>
+          <div class="item-info"><p class="item-title">${escapeHtml(item.title)}</p><p class="item-artist">👤 ${escapeHtml(uploader ? uploader.fullname : 'ناشناس')}</p></div>`;
+        adminItems.appendChild(card);
+      });
+    }
+
+    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
+    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی نیست</div>'; }
+    function renderSettings() { /* لود کردن تنظیمات */ }
+
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
       const isAdminUser = adminData.email === ADMIN_EMAIL || adminData.role === 'admin';
@@ -152,67 +191,29 @@
       const adminActive = isAdminUser ? 'is-admin' : '';
       
       let savedAvatar = localStorage.getItem('navaa_avatar_' + adminData.email);
-      
-      const profileContent = savedAvatar 
-        ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>`
-        : `<span class="nav-icon">👤</span>`;
+      const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
 
       nav.innerHTML = `
-        <button class="nav-pill-btn logout-pill" id="logoutNavBtn">
-          <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
-        </button>
-        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn">
-          <span class="nav-pill-icon">✨${adminData.hasSubscription ? '<span class="pill-dot"></span>' : ''}</span>
-          <span class="nav-pill-label">${adminData.hasSubscription ? 'اشتراک فعال' : 'اشتراک'}</span>
-        </button>
-        <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">
-          ${profileContent}<span class="nav-center-label">پروفایل</span>
-        </a>
-        ${isAdminUser ? `
-          <button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn">
-            <span class="nav-pill-icon">🛡️</span>
-            <span class="nav-pill-label">${isSuperUser ? 'مدیر کل' : 'ادمین'}</span>
-          </button>` : ''}
-        <button class="nav-pill-btn upload-pill" id="uploadNavBtn">
-          <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
-        </button>
+        <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
+        <button class="nav-pill-btn sub-pill ${subActive}" id="subNavBtn"><span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک فعال</span></button>
+        <a href="profile.html" class="nav-center-profile ${savedAvatar ? 'has-avatar' : ''}" title="پروفایل">${profileContent}<span class="nav-center-label">پروفایل</span></a>
+        <button class="nav-pill-btn admin-pill ${adminActive}" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیر کل</span></button>
+        <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>
       `;
-
       nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
       nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
       nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
-      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { 
-        if (confirm('خارج بشی؟')) { 
-          localStorage.removeItem(CURRENT_KEY); 
-          window.location.href = 'home.html'; 
-        } 
-      });
+      nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // 🔥 فیکس کردن باگ: دیتای فایربیس رو می‌گیریم، ولی شماره و پلن مدیر رو مجبور می‌کنیم درست باشه
     window.renderUsersFromCloud = function(cloudUsers) {
-      let merged = [...cloudUsers];
-      
-      // پیدا کردن مدیر توی دیتای ابری
-      let cloudAdminIndex = merged.findIndex(u => u.email === ADMIN_EMAIL);
-      
-      if (cloudAdminIndex !== -1) {
-        // اگر مدیر توی ابر بود، اطلاعات خرابش رو با اطلاعات درست جایگزین می‌کنیم
-        merged[cloudAdminIndex] = adminData;
-      } else {
-        // اگر نبود، اضافه‌ش می‌کنیم
-        merged.push(adminData);
-      }
-      
-      users = merged;
+      let updatedUsers = cloudUsers.filter(u => u.email !== ADMIN_EMAIL);
+      updatedUsers.push(adminData);
+      users = updatedUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      
-      renderUsers();
-      updateStats();
-      renderBottomNav(); // 🔥 این خط رو اینجا صدا می‌زنیم تا نوار پایین برگرده
+      renderUsers(); updateStats();
     };
 
-    // رندر اولیه
     renderUsers(); updateStats(); renderBottomNav();
   </script>
 
