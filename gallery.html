@@ -19,6 +19,7 @@
       min-height: 100vh;
       margin: 0;
       padding: 0;
+      padding-bottom: 100px; /* فاصله ایمن برای نوار پایین */
       overflow-x: hidden;
     }
 
@@ -40,7 +41,7 @@
     footer {
       flex-shrink: 0;
       margin-top: auto;
-      padding: 1.5rem 1rem 90px 1rem; 
+      padding: 1.5rem 1rem; 
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--black-2);
@@ -90,42 +91,48 @@
     }
 
     /* ==========================================
-       🔥 اصلاح اساسی گالری (استفاده از Flexbox برای وسط‌چین شدن)
+       🔥 اصلاح اساسی گالری (وسط‌چین کردن مطلق)
        ========================================== */
     .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 1.5rem;
-      width: 100%;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      align-items: flex-start !important;
+      gap: 1.5rem !important;
+      width: 100% !important;
+      padding: 1rem 0 !important;
     }
 
-    /* تنظیم سایز کارت‌ها */
-    #gallery > *:not(.no-items):not(.empty-state) {
-      flex: 0 0 auto;
-      width: 240px; 
-      max-width: 100%;
+    /* تنظیم سایز کارت‌ها که از عرض بیرون نزنن */
+    .gallery > *:not(.empty-state):not(.no-items) {
+      flex: 0 0 auto !important;
+      width: 240px !important; 
+      max-width: 100% !important;
+      margin: 0 !important; /* حذف مارجین‌های اضافی */
       border-radius: 16px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    #gallery > *:not(.no-items):not(.empty-state):hover {
+    .gallery > *:not(.empty-state):not(.no-items):hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
-    /* 🔥 وسط چین کردن پیام "هنوز اثری نیست" */
-    .no-items, .empty-state {
+    /* 🔥 زور زدن به پیام "هنوز اثری نیست" که حتماً وسط باشه */
+    .gallery .empty-state, 
+    .gallery .no-items, 
+    #emptyFallback {
+      flex: 0 0 100% !important;
       width: 100% !important;
       text-align: center !important;
-      padding: 4rem 1rem !important;
+      padding: 5rem 1rem !important;
       color: var(--text-dim);
       font-size: 1.1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto !important;
     }
 
     /* ==========================================
@@ -143,8 +150,9 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      z-index: 9999 !important;
+      z-index: 99999 !important;
       background: var(--black-2) !important;
+      margin: 0 !important;
     }
 
     .nav-pill-btn {
@@ -229,6 +237,7 @@
       overflow-y: auto;
       margin: 0 auto;
       position: relative;
+      user-select: none;
     }
 
     .modal-close {
@@ -306,8 +315,6 @@
 
   <header>
     <div class="header-inner">
-      
-      <!-- سمت راست -->
       <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.3rem;">
         <div id="shamsiDate" style="font-size: 0.75rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap;"></div>
         <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
@@ -315,7 +322,6 @@
         </a>
       </div>
 
-      <!-- وسط -->
       <div style="display: flex; justify-content: center; align-items: center;">
         <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
           <span class="logo-icon-sm">🎵</span>
@@ -323,18 +329,15 @@
         </a>
       </div>
 
-      <!-- سمت چپ -->
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
         <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
         <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; font-size: 0.85rem; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.color='var(--turquoise)'" onmouseout="this.style.color='#fff'">
           <span id="userGreeting" class="user-greeting"></span>
         </a>
       </div>
-
     </div>
   </header>
   
-  <!-- کادر جستجو -->
   <div class="topbar-wrap">
     <div class="topbar">
       <div class="search-box">
@@ -348,7 +351,6 @@
 
   <!-- گالری اصلی -->
   <main id="gallery" class="gallery">
-    <!-- این بخش توسط app.js پر می‌شود. اگر خالی بود، حالت زیر نمایش داده می‌شود -->
     <div class="no-items" id="emptyFallback">
       <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️ هنوز اثری نیست</p>
       <p style="font-size: 0.9rem;">اولین اثر رو آپلود کن!</p>
@@ -358,6 +360,26 @@
   <footer>
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
+
+  <!-- 🔥 قرار دادن دستی نوار پایین برای جلوگیری از غیب شدن -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-pill-btn logout-pill" onclick="localStorage.removeItem('navaa_current_user'); window.location.href='home.html'">
+      <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
+    </button>
+    <button class="nav-pill-btn sub-pill" onclick="document.getElementById('subModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
+    </button>
+    <a href="profile.html" class="nav-center-profile" title="پروفایل" style="text-decoration:none;">
+      <span class="nav-icon" id="navFallbackIcon">👤</span>
+      <span class="nav-center-label">پروفایل</span>
+    </a>
+    <button class="nav-pill-btn admin-pill" style="visibility:hidden;">
+      <span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">ادمین</span>
+    </button>
+    <button class="nav-pill-btn upload-pill" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
+    </button>
+  </nav>
 
   <!-- مودال نمایش اثر -->
   <div id="modal" class="modal hidden">
@@ -555,8 +577,6 @@
     </div>
   </div>
 
-  <nav class="bottom-nav" id="bottomNav"></nav>
-
   <script>
     window.addEventListener('load', function() {
       // 1. تنظیم تاریخ شمسی
@@ -570,33 +590,18 @@
       const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
       if (currentUser && currentUser.email) {
         const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
-        
-        const injectAvatarToNav = setInterval(() => {
+        if (avatarData) {
           const navCenter = document.querySelector('.nav-center-profile');
           if (navCenter) {
-            if (avatarData) {
-              let avatarDiv = navCenter.querySelector('.profile-btn-avatar');
-              if (!avatarDiv) {
-                navCenter.innerHTML = ''; 
-                avatarDiv = document.createElement('div');
-                avatarDiv.className = 'profile-btn-avatar';
-                navCenter.appendChild(avatarDiv);
-                
-                const label = document.createElement('span');
-                label.className = 'nav-center-label';
-                label.textContent = 'پروفایل';
-                navCenter.appendChild(label);
-              }
-              avatarDiv.style.backgroundImage = `url(${avatarData})`;
-            }
-            clearInterval(injectAvatarToNav); 
+             navCenter.innerHTML = `
+               <div class="profile-btn-avatar" style="background-image: url('${avatarData}');"></div>
+               <span class="nav-center-label">پروفایل</span>
+             `;
           }
-        }, 100);
-
-        setTimeout(() => clearInterval(injectAvatarToNav), 3000);
+        }
       }
 
-      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه تیره (محافظت شده با if تا ارور نده)
+      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه
       const modal = document.getElementById('modal');
       if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
       
