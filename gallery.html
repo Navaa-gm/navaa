@@ -104,24 +104,23 @@
     }
 
     /* تنظیم سایز کارت‌ها که از عرض بیرون نزنن */
-    .gallery > *:not(.empty-state):not(.no-items) {
+    .card {
       flex: 0 0 auto !important;
       width: 240px !important; 
       max-width: 100% !important;
-      margin: 0 !important; /* حذف مارجین‌های اضافی */
+      margin: 0 !important;
       border-radius: 16px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
     }
-    .gallery > *:not(.empty-state):not(.no-items):hover {
+    .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
     /* 🔥 زور زدن به پیام "هنوز اثری نیست" که حتماً وسط باشه */
-    .gallery .empty-state, 
-    .gallery .no-items, 
-    #emptyFallback {
+    .gallery > .empty {
       flex: 0 0 100% !important;
       width: 100% !important;
       text-align: center !important;
@@ -134,6 +133,8 @@
       justify-content: center !important;
       margin: 0 auto !important;
     }
+    .gallery > .empty h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+    .gallery > .empty p { font-size: 0.95rem; }
 
     /* ==========================================
        🌟 نوار پایین و دایره عکس پروفایل
@@ -349,42 +350,20 @@
 
   <nav class="sub-nav hidden" id="subNav"></nav>
 
-  <!-- گالری اصلی -->
-  <main id="gallery" class="gallery">
-    <div class="no-items" id="emptyFallback">
-      <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️ هنوز اثری نیست</p>
-      <p style="font-size: 0.9rem;">اولین اثر رو آپلود کن!</p>
-    </div>
-  </main>
+  <!-- گالری اصلی (توسط app.js پر می‌شود) -->
+  <main id="gallery" class="gallery"></main>
 
   <footer>
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- 🔥 قرار دادن دستی نوار پایین برای جلوگیری از غیب شدن -->
-  <nav class="bottom-nav" id="bottomNav">
-    <button class="nav-pill-btn logout-pill" onclick="localStorage.removeItem('navaa_current_user'); window.location.href='home.html'">
-      <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span>
-    </button>
-    <button class="nav-pill-btn sub-pill" onclick="document.getElementById('subModal').classList.remove('hidden')">
-      <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
-    </button>
-    <a href="profile.html" class="nav-center-profile" title="پروفایل" style="text-decoration:none;">
-      <span class="nav-icon" id="navFallbackIcon">👤</span>
-      <span class="nav-center-label">پروفایل</span>
-    </a>
-    <button class="nav-pill-btn admin-pill" style="visibility:hidden;">
-      <span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">ادمین</span>
-    </button>
-    <button class="nav-pill-btn upload-pill" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
-      <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
-    </button>
-  </nav>
+  <!-- نوار پایین (توسط app.js پر می‌شود) -->
+  <nav class="bottom-nav" id="bottomNav"></nav>
 
   <!-- مودال نمایش اثر -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <button class="modal-close" onclick="document.getElementById('modal').classList.add('hidden')">✕</button>
+      <button class="modal-close" id="modalClose">✕</button>
       <div class="modal-media">
         <img id="modalImg" src="" alt="">
         <div id="modalAudioWrap" class="audio-wrap hidden">
@@ -409,7 +388,7 @@
   <!-- مودال آپلود اثر -->
   <div id="uploadModal" class="modal hidden">
     <div class="modal-content upload-content">
-      <button class="modal-close" onclick="document.getElementById('uploadModal').classList.add('hidden')">✕</button>
+      <button class="modal-close" id="uploadClose">✕</button>
 
       <div class="upload-header" style="padding-top: 2rem; text-align: center;">
         <div class="upload-header-icon">✨</div>
@@ -504,7 +483,7 @@
     </div>
   </div>
 
-  <!-- مودال اشتراک -->
+  <!-- مودال اشتراک (دکمه ضربدر برای اطمینان) -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
@@ -633,6 +612,7 @@
   
   <script src="js/app.js"></script>
 
+  <!-- 🔥 اتصال به Firebase با قابلیت سینک کامل و دوطرفه -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -651,8 +631,14 @@
     const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
+    // 1. تابعی که موقع آپلود از app.js صدا زده میشه
     window.saveItemsToCloud = async function(items) {
-      await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
+      try {
+        await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
+        console.log('✅ اطلاعات با موفقیت روی سرور ذخیره شد.');
+      } catch (error) {
+        console.error('❌ خطا در ذخیره روی سرور:', error);
+      }
     };
 
     window.saveUsersToCloud = async function() {
@@ -660,14 +646,36 @@
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
     };
 
+    // 2. لود کردن اولیه اطلاعات از سرور
+    async function loadInitialData() {
+      try {
+        const snap = await getDoc(docRefItems);
+        if (snap.exists()) {
+          const cloudItems = JSON.parse(snap.data().value);
+          if (cloudItems && cloudItems.length > 0) {
+            window.DB.items = cloudItems;
+            localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
+            if (typeof window.renderGallery === 'function') window.renderGallery();
+            console.log('🔄 اطلاعات اولیه از سرور لود شد.');
+          }
+        }
+      } catch (error) {
+        console.error('❌ خطا در لود اولیه از سرور:', error);
+      }
+    }
+    loadInitialData();
+
+    // 3. گوش دادن به تغییرات سرور (برای وقتی که کاربر دیگه‌ای فایل آپلود میکنه)
     onSnapshot(docRefItems, (docSnap) => {
       if (window.isUploading) return; 
+      
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
-        if (cloudItems.length > 0 || window.DB.items.length === 0) {
+        if (cloudItems.length > 0) {
           window.DB.items = cloudItems;
           localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
           if (typeof window.renderGallery === 'function') window.renderGallery();
+          console.log('🔔 تغییرات جدید از سرور دریافت شد.');
         }
       }
     });
