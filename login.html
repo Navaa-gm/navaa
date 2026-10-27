@@ -11,24 +11,146 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--black); margin: 0; padding: 1rem; position: relative; }
-    .back-home-btn { position: absolute; top: 1.5rem; right: 1.5rem; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 10px; transition: 0.2s; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); }
-    .back-home-btn:hover { color: #fff; background: rgba(255,255,255,0.08); border-color: var(--turquoise); }
-    .auth-container { background: var(--black-2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 0 40px rgba(0,240,212,0.1); }
-    .auth-tabs { display: flex; background: var(--black-3); border-radius: 12px; padding: 0.3rem; margin-bottom: 2rem; }
-    .auth-tab { flex: 1; padding: 0.8rem; background: transparent; border: none; color: var(--text-dim); font-family: inherit; font-weight: 700; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-    .auth-tab.active { background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c; }
-    .auth-form { display: none; }
+    /* 🌟 تنظیمات پایه صفحه */
+    html { font-size: 14px; }
+    body { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,240,212,.1), transparent 70%), var(--black); 
+      margin: 0; 
+      padding: 1.5rem; 
+      position: relative; 
+      box-sizing: border-box;
+    }
+
+    /* 🌟 دکمه بازگشت */
+    .back-home-btn { 
+      position: absolute; 
+      top: 1.5rem; 
+      right: 1.5rem; 
+      color: var(--text-dim); 
+      text-decoration: none; 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      padding: 0.6rem 1.2rem; 
+      border-radius: 12px; 
+      transition: 0.3s; 
+      background: rgba(255,255,255,0.03); 
+      border: 1px solid rgba(255,255,255,0.1); 
+      backdrop-filter: blur(10px);
+    }
+    .back-home-btn:hover { 
+      color: #fff; 
+      background: rgba(255,255,255,0.08); 
+      border-color: var(--turquoise); 
+      box-shadow: 0 0 15px rgba(0,240,212,0.2);
+    }
+
+    /* 🌟 کادر شیشه‌ای فرم */
+    .auth-container { 
+      background: rgba(20, 24, 28, 0.6); 
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.15); 
+      border-radius: 24px; 
+      padding: 2.5rem 2rem; 
+      width: 100%; 
+      max-width: 420px; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(0,240,212,0.1); 
+      max-height: 90vh; /* جلوگیری از بیرون زدن در موبایل */
+      overflow-y: auto; /* اسکرول در صورت نیاز */
+      animation: popIn 0.4s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* 🌟 تب‌های ورود و ثبت‌نام */
+    .auth-tabs { 
+      display: flex; 
+      background: rgba(0,0,0,0.4); 
+      border-radius: 14px; 
+      padding: 0.3rem; 
+      margin-bottom: 2rem; 
+    }
+    .auth-tab { 
+      flex: 1; 
+      padding: 0.8rem; 
+      background: transparent; 
+      border: none; 
+      color: var(--text-dim); 
+      font-family: inherit; 
+      font-weight: 700; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      transition: 0.3s; 
+    }
+    .auth-tab.active { 
+      background: linear-gradient(135deg, var(--turquoise), var(--sky)); 
+      color: #001a1c; 
+      box-shadow: 0 4px 15px rgba(0,240,212,0.3);
+    }
+
+    /* 🌟 فرم‌ها */
+    .auth-form { display: none; animation: fadeIn 0.4s ease-out; }
     .auth-form.active { display: block; }
-    .auth-form h2 { color: #fff; font-size: 1.2rem; margin-bottom: 0.5rem; text-align: center; }
-    .auth-sub { color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .auth-form h2 { color: #fff; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; text-align: center; }
+    .auth-sub { color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-bottom: 1.8rem; }
     .auth-form label { display: block; color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .auth-form input { width: 100%; padding: 0.9rem; background: var(--black-3); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-family: inherit; font-size: 0.95rem; margin-bottom: 1rem; outline: none; transition: 0.2s; box-sizing: border-box; }
-    .auth-form input:focus { border-color: var(--turquoise); box-shadow: 0 0 10px rgba(0,240,212,0.2); }
-    .auth-form .checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-dim); font-size: 0.8rem; }
-    .btn-primary.full { width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem; }
+    
+    /* 🌟 اینپوت‌های شیشه‌ای */
+    .auth-form input { 
+      width: 100%; 
+      padding: 0.9rem 1rem; 
+      background: rgba(255, 255, 255, 0.03); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 12px; 
+      color: #fff; 
+      font-family: inherit; 
+      font-size: 0.9rem; 
+      margin-bottom: 1.2rem; 
+      outline: none; 
+      transition: 0.3s; 
+      box-sizing: border-box; 
+    }
+    .auth-form input:focus { 
+      border-color: var(--turquoise); 
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 15px rgba(0,240,212,0.15); 
+    }
+    .auth-form input::placeholder { color: #555; }
+
+    .auth-form .checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-dim); font-size: 0.8rem; cursor: pointer; }
+    .auth-form .checkbox-row input { width: auto; margin-bottom: 0; cursor: pointer; }
+    
+    .btn-primary.full { 
+      width: 100%; 
+      padding: 1rem; 
+      font-size: 1rem; 
+      margin-top: 0.5rem; 
+      border-radius: 12px; 
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(0,240,212,0.4);
+    }
+    
     .auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-dim); }
-    .auth-switch a { color: var(--turquoise); text-decoration: none; font-weight: 700; cursor: pointer; }
+    .auth-switch a { color: var(--turquoise); text-decoration: none; font-weight: 700; cursor: pointer; margin-right: 0.3rem; }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    /* سفارشی‌سازی اسکرول‌بار */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.5); }
   </style>
 </head>
 <body>
@@ -37,17 +159,21 @@
 
   <div class="auth-container">
     <div class="auth-tabs">
-      <button class="auth-tab active" data-target="login">ورود</button>
-      <button class="auth-tab" data-target="signup">ساخت حساب</button>
+      <!-- 🔥 type="button" اضافه شد تا در آینده مشکل ایجاد نکنه -->
+      <button type="button" class="auth-tab active" data-target="login">ورود</button>
+      <button type="button" class="auth-tab" data-target="signup">ساخت حساب</button>
     </div>
 
     <form id="loginForm" class="auth-form active">
       <h2>خوش برگشتی 👋</h2>
       <p class="auth-sub">وارد حساب Navaa خودت شو</p>
+      
       <label>ایمیل</label>
       <input type="email" name="email" required placeholder="you@example.com">
+      
       <label>رمز عبور</label>
       <input type="password" name="password" required placeholder="••••••">
+      
       <button type="submit" class="btn-primary full">🚀 ورود</button>
       <p class="auth-switch">حساب نداری؟ <a onclick="switchTab('signup')">ثبت‌نام کن</a></p>
     </form>
@@ -55,18 +181,24 @@
     <form id="signupForm" class="auth-form">
       <h2>به Navaa خوش اومدی ✨</h2>
       <p class="auth-sub">برای ساخت حساب، اطلاعاتت رو وارد کن</p>
+      
       <label>نام و نام خانوادگی</label>
       <input type="text" name="fullname" required placeholder="مثلاً علی رضایی">
+      
       <label>ایمیل <span style="color:#ff2e4d;">*</span></label>
       <input type="email" name="email" required placeholder="you@example.com">
+      
       <label>شماره تماس <span style="color:#a0a0a0;font-size:.75rem;">(اختیاری)</span></label>
-      <input type="tel" name="phone" placeholder="09123456789" pattern="[0-9]{11}">
+      <input type="tel" name="phone" placeholder="09123456789" pattern="[0-9]{11}" title="شماره موبایل ۱۱ رقمی وارد کنید">
+      
       <label>رمز عبور</label>
       <input type="password" name="password" required minlength="4" placeholder="حداقل ۴ کاراکتر">
+      
       <label class="checkbox-row">
         <input type="checkbox" name="terms" required>
         <span>قوانین Navaa رو می‌پذیرم</span>
       </label>
+      
       <button type="submit" class="btn-primary full">✨ ساخت حساب</button>
       <p class="auth-switch">حساب داری؟ <a onclick="switchTab('login')">وارد شو</a></p>
     </form>
@@ -88,7 +220,10 @@
     };
 
     document.querySelectorAll('.auth-tab').forEach(tab => {
-      tab.addEventListener('click', (e) => { e.preventDefault(); switchTab(tab.dataset.target); });
+      tab.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        switchTab(tab.dataset.target); 
+      });
     });
 
     // ورود
@@ -108,13 +243,13 @@
       const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
 
       if (!user) return alert('❌ ایمیل یا رمز عبور اشتباهه!');
-      if (user.banned === true) return alert('🚫 حساب شما مسدود شده!');
+      if (user.banned === true) return alert('🚫 حساب شما مسدود شده!\nبرای اطلاعات بیشتر با پشتیبانی تماس بگیرید.');
 
       localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
       window.location.href = 'gallery.html';
     });
 
-    // ثبت‌نام (با هدیه ۱۰,۰۰۰ تومنی)
+    // ثبت‌نام
     document.getElementById('signupForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -134,24 +269,36 @@
       if (phone && users.find(u => u.phone === phone)) return alert('❌ این شماره قبلا ثبت‌نام کرده!');
 
       const isAdminSignup = email === ADMIN_EMAIL;
-      
-      // 🔥 هدیه خوش‌آمدگویی (۱۰,۰۰۰ تومان از ادمین کم میشه)
       let welcomeMsg = '';
+
+      // 🔥 هدیه خوش‌آمدگویی
       if (!isAdminSignup) {
         const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
         if (adminIdx !== -1) {
-          users[adminIdx].balance = (users[adminIdx].balance || 0) - WELCOME_GIFT;
-          welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+          // اطمینان از اینکه موجودی ادمین منفی نمیشه (هرچند ادمین ۵ میلیون داره)
+          if ((users[adminIdx].balance || 0) >= WELCOME_GIFT) {
+            users[adminIdx].balance -= WELCOME_GIFT;
+            welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+          }
         }
       }
 
       const newUser = {
-        id: Date.now(), fullname, phone: phone || null, email, password,
-        hasSubscription: isAdminSignup, subscriptionPlan: isAdminSignup ? 'diamond' : null,
+        id: Date.now(), 
+        fullname, 
+        phone: phone || null, 
+        email, 
+        password,
+        hasSubscription: isAdminSignup, 
+        subscriptionPlan: isAdminSignup ? 'diamond' : null,
         subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
-        joinDate: Date.now(), role: isAdminSignup ? 'admin' : 'user',
-        balance: isAdminSignup ? 5000000 : WELCOME_GIFT, banned: false, purchasedItems: [],
-        monthlyUploads: 0, lastUploadMonth: new Date().getMonth() // 🔥 برای سیستم ۵۰ فایل رایگان
+        joinDate: Date.now(), 
+        role: isAdminSignup ? 'admin' : 'user',
+        balance: isAdminSignup ? 5000000 : WELCOME_GIFT, 
+        banned: false, 
+        purchasedItems: [],
+        monthlyUploads: 0, 
+        lastUploadMonth: new Date().getMonth()
       };
 
       users.push(newUser);
@@ -162,12 +309,12 @@
           await window.saveToCloud(USERS_KEY, JSON.stringify(users));
           console.log('✅ کاربر با موفقیت روی سرور ذخیره شد');
         } else {
-          throw new Error("تابع اتصال به سرور لود نشده است!");
+          console.warn("تابع اتصال به سرور لود نشده است! اطلاعات فقط در حافظه محلی ذخیره شد.");
         }
       } catch (err) {
         console.error(err);
         alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message);
-        return; // جلوگیری از ورود در صورت خطا
+        return; 
       }
       
       localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
