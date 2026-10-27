@@ -18,7 +18,6 @@
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
     
-    /* دکمه‌های عملیات کاربران */
     .user-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
     .btn-action { background: var(--black-3); border: 1px solid var(--border); color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.2s; flex: 1; min-width: 100px; text-align: center; }
     .btn-action:hover { background: var(--turquoise); color: #001a1c; border-color: var(--turquoise); }
@@ -87,18 +86,14 @@
     const ITEMS_KEY = 'navaa_items_v3';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
-    const adminData = { 
-      id: 1, fullname: "M_Soroush_SF_86", email: ADMIN_EMAIL, phone: "09200914119", 
-      role: "admin", hasSubscription: true, subscriptionPlan: "diamond", 
-      balance: 5000000, joinDate: Date.now(), banned: false 
-    };
-    
-    localStorage.setItem(CURRENT_KEY, JSON.stringify(adminData));
-    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    users = users.filter(u => u.email !== ADMIN_EMAIL);
-    users.push(adminData);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    // 🔥 اطلاعات ادمین از حافظه خونده میشه، دیگه فیک نیست
+    let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
+        alert('⛔ دسترسی نداری!');
+        window.location.href = 'gallery.html';
+    }
 
+    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
@@ -140,13 +135,12 @@
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
-        const isMe = u.id === adminData.id;
+        const isMe = u.id === currentUser.id; // 🔥 از currentUser استفاده میکنیم
         
         let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
         let banBadge = u.banned ? '<span class="badge-no">🚫 بن شده</span>' : '';
 
-        // دکمه‌های عملیات برای هر کاربر
         let actionsHtml = '';
         if (!isMe && !isSuper) {
           actionsHtml = `
@@ -180,12 +174,11 @@
       });
     }
 
-    // توابع عملیات ادمین
     window.toggleAdmin = function(id) {
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.role = user.role === 'admin' ? 'user' : 'admin';
-      if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; } // ادمین جدید اشتراک برنزی بگیره
+      if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; }
       saveUsersToCloud();
     };
 
@@ -212,7 +205,7 @@
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      let savedAvatar = localStorage.getItem('navaa_avatar_' + adminData.email);
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email); // 🔥 از currentUser استفاده میکنیم
       const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
       nav.innerHTML = `
         <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
@@ -227,11 +220,18 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
+    // 🔥 آپدیت کردن لیست کاربرا از سرور (بدون دستکاری ادمین)
     window.renderUsersFromCloud = function(cloudUsers) {
-      let updatedUsers = cloudUsers.filter(u => u.email !== ADMIN_EMAIL);
-      updatedUsers.push(adminData); 
-      users = updatedUsers;
+      users = cloudUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      
+      // اگه اطلاعات خود ادمین تغییر کرده بود، آپدیتش کن
+      const me = users.find(u => u.email === currentUser.email);
+      if (me) {
+          currentUser = me;
+          localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+      }
+      
       renderUsers(); updateStats();
     };
 
