@@ -7,15 +7,16 @@ const USERS_KEY = 'navaa_users';
 const ITEMS_KEY = 'navaa_items_v3';
 const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 const UPLOAD_REWARD = 5000;
+const SETTINGS = { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
 
 let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY)) || null;
 if (!currentUser) window.location.href = 'home.html';
 
 const PLAN_LIMITS = {
-  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین' },
-  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی' },
-  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, maxDailyTotalSize: 200 * 1024 * 1024 * 1024, label: '🥈 طلایی' },
-  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, maxDailyTotalSize: 25 * 1024 * 1024 * 1024, label: '🥉 برنزی' }
+  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, label: '🛡️ ادمین' },
+  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, label: '💎 الماسی' },
+  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, label: '🥈 طلایی' },
+  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, label: '🥉 برنزی' }
 };
 
 let hasSubscription = currentUser.hasSubscription || false;
@@ -41,7 +42,6 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
-// 🎁 هدیه آپلود
 function giveUploadReward(uploaderEmail) {
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
@@ -65,47 +65,28 @@ function giveUploadReward(uploaderEmail) {
   return { success: true, isAdmin: isUploaderAdmin };
 }
 
-// 📊 سیستم ۵۰ فایل رایگان
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
-  
   const currentMonth = new Date().getMonth();
   if (currentUser.lastUploadMonth !== currentMonth) {
     currentUser.monthlyUploads = 0;
     currentUser.lastUploadMonth = currentMonth;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
   }
-  
   if ((currentUser.monthlyUploads || 0) >= 50) {
     return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
   }
   return { allowed: true };
 }
 
-// 🗂️ دسته‌بندی‌ها
 const SUBCATS = {
-  music: {
-    'music-pop': { label: '🎵 پاپ' }, 'music-classic': { label: '🎼 سنتی' },
-    'music-rock': { label: '🎸 راک' }, 'music-electronic': { label: '🎧 الکترونیک' },
-    'music-classical': { label: '🎻 کلاسیک' }, 'music-rap': { label: '🎤 رپ' }
-  },
-  photo: {
-    'photo-nature': { label: '🌿 طبیعت' }, 'photo-arch': { label: '🏛️ معماری' },
-    'photo-bw': { label: '⚫ سیاه و سفید' }, 'photo-animal': { label: '🐾 حیوانات' },
-    'photo-nostalgic': { label: '📻 نوستالژیک' }, 'photo-phone-bg': { label: '📱 پس‌زمینه گوشی' },
-    'photo-pc-bg': { label: '💻 پس‌زمینه کامپیوتر' }, 'photo-profile': { label: '👤 عکس پروفایل' },
-    'photo-ad': { label: '📢 عکس تبلیغاتی' }
-  },
-  car: {
-    'car-super': { label: '🏎️ سوپراسپرت' }, 'car-classic': { label: '🚙 کلاسیک' },
-    'car-offroad': { label: '🚙 آفرود' }, 'car-sport': { label: '🏁 اسپرت' },
-    'car-luxury': { label: '💎 لوکس' }, 'car-motorcycle': { label: '🏍️ موتور' }
-  }
+  music: { 'music-pop': { label: '🎵 پاپ' }, 'music-classic': { label: '🎼 سنتی' }, 'music-rock': { label: '🎸 راک' }, 'music-electronic': { label: '🎧 الکترونیک' }, 'music-classical': { label: '🎻 کلاسیک' }, 'music-rap': { label: '🎤 رپ' } },
+  photo: { 'photo-nature': { label: '🌿 طبیعت' }, 'photo-arch': { label: '🏛️ معماری' }, 'photo-bw': { label: '⚫ سیاه و سفید' }, 'photo-animal': { label: '🐾 حیوانات' }, 'photo-nostalgic': { label: '📻 نوستالژیک' }, 'photo-phone-bg': { label: '📱 پس‌زمینه گوشی' }, 'photo-pc-bg': { label: '💻 پس‌زمینه کامپیوتر' }, 'photo-profile': { label: '👤 عکس پروفایل' }, 'photo-ad': { label: '📢 عکس تبلیغاتی' } },
+  car: { 'car-super': { label: '🏎️ سوپراسپرت' }, 'car-classic': { label: '🚙 کلاسیک' }, 'car-offroad': { label: '🚙 آفرود' }, 'car-sport': { label: '🏁 اسپرت' }, 'car-luxury': { label: '💎 لوکس' }, 'car-motorcycle': { label: '🏍️ موتور' } }
 };
 
 function setupUserHeader() { const greeting = document.getElementById('userGreeting'); if (greeting) greeting.textContent = currentUser.fullname; }
 
-// ✅ فشرده‌سازی تصویر (بازگردانده شد)
 function compressImage(file, maxWidth = 800, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -125,13 +106,112 @@ function compressImage(file, maxWidth = 800, quality = 0.7) {
   });
 }
 
-// ✅ ساخت SVG برای فایل‌های صوتی بدون عکس
 function makeSVG(color1, color2, emoji, label) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${color1}"/><stop offset="100%" stop-color="${color2}"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="45%" font-size="180" text-anchor="middle" dominant-baseline="middle">${emoji}</text><text x="50%" y="75%" font-size="34" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-weight="700">${label}</text></svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-// ✅ گالری
+// 🤖 ربات قیمت‌گذاری (برگردانده شد)
+function botPriceItem(itemData) {
+  const details = []; let basePrice = 10000; details.push({ label: 'قیمت پایه', value: basePrice });
+  if (itemData.hasAudio) { basePrice += 30000; details.push({ label: '🎵 فایل صوتی', value: 30000 }); }
+  const titleLen = (itemData.title || '').trim().length;
+  if (titleLen > 20) { basePrice += 15000; details.push({ label: '✏️ عنوان توصیفی', value: 15000 }); }
+  else if (titleLen > 10) { basePrice += 7000; details.push({ label: '✏️ عنوان مناسب', value: 7000 }); }
+  const descLen = (itemData.desc || '').trim().length;
+  if (descLen > 100) { basePrice += 20000; details.push({ label: '📝 توضیحات کامل', value: 20000 }); }
+  else if (descLen > 40) { basePrice += 10000; details.push({ label: '📝 توضیحات مناسب', value: 10000 }); }
+  const tagsCount = (itemData.tags || []).length;
+  if (tagsCount >= 4) { basePrice += 8000; details.push({ label: '🏷️ تگ‌های متنوع', value: 8000 }); }
+  else if (tagsCount >= 2) { basePrice += 4000; details.push({ label: '🏷️ تگ‌های مناسب', value: 4000 }); }
+  const categoryWeights = { music: 1.4, photo: 1.2, car: 1.0 };
+  const mainCat = (itemData.category || '').split('-')[0];
+  const weight = categoryWeights[mainCat] || 1.0;
+  if (weight > 1) { const bonus = Math.round(basePrice * (weight - 1)); details.push({ label: `⭐ کیفیت ${mainCat === 'music' ? 'موسیقی' : 'عکس'}`, value: bonus }); basePrice = Math.round(basePrice * weight); }
+  if (itemData.imageSize > 2 * 1024 * 1024) { basePrice += 25000; details.push({ label: '🖼️ تصویر باکیفیت', value: 25000 }); }
+  else if (itemData.imageSize > 500 * 1024) { basePrice += 10000; details.push({ label: '🖼️ تصویر خوب', value: 10000 }); }
+  if (itemData.audioDuration && itemData.audioDuration > 60) { basePrice += 20000; details.push({ label: '⏱️ موسیقی طولانی', value: 20000 }); }
+  const finalPrice = Math.min(basePrice, SETTINGS.maxItemPrice);
+  return { suggestedPrice: finalPrice, details: details, quality: finalPrice >= 100000 ? 'A+' : finalPrice >= 50000 ? 'A' : finalPrice >= 25000 ? 'B' : 'C' };
+}
+
+// ✅ راه‌اندازی بخش محتوای ویژه (برگردانده شد)
+function initPremiumSection() {
+  const modal = document.getElementById('uploadModal'); if (!modal) return;
+  const premiumSection = document.getElementById('premiumSection'); if (!premiumSection) return;
+
+  premiumSection.innerHTML = `
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;">
+      <input type="checkbox" id="isPremiumCheck" style="width:18px;height:18px;accent-color:#ffc93c;">
+      <label for="isPremiumCheck" style="color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;">💎 این اثر رو ویژه بذار</label>
+    </div>
+    <div id="premiumOptions" style="display:none;">
+      <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.7rem;font-size:.85rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff8c00);color:#1a1100;">🤖 تحلیل ربات</button>
+      <div id="botResult" style="display:none;background:#1c1c1c;border-radius:10px;padding:.8rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;"></div>
+      <label style="display:block;font-size:.82rem;color:#fff;font-weight:700;margin-bottom:.4rem;">💰 قیمت نهایی (تومان):</label>
+      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.8rem;background:#0a0a0a;border:1.5px solid #2a2a2a;border-radius:10px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;">
+    </div>`;
+
+  const isPremiumCheck = premiumSection.querySelector('#isPremiumCheck');
+  const premiumOptions = premiumSection.querySelector('#premiumOptions');
+  const analyzeBtn = premiumSection.querySelector('#analyzeBtn');
+  const botResult = premiumSection.querySelector('#botResult');
+  const premiumPriceInput = premiumSection.querySelector('#premiumPriceInput');
+
+  window.__navaaPremium = { isPremium: false, price: 0 };
+
+  isPremiumCheck.addEventListener('change', () => {
+    premiumOptions.style.display = isPremiumCheck.checked ? 'block' : 'none';
+    window.__navaaPremium.isPremium = isPremiumCheck.checked;
+  });
+
+  analyzeBtn.addEventListener('click', () => {
+    const titleInput = modal.querySelector('input[name="title"]');
+    const descInput = modal.querySelector('textarea[name="desc"]');
+    const tagsInput = modal.querySelector('input[name="tags"]');
+    const catSelect = document.getElementById('catSelect');
+    
+    const tagsValue = tagsInput?.value || '';
+    const tagsArr = tagsValue.split(/[,،]/).map(t => t.trim()).filter(Boolean);
+
+    const itemData = {
+      title: titleInput?.value || '',
+      desc: descInput?.value || '',
+      tags: tagsArr,
+      category: catSelect?.value || '',
+      hasAudio: false,
+      imageSize: 0,
+      audioDuration: 0
+    };
+    
+    if (!itemData.title) return alert('❌ اول عنوان!');
+    const result = botPriceItem(itemData);
+    
+    botResult.style.display = 'block';
+    botResult.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
+        <strong style="color:#ffc93c;">🤖 امتیاز: ${result.quality}</strong>
+      </div>
+      <div style="border-top:1px solid #2a2a2a;padding-top:.5rem;margin-bottom:.5rem;">
+        ${result.details.map(d => `<div style="display:flex;justify-content:space-between;padding:.15rem 0;"><span>${d.label}</span><span style="color:#00f0d4;">+${formatMoney(d.value)}</span></div>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;padding-top:.5rem;border-top:1px solid #2a2a2a;">
+        <strong style="color:#fff;">💰 پیشنهادی:</strong>
+        <strong style="color:#00f0d4;font-size:1rem;">${formatMoney(result.suggestedPrice)} تومان</strong>
+      </div>`;
+      
+    premiumPriceInput.value = result.suggestedPrice;
+    window.__navaaPremium.price = result.suggestedPrice;
+  });
+
+  premiumPriceInput.addEventListener('input', () => {
+    let val = parseInt(premiumPriceInput.value) || 0;
+    if (val > SETTINGS.maxItemPrice) { premiumPriceInput.value = SETTINGS.maxItemPrice; val = SETTINGS.maxItemPrice; }
+    if (val < SETTINGS.minItemPrice && val > 0) { premiumPriceInput.value = SETTINGS.minItemPrice; val = SETTINGS.minItemPrice; }
+    window.__navaaPremium.price = val;
+  });
+}
+
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -143,6 +223,7 @@ function renderGallery() {
     const isMyItem = item.uploadedByEmail === currentUser.email;
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
+      ${item.isPremium ? '<span class="premium-badge">💎 ویژه</span>' : ''}
       <div class="card-actions">
         <button class="action-btn like-btn">${item.likedByMe ? '❤️' : '🤍'}</button>
         ${isMyItem || currentUser.role === 'admin' ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
@@ -166,7 +247,6 @@ function renderGallery() {
   });
 }
 
-// ✅ فرم آپلود (با کدهای کامل خواندن فایل)
 function bindUploadModal() {
   const modal = document.getElementById('uploadModal'); 
   const form = document.getElementById('uploadForm');
@@ -182,7 +262,6 @@ function bindUploadModal() {
   
   if (!modal || !form) return;
 
-  // پر کردن دسته‌بندی‌ها
   if (catSel) {
     let allSubs = [];
     Object.entries(SUBCATS).forEach(([main, subs]) => {
@@ -192,79 +271,42 @@ function bindUploadModal() {
   }
 
   let compressedImageData = null;
-  let currentAudioDuration = 0;
 
-  // 🔥 انتخاب عکس
   fileIn.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
-    
     compressImage(file, 800, 0.7).then(compressed => {
       compressedImageData = compressed;
       preview.src = compressed;
       previewWrap.classList.remove('hidden');
-    }).catch(err => {
-      console.error(err);
-      // اگر فشرده‌سازی نشد، به صورت دیتا یو آر ال می‌خونیم
-      const reader = new FileReader();
-      reader.onload = ev => {
-        compressedImageData = ev.target.result;
-        preview.src = ev.target.result;
-        previewWrap.classList.remove('hidden');
-      };
-      reader.readAsDataURL(file);
     });
   });
 
-  // 🔥 حذف عکس انتخاب شده
   previewRemove?.addEventListener('click', () => {
-    fileIn.value = '';
-    preview.src = '';
-    previewWrap.classList.add('hidden');
-    compressedImageData = null;
+    fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null;
   });
 
-  // 🔥 انتخاب فایل صوتی
   audioIn?.addEventListener('change', e => {
     const file = e.target.files[0];
-    if (file) {
-      audioFileName.textContent = file.name;
-      audioFileBox.classList.remove('hidden');
-      const audio = document.createElement('audio');
-      audio.src = URL.createObjectURL(file);
-      audio.addEventListener('loadedmetadata', () => { currentAudioDuration = audio.duration; });
-    } else {
-      audioFileBox.classList.add('hidden');
-      currentAudioDuration = 0;
-    }
+    if (file) { audioFileName.textContent = file.name; audioFileBox.classList.remove('hidden'); } 
+    else { audioFileBox.classList.add('hidden'); }
   });
 
-  // 🔥 حذف فایل صوتی
   audioFileRemove?.addEventListener('click', () => {
-    audioIn.value = '';
-    audioFileName.textContent = '';
-    audioFileBox.classList.add('hidden');
-    currentAudioDuration = 0;
+    audioIn.value = ''; audioFileName.textContent = ''; audioFileBox.classList.add('hidden');
   });
 
   document.getElementById('uploadClose')?.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    form.reset();
-    previewWrap.classList.add('hidden');
-    preview.src = '';
-    audioFileBox.classList.add('hidden');
-    compressedImageData = null;
+    modal.classList.add('hidden'); form.reset(); previewWrap.classList.add('hidden'); audioFileBox.classList.add('hidden'); compressedImageData = null;
   });
 
   document.getElementById('uploadBtn')?.addEventListener('click', () => modal.classList.remove('hidden'));
   
-  // 🔥 ثبت فرم
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
     const imageFile = fileIn.files[0];
     const audioFile = audioIn ? audioIn.files[0] : null;
-    
     if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
     
     const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
@@ -276,7 +318,9 @@ function bindUploadModal() {
     const tagsInput = form.tags.value || '';
     const tagsArray = tagsInput.split(/[,،]/).map(t => t.trim()).filter(Boolean);
 
-    // تابع نهایی برای ساخت آبجکت
+    const isPremium = window.__navaaPremium?.isPremium === true;
+    const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
+
     const finish = async (finalImage, audioData) => {
       const newItem = { 
           id: Date.now(), 
@@ -287,6 +331,8 @@ function bindUploadModal() {
           desc: form.desc.value.trim(),
           category: form.category.value,
           tags: tagsArray,
+          isPremium: isPremium,
+          price: itemPrice,
           time: Date.now(), 
           uploadedByEmail: currentUser.email, 
           likes: 0 
@@ -301,22 +347,15 @@ function bindUploadModal() {
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
       }
 
-      if (window.saveItemsToCloud) { 
-          try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } 
-      }
+      if (window.saveItemsToCloud) { try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } }
       window.isUploading = false;
       
       const reward = giveUploadReward(currentUser.email);
-      modal.classList.add('hidden'); 
-      form.reset();
-      previewWrap.classList.add('hidden');
-      audioFileBox.classList.add('hidden');
-      compressedImageData = null;
+      modal.classList.add('hidden'); form.reset(); previewWrap.classList.add('hidden'); audioFileBox.classList.add('hidden'); compressedImageData = null;
       renderGallery();
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
 
-    // اگه فایل صوتی هم بود، خونده میشه
     if (audioFile) {
       const r = new FileReader();
       r.onload = ev => finish(compressedImageData, ev.target.result);
@@ -327,7 +366,6 @@ function bindUploadModal() {
   });
 }
 
-// ✅ نوار پایین
 function renderBottomNav() {
   const nav = document.getElementById('bottomNav'); 
   if (!nav) return;
@@ -355,6 +393,7 @@ function renderBottomNav() {
 }
 
 setupUserHeader(); 
+initPremiumSection();
 renderGallery(); 
 bindUploadModal(); 
 renderBottomNav();
