@@ -201,7 +201,7 @@
     .limit-box-value { color: #ffc93c; font-weight: 800; }
 
     .transfer-modal-wrap {
-      position: fixed; inset: 0; background: rgba(0,0,0,.95); z-index: 300;
+      position: fixed; inset: 0; background: rgba(0,0,0,.95); z-index: 3000;
       display: flex; align-items: center; justify-content: center; padding: 1rem;
       backdrop-filter: blur(8px); overflow-y: auto;
     }
@@ -338,7 +338,7 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      z-index: 99999 !important;
+      z-index: 1000 !important; /* لایه پایین‌تر از مودال‌ها */
       background: var(--black-2) !important;
     }
 
@@ -405,6 +405,7 @@
       background: rgba(0, 0, 0, 0.6) !important;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      z-index: 2000 !important; /* لایه بالاتر از نوار پایین */
     }
 
     .modal-content {
@@ -431,7 +432,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 9999 !important;
+      z-index: 2100 !important;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       pointer-events: auto !important;
@@ -971,19 +972,25 @@
     });
   }
 
-  function deleteMyItem(id) {
+  async function deleteMyItem(id) {
     if (!user) return;
+    // گرفتن آخرین لیست از سرور
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+    if (window.getItemsFromCloud) {
+        try { items = await window.getItemsFromCloud(); } catch(e) {}
+    }
+    
     const item = items.find(i => i.id === id);
     if (!item) return;
     const isMine = item.uploadedBy === user.id || item.uploadedByEmail === user.email;
     if (!isMine && !isAdmin) return alert('❌ دسترسی نداری!');
     if (!confirm(`🗑️ حذف «${item.title}»؟`)) return;
+    
     items = items.filter(i => i.id !== id);
     localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
     
     // 🔥 ارسال تغییرات به سرور
-    if (window.saveItemsToCloud) window.saveItemsToCloud(items);
+    if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
     
     alert('🗑️ حذف شد!');
     renderMyItems();
@@ -1322,7 +1329,7 @@
       if (val > balance) amountInput.value = balance;
     });
 
-    // 🔥 اصلاح انتقال: تبدیل به async و ذخیره در فایربیس
+    // 🔥 اصلاح انتقال: تبدیل به async و دریافت اطلاعات از سرور
     overlay.querySelector('#transferConfirm').addEventListener('click', async () => {
       hideAlert();
       if (!foundRecipient) { showAlert('❌ اول شناسه گیرنده رو وارد کن یا از لیست انتخاب کن!'); return; }
@@ -1333,43 +1340,76 @@
 
       if (!confirm(`💸 تایید انتقال\n\n👤 گیرنده: ${foundRecipient.fullname}\n💰 مبلغ: ${formatMoney(amount)} تومان\n\nمطمئنی؟`)) return;
 
-      const freshUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      const senderIdx = freshUsers.findIndex(u => u.email === user.email);
-      const recipientIdx = freshUsers.findIndex(u => u.email === foundRecipient.email);
+      const confirmBtn = overlay.querySelector('#transferConfirm');
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = '⏳ در حال انتقال...';
 
-      if (senderIdx === -1 || recipientIdx === -1) { showAlert('❌ خطا در پیدا کردن حساب!'); return; }
-      if ((freshUsers[senderIdx].balance || 0) < amount) { showAlert('❌ موجودی کافی نداری!'); return; }
+      try {
+        // گرفتن آخرین اطلاعات از سرور برای جلوگیری از تداخل
+        let latestUsers = users;
+        if (window.getUsersFromCloud) {
+            const cloudUsers = await window.getUsersFromCloud();
+            if (cloudUsers && cloudUsers.length > 0) {
+                latestUsers = cloudUsers;
+                localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
+            }
+        }
 
-      freshUsers[senderIdx].balance = (freshUsers[senderIdx].balance || 0) - amount;
-      freshUsers[recipientIdx].balance = (freshUsers[recipientIdx].balance || 0) + amount;
-      localStorage.setItem(USERS_KEY, JSON.stringify(freshUsers));
+        const senderIdx = latestUsers.findIndex(u => u.email === user.email);
+        const recipientIdx = latestUsers.findIndex(u => u.email === foundRecipient.email);
 
-      // 🔥 فرستادن به سرور
-      if (window.saveUsersToCloud) {
-        await window.saveUsersToCloud();
+        if (senderIdx === -1 || recipientIdx === -1) { 
+            showAlert('❌ خطا در پیدا کردن حساب!'); 
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = '✅ تایید و انتقال';
+            return; 
+        }
+        
+        if ((latestUsers[senderIdx].balance || 0) < amount) { 
+            showAlert('❌ موجودی کافی نداری! (اطلاعات از سرور آپدیت شد)'); 
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = '✅ تایید و انتقال';
+            renderWallet();
+            return; 
+        }
+
+        // کم کردن از مبدا و اضافه کردن به مقصد
+        latestUsers[senderIdx].balance = (latestUsers[senderIdx].balance || 0) - amount;
+        latestUsers[recipientIdx].balance = (latestUsers[recipientIdx].balance || 0) + amount;
+        
+        localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
+        users = latestUsers;
+
+        // 🔥 ذخیره در سرور (فایربیس)
+        if (window.saveUsersToCloud) {
+          await window.saveUsersToCloud();
+        }
+
+        const transfers = JSON.parse(localStorage.getItem(TRANSFERS_KEY)) || [];
+        transfers.push({
+          id: Date.now(),
+          fromEmail: user.email,
+          fromName: user.fullname,
+          toEmail: foundRecipient.email,
+          toName: foundRecipient.fullname,
+          amount,
+          time: Date.now()
+        });
+        localStorage.setItem(TRANSFERS_KEY, JSON.stringify(transfers));
+
+        user.balance = latestUsers[senderIdx].balance;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+        document.body.removeChild(overlay);
+        alert(`✅ انتقال موفق!\n\n💰 ${formatMoney(amount)} تومان به ${foundRecipient.fullname} انتقال یافت.`);
+        renderWallet();
+        renderTransfers();
+      } catch (err) {
+        console.error(err);
+        showAlert('❌ خطا در ارتباط با سرور! لطفاً دوباره تلاش کنید.');
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ تایید و انتقال';
       }
-
-      const transfers = JSON.parse(localStorage.getItem(TRANSFERS_KEY)) || [];
-      transfers.push({
-        id: Date.now(),
-        fromEmail: user.email,
-        fromName: user.fullname,
-        toEmail: foundRecipient.email,
-        toName: foundRecipient.fullname,
-        amount,
-        time: Date.now()
-      });
-      localStorage.setItem(TRANSFERS_KEY, JSON.stringify(transfers));
-
-      user.balance = freshUsers[senderIdx].balance;
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-
-      users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-
-      document.body.removeChild(overlay);
-      alert(`✅ انتقال موفق!\n\n💰 ${formatMoney(amount)} تومان به ${foundRecipient.fullname} انتقال یافت.`);
-      renderWallet();
-      renderTransfers();
     });
 
     overlay.querySelector('#transferCancel').addEventListener('click', () => {
@@ -1446,7 +1486,7 @@
     document.getElementById('limitMaxSize').textContent = formatLimitSize(limit.maxDailyTotalSize);
   }
 
-  document.getElementById('withdrawBtn').addEventListener('click', () => {
+  document.getElementById('withdrawBtn').addEventListener('click', async () => {
     if (!user) return;
     const balance = user.balance || 0;
     const minWithdraw = isAdmin ? 1000 : 50000;
@@ -1472,34 +1512,46 @@
 
     if (!confirm(`💸 درخواست برداشت ${formatMoney(amt)} تومان ثبت شود؟\nمبلغ از موجودی شما قفل می‌شود.`)) return;
 
-    const freshUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    const myIdx = freshUsers.findIndex(u => u.email === user.email);
-    if (myIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
-    if ((freshUsers[myIdx].balance || 0) < amt) return alert('❌ موجودی کافی نیست!');
+    // 🔥 خواندن از سرور، کم کردن، و ذخیره مجدد
+    try {
+        let latestUsers = users;
+        if (window.getUsersFromCloud) {
+            const cloudUsers = await window.getUsersFromCloud();
+            if (cloudUsers && cloudUsers.length > 0) latestUsers = cloudUsers;
+        }
 
-    freshUsers[myIdx].balance -= amt;
-    localStorage.setItem(USERS_KEY, JSON.stringify(freshUsers));
-    
-    user.balance = freshUsers[myIdx].balance;
-    localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+        const myIdx = latestUsers.findIndex(u => u.email === user.email);
+        if (myIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
+        if ((latestUsers[myIdx].balance || 0) < amt) return alert('❌ موجودی کافی نیست!');
 
-    const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
-    requests.push({
-      id: Date.now(),
-      userEmail: user.email,
-      userId: user.id,
-      userName: user.fullname,
-      amount: amt,
-      cardNumber: cardNum,
-      status: 'pending',
-      time: Date.now()
-    });
-    localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-    
-    if (window.saveUsersToCloud) window.saveUsersToCloud(); // 🔥 سینک با سرور
-    
-    alert('✅ درخواست برداشت ثبت شد! مبلغ از موجودی شما کسر شد.');
-    renderWallet();
+        latestUsers[myIdx].balance -= amt;
+        localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
+        users = latestUsers;
+        
+        user.balance = latestUsers[myIdx].balance;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+        const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
+        requests.push({
+          id: Date.now(),
+          userEmail: user.email,
+          userId: user.id,
+          userName: user.fullname,
+          amount: amt,
+          cardNumber: cardNum,
+          status: 'pending',
+          time: Date.now()
+        });
+        localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
+        
+        if (window.saveUsersToCloud) await window.saveUsersToCloud();
+        
+        alert('✅ درخواست برداشت ثبت شد! مبلغ از موجودی شما کسر شد.');
+        renderWallet();
+    } catch (e) {
+        console.error(e);
+        alert('❌ خطا در ارتباط با سرور!');
+    }
   });
 
   document.getElementById('transferBtn').addEventListener('click', () => {
@@ -1544,7 +1596,7 @@
     }
   });
 
-  document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+  document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
     if (isAdmin) {
       alert('❌ ادمین نمی‌تونه حسابش رو از اینجا حذف کنه!');
       return;
@@ -1562,16 +1614,34 @@
       return;
     }
 
-    users = users.filter(u => u.email !== user.email);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    
-    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    items = items.filter(i => i.uploadedByEmail !== user.email);
-    localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+    // 🔥 خواندن از سرور، حذف، و ذخیره مجدد
+    try {
+        let latestUsers = users;
+        if (window.getUsersFromCloud) {
+            const cloudUsers = await window.getUsersFromCloud();
+            if (cloudUsers && cloudUsers.length > 0) latestUsers = cloudUsers;
+        }
 
-    localStorage.removeItem(CURRENT_KEY);
-    alert('✅ حساب شما با موفقیت حذف شد.');
-    window.location.href = 'home.html';
+        latestUsers = latestUsers.filter(u => u.email !== user.email);
+        localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
+
+        let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+        if (window.getItemsFromCloud) {
+            try { items = await window.getItemsFromCloud(); } catch(e) {}
+        }
+        items = items.filter(i => i.uploadedByEmail !== user.email);
+        localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+
+        if (window.saveUsersToCloud) await window.saveUsersToCloud();
+        if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
+
+        localStorage.removeItem(CURRENT_KEY);
+        alert('✅ حساب شما با موفقیت حذف شد.');
+        window.location.href = 'home.html';
+    } catch(e) {
+        console.error(e);
+        alert('❌ خطا در ارتباط با سرور!');
+    }
   });
 
   function renderBottomNav() {
@@ -1660,7 +1730,7 @@
   }
   </script>
 
-  <!-- 🔥 اتصال به Firebase و سینک زنده کاربران -->
+  <!-- 🔥 اتصال به Firebase و سینک زنده کاربران (دریافت آنی پول) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1677,6 +1747,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
+    const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
 
     // تابع ذخیره کاربران در دیتابیس ابری
     window.saveUsersToCloud = async function() {
@@ -1686,6 +1757,27 @@
         console.log('✅ کاربران در دیتابیس ابری ذخیره شدند.');
       } catch (e) {
         console.error('❌ خطا در ذخیره کاربران:', e);
+      }
+    };
+
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(docRefUsers);
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    window.getItemsFromCloud = async function() {
+      const snap = await getDoc(docRefItems);
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    window.saveItemsToCloud = async function(items) {
+      try {
+        await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
+        console.log('✅ آثار در دیتابیس ابری ذخیره شدند.');
+      } catch (error) {
+        console.error('❌ خطا در ذخیره آثار:', error);
       }
     };
 
@@ -1701,7 +1793,7 @@
     }
     loadInitialUsers();
 
-    // گوش دادن زنده به تغییرات (اگه کسی به ما پول زد، آنی موجودی بالا بره)
+    // 🔥 گوش دادن زنده به تغییرات کاربران (اگه کسی به ما پول زد، آنی موجودی بالا بره)
     onSnapshot(docRefUsers, (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
