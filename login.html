@@ -72,6 +72,7 @@
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
+    const WELCOME_GIFT = 10000; // 🔥 مبلغ هدیه خوش‌آمدگویی
 
     window.switchTab = function(tabName) {
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -86,7 +87,7 @@
       tab.addEventListener('click', (e) => { e.preventDefault(); switchTab(tab.dataset.target); });
     });
 
-    // 🔥 ورود: الان از دیتابیس ابری هم می‌خونه تا از هر مرورگری کار کنه
+    // ورود
     document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -94,13 +95,10 @@
 
       let users = [];
       try {
-        if (window.getUsersFromCloud) {
-           users = await window.getUsersFromCloud(); // گرفتن لیست از سرور
-        } else {
-           users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-        }
+        if (window.getUsersFromCloud) users = await window.getUsersFromCloud();
+        else users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       } catch (err) {
-         users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       }
 
       const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
@@ -112,7 +110,7 @@
       window.location.href = 'gallery.html';
     });
 
-    // 🔥 ثبت‌نام: لیست از سرور میاد، اضافه میشه و دوباره ذخیره میشه
+    // ثبت‌نام (با هدیه ۱۰,۰۰۰ تومنی)
     document.getElementById('signupForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -122,11 +120,8 @@
 
       let users = [];
       try {
-        if (window.getUsersFromCloud) {
-           users = await window.getUsersFromCloud(); 
-        } else {
-           users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-        }
+        if (window.getUsersFromCloud) users = await window.getUsersFromCloud();
+        else users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       } catch(err) {
          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
       }
@@ -135,12 +130,24 @@
       if (phone && users.find(u => u.phone === phone)) return alert('❌ این شماره قبلا ثبت‌نام کرده!');
 
       const isAdminSignup = email === ADMIN_EMAIL;
+      
+      // 🔥 هدیه خوش‌آمدگویی (۱۰,۰۰۰ تومان از ادمین کم میشه)
+      let welcomeMsg = '';
+      if (!isAdminSignup) {
+        const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+        if (adminIdx !== -1) {
+          users[adminIdx].balance = (users[adminIdx].balance || 0) - WELCOME_GIFT;
+          welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+        }
+      }
+
       const newUser = {
         id: Date.now(), fullname, phone: phone || null, email, password,
         hasSubscription: isAdminSignup, subscriptionPlan: isAdminSignup ? 'diamond' : null,
         subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
         joinDate: Date.now(), role: isAdminSignup ? 'admin' : 'user',
-        balance: isAdminSignup ? 5000000 : 0, banned: false, purchasedItems: []
+        balance: isAdminSignup ? 5000000 : WELCOME_GIFT, banned: false, purchasedItems: [],
+        monthlyUploads: 0, lastUploadMonth: new Date().getMonth() // 🔥 برای سیستم ۵۰ فایل رایگان
       };
 
       users.push(newUser);
@@ -160,7 +167,7 @@
       }
       
       localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
-      alert('✨ حساب با موفقیت ساخته شد!');
+      alert('✨ حساب با موفقیت ساخته شد!' + welcomeMsg);
       window.location.href = 'gallery.html';
     });
   </script>
