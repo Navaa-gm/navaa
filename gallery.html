@@ -19,11 +19,10 @@
       min-height: 100vh;
       margin: 0;
       padding: 0;
-      padding-bottom: 100px; /* فاصله ایمن برای نوار پایین */
+      padding-bottom: 100px; 
       overflow-x: hidden;
     }
 
-    /* 🌟 کشیده‌تر شدن کل صفحه */
     header, .topbar-wrap, main#gallery {
       width: 100%;
       max-width: 100%;
@@ -93,45 +92,43 @@
     /* ==========================================
        🔥 اصلاح اساسی گالری (وسط‌چین کردن مطلق)
        ========================================== */
-    .gallery {
+    #gallery.gallery {
       display: flex !important;
       flex-wrap: wrap !important;
       justify-content: center !important;
       align-items: flex-start !important;
       gap: 1.5rem !important;
       width: 100% !important;
-      padding: 1rem 0 !important;
+      min-height: 60vh; /* فضا برای وسط چین شدن پیام خالی بودن */
     }
 
-    /* تنظیم سایز کارت‌ها که از عرض بیرون نزنن */
+    /* سایز کارت‌ها */
     .card {
       flex: 0 0 auto !important;
       width: 240px !important; 
       max-width: 100% !important;
-      margin: 0 !important;
       border-radius: 16px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
+      margin: 0 !important; /* حذف مارجین‌های مزاحم */
     }
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
-    /* 🔥 زور زدن به پیام "هنوز اثری نیست" که حتماً وسط باشه */
+    /* 🔥 زور زدن به پیام "هنوز اثری نیست" که دقیقاً وسط باشه */
     .gallery > .empty {
-      flex: 0 0 100% !important;
       width: 100% !important;
-      text-align: center !important;
-      padding: 5rem 1rem !important;
-      color: var(--text-dim);
-      font-size: 1.1rem;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
-      margin: 0 auto !important;
+      text-align: center !important;
+      margin: auto !important; /* این خط باعث میشه دقیقا وسط افقی و عمودی قرار بگیره */
+      padding: 2rem !important;
+      color: var(--text-dim);
     }
     .gallery > .empty h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
     .gallery > .empty p { font-size: 0.95rem; }
@@ -151,7 +148,7 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      z-index: 99999 !important;
+      z-index: 1000 !important; /* 🔥 لایه پایین‌تر از مودال‌ها */
       background: var(--black-2) !important;
       margin: 0 !important;
     }
@@ -215,13 +212,14 @@
     }
 
     /* ==========================================
-       🌟 افکت شیشه‌ای مودال‌ها
+       🌟 افکت شیشه‌ای مودال‌ها (اصلاح Z-index)
        ========================================== */
     .modal {
       background: rgba(0, 0, 0, 0.6) !important;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      position: fixed; inset: 0; z-index: 2000;
+      position: fixed; inset: 0; 
+      z-index: 2000 !important; /* 🔥 بالاتر از نوار پایین */
       display: flex; align-items: center; justify-content: center;
     }
 
@@ -256,7 +254,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 9999 !important;
+      z-index: 2100 !important; /* بالاتر از خود مودال */
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       pointer-events: auto !important;
@@ -357,8 +355,24 @@
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- نوار پایین (توسط app.js پر می‌شود) -->
-  <nav class="bottom-nav" id="bottomNav"></nav>
+  <!-- 🔥 نوار پایین با کدهای پیش‌فرض (اگر app.js ارور داد، این غیب نمیشه) -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
+      <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
+    </button>
+    <button class="nav-pill-btn sub-pill" onclick="document.getElementById('subModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
+    </button>
+    <a href="profile.html" class="nav-center-profile">
+      <span class="nav-icon">👤</span><span class="nav-center-label">پروفایل</span>
+    </a>
+    <button class="nav-pill-btn admin-pill" style="visibility:hidden;">
+      <span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">ادمین</span>
+    </button>
+    <button class="nav-pill-btn upload-pill" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
+    </button>
+  </nav>
 
   <!-- مودال نمایش اثر -->
   <div id="modal" class="modal hidden">
@@ -565,20 +579,23 @@
         dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
       }
 
-      // 2. آپدیت عکس پروفایل در نوار پایین
-      const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
-      if (currentUser && currentUser.email) {
-        const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
-        if (avatarData) {
-          const navCenter = document.querySelector('.nav-center-profile');
-          if (navCenter) {
-             navCenter.innerHTML = `
-               <div class="profile-btn-avatar" style="background-image: url('${avatarData}');"></div>
-               <span class="nav-center-label">پروفایل</span>
-             `;
+      // 2. آپدیت مداوم عکس پروفایل در نوار پایین (حتی بعد از اینکه app.js نوار رو بازنویسی کرد)
+      setInterval(() => {
+        const navCenter = document.querySelector('.nav-center-profile');
+        const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+        if (navCenter && currentUser && currentUser.email) {
+          const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
+          if (avatarData) {
+            // چک میکنه که آیا عکس قبلا تزریق شده یا نه
+            if (!navCenter.querySelector('.profile-btn-avatar')) {
+              navCenter.innerHTML = `
+                <div class="profile-btn-avatar" style="background-image: url('${avatarData}');"></div>
+                <span class="nav-center-label">پروفایل</span>
+              `;
+            }
           }
         }
-      }
+      }, 500); // هر نیم ثانیه چک میکنه
 
       // 3. بستن مودال‌ها با کلیک روی پس‌زمینه
       const modal = document.getElementById('modal');
