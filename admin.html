@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>پنل مدیریت | Navaa</title>
   
-  <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -36,6 +34,15 @@
     .admin-section { background: rgba(20,24,28,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; max-width: 600px; margin: 0 auto; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
     
+    /* 🔥 فیکس شدن چیدمان تب‌ها و جستجو */
+    .admin-title { text-align: center; margin-top: 1rem; font-size: 1.8rem; color: #fff; font-weight: 900; }
+    .admin-sub { text-align: center; color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
+    
+    .admin-tabs { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .admin-search { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+    .admin-search input { width: 100%; max-width: 400px; padding: 0.8rem 1rem; background: rgba(20,24,28,0.8); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-family: inherit; outline: none; transition: 0.3s; }
+    .admin-search input:focus { border-color: var(--turquoise); box-shadow: 0 0 10px rgba(0,240,212,0.2); }
+
     .user-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
     .btn-action { background: var(--black-3); border: 1px solid var(--border); color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.2s; flex: 1; min-width: 100px; text-align: center; }
     .btn-action:hover { background: var(--turquoise); color: #001a1c; border-color: var(--turquoise); }
@@ -46,30 +53,21 @@
 
     /* 🌟 نوار پایین و اصلاح دایره عکس پروفایل */
     .bottom-nav {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      height: 64px !important;
-      padding: 0.2rem 3% !important;
-      border-radius: 16px 16px 0 0 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      z-index: 1000 !important;
-      background: var(--black-2) !important;
+      position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+      height: 64px !important; padding: 0.2rem 3% !important; border-radius: 16px 16px 0 0 !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important; display: flex !important;
+      align-items: center !important; justify-content: space-between !important;
+      z-index: 1000 !important; background: var(--black-2) !important;
     }
     .nav-pill-btn { padding: 0.3rem 0.8rem !important; font-size: 0.75rem !important; gap: 0.3rem !important; border-radius: 10px !important; }
     .nav-pill-icon { font-size: 1rem !important; }
 
-    /* 🔥 دایره وسط */
     .nav-center-profile {
       position: relative !important; width: 56px !important; height: 56px !important;
-      min-width: 56px !important; min-height: 56px !important;
-      flex: 0 0 56px !important; border-radius: 50% !important;
-      display: flex !important; align-items: center !important; justify-content: center !important;
-      padding: 0 !important; margin-top: -18px !important; box-sizing: border-box !important;
+      min-width: 56px !important; min-height: 56px !important; flex: 0 0 56px !important;
+      border-radius: 50% !important; display: flex !important; align-items: center !important;
+      justify-content: center !important; padding: 0 !important; margin-top: -18px !important;
+      box-sizing: border-box !important;
     }
     .profile-btn-avatar {
       width: 100% !important; height: 100% !important; border-radius: 50% !important;
@@ -85,17 +83,13 @@
     }
     .nav-center-label {
       position: absolute !important; bottom: -18px !important; left: 50% !important;
-      transform: translateX(-50%) !important; font-size: 0.65rem !important; white-space: nowrap !important; color: #fff !important;
+      transform: translateX(-50%) !important; font-size: 0.65rem !important;
+      white-space: nowrap !important; color: #fff !important;
     }
 
     /* 🌟 افکت شیشه‌ای مودال هدیه */
     .modal { background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(8px); z-index: 2000 !important; }
-    .modal-content { 
-      background: rgba(20, 24, 28, 0.7) !important; 
-      backdrop-filter: blur(24px) !important; 
-      border: 1px solid rgba(255,255,255,0.15) !important; 
-      border-radius: 20px !important; 
-    }
+    .modal-content { background: rgba(20, 24, 28, 0.7) !important; backdrop-filter: blur(24px) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 20px !important; }
     .modal-close {
       position: absolute; top: 15px; left: 15px; width: 38px; height: 38px; border-radius: 50%;
       background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -141,31 +135,25 @@
       <button class="admin-tab" data-tab="settings">⚙️ تنظیمات</button>
     </div>
 
-    <!-- تب کاربران -->
     <section id="tab-users" class="admin-panel">
-      <div class="admin-search"><input type="text" id="userSearch" placeholder="🔍 جستجو..."></div>
+      <div class="admin-search"><input type="text" id="userSearch" placeholder="🔍 جستجو در نام یا ایمیل..."></div>
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
-    <!-- تب آثار -->
     <section id="tab-items" class="admin-panel hidden">
       <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
       <div class="items-grid" id="adminItems"></div>
     </section>
     
-    <!-- تب پرداخت‌ها -->
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
-    
-    <!-- تب برداشت‌ها -->
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
-    <!-- تب تنظیمات -->
     <section id="tab-settings" class="admin-panel hidden">
       <div class="admin-section">
         <h3>⚙️ تنظیمات پلتفرم</h3>
         <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label><input type="number" id="commissionInput" min="0" max="50" value="15" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
         <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label><input type="number" id="maxPriceInput" min="10000" step="10000" value="500000" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
-        <button id="saveSettingsBtn" class="btn-primary" style="padding:.8rem 1.5rem;">💾 ذخیره</button>
+        <button id="saveSettingsBtn" class="btn-primary" style="padding:.8rem 1.5rem;">💾 ذخیره تنظیمات</button>
       </div>
     </section>
   </main>
@@ -207,7 +195,7 @@
 
   <nav class="bottom-nav" id="bottomNav"></nav>
 
-  <!-- 🔥 اسکریپت یکپارچه (هم فایربیس هم منطق سایت) -->
+  <!-- 🔥 اسکریپت یکپارچه (فایربیس + منطق) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -324,7 +312,7 @@
           sorted = sorted.filter(u => (u.fullname || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
       }
       
-      if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid">کاربری پیدا نشد</div>'; return; }
+      if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid" style="grid-column:1/-1; text-align:center; padding:2rem; color:#a0a0a0;">کاربری پیدا نشد</div>'; return; }
 
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
@@ -388,15 +376,14 @@
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
 
-      if (window.getUsersFromCloud) {
-          try {
-              const freshUsers = await window.getUsersFromCloud();
-              if (freshUsers && freshUsers.length > 0) {
-                  users = freshUsers;
-                  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-              }
-          } catch(e) { console.error(e); }
-      }
+      // 🔥 خواندن اطلاعات جدید از سرور
+      try {
+          const freshUsers = await window.getUsersFromCloud();
+          if (freshUsers && freshUsers.length > 0) {
+              users = freshUsers;
+              localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          }
+      } catch(e) { console.error(e); }
 
       const gifterIdx = users.findIndex(u => u.email === currentUser.email);
       if (gifterIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
@@ -438,12 +425,10 @@
       if (!user) return;
       if (!confirm(`اشتراک ${user.fullname} لغو شود؟`)) return;
       
-      if (window.getUsersFromCloud) {
-          try {
-              const freshUsers = await window.getUsersFromCloud();
-              if (freshUsers && freshUsers.length > 0) users = freshUsers;
-          } catch(e) {}
-      }
+      try {
+          const freshUsers = await window.getUsersFromCloud();
+          if (freshUsers && freshUsers.length > 0) users = freshUsers;
+      } catch(e) {}
 
       const idx = users.findIndex(u => u.id === id);
       if (idx !== -1) {
@@ -455,12 +440,11 @@
     };
 
     window.toggleAdmin = async function(id) {
-      if (window.getUsersFromCloud) {
-          try {
-              const freshUsers = await window.getUsersFromCloud();
-              if (freshUsers && freshUsers.length > 0) users = freshUsers;
-          } catch(e) {}
-      }
+      try {
+          const freshUsers = await window.getUsersFromCloud();
+          if (freshUsers && freshUsers.length > 0) users = freshUsers;
+      } catch(e) {}
+      
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.role = user.role === 'admin' ? 'user' : 'admin';
@@ -469,12 +453,11 @@
     };
 
     window.toggleBan = async function(id) {
-      if (window.getUsersFromCloud) {
-          try {
-              const freshUsers = await window.getUsersFromCloud();
-              if (freshUsers && freshUsers.length > 0) users = freshUsers;
-          } catch(e) {}
-      }
+      try {
+          const freshUsers = await window.getUsersFromCloud();
+          if (freshUsers && freshUsers.length > 0) users = freshUsers;
+      } catch(e) {}
+      
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.banned = !user.banned;
@@ -492,7 +475,7 @@
           list = list.filter(i => (i.title || '').toLowerCase().includes(q) || (i.artist || '').toLowerCase().includes(q));
       }
       
-      if (list.length === 0) { grid.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
+      if (list.length === 0) { grid.innerHTML = '<div class="empty-grid" style="grid-column:1/-1; text-align:center; padding:2rem; color:#a0a0a0;">اثری پیدا نشد</div>'; return; }
 
       list.forEach(item => {
         const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
@@ -517,7 +500,7 @@
       const purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
 
       if (purchases.length === 0) {
-        list.innerHTML = '<div class="empty-grid">پرداختی ثبت نشده است</div>';
+        list.innerHTML = '<div class="empty-grid" style="text-align:center; padding:2rem; color:#a0a0a0;">پرداختی ثبت نشده است</div>';
         return;
       }
 
@@ -549,7 +532,7 @@
       const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
 
       if (requests.length === 0) {
-        list.innerHTML = '<div class="empty-grid">درخواست برداشتی وجود ندارد</div>';
+        list.innerHTML = '<div class="empty-grid" style="text-align:center; padding:2rem; color:#a0a0a0;">درخواست برداشتی وجود ندارد</div>';
         return;
       }
 
@@ -593,7 +576,7 @@
       const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const req = requests.find(r => r.id === id);
       if (!req || req.status !== 'pending') return;
-      if (!confirm(`تایید برداشت ${formatMoney(req.amount)} تومان برای ${req.userName}؟\n(مبلغ قبلاً از حساب کاربر کسر شده است)`)) return;
+      if (!confirm(`تایید برداشت ${formatMoney(req.amount)} تومان برای ${req.userName}؟`)) return;
 
       req.status = 'approved';
       req.approvedAt = Date.now();
@@ -611,12 +594,10 @@
       if (!req || req.status !== 'pending') return;
       if (!confirm(`رد برداشت ${formatMoney(req.amount)} تومان؟\nمبلغ به کیف پول کاربر برگردانده می‌شود.`)) return;
 
-      if (window.getUsersFromCloud) {
-          try {
-              const freshUsers = await window.getUsersFromCloud();
-              if (freshUsers && freshUsers.length > 0) users = freshUsers;
-          } catch(e) {}
-      }
+      try {
+          const freshUsers = await window.getUsersFromCloud();
+          if (freshUsers && freshUsers.length > 0) users = freshUsers;
+      } catch(e) {}
 
       const userIdx = users.findIndex(u => u.email === req.userEmail);
       if (userIdx !== -1) {
@@ -636,7 +617,6 @@
       renderUsers();
     };
 
-    // 🌟 تنظیمات
     async function loadSettings() {
         try {
             const snap = await window.getSettingsFromCloud();
@@ -650,7 +630,6 @@
     document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
         const commission = parseInt(document.getElementById('commissionInput').value) || 15;
         const maxPrice = parseInt(document.getElementById('maxPriceInput').value) || 500000;
-        
         if (window.saveSettingsToCloud) {
             await window.saveSettingsToCloud({ commissionRate: commission, maxItemPrice: maxPrice });
             alert('✅ تنظیمات با موفقیت ذخیره شد.');
@@ -660,10 +639,7 @@
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
       let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
-      
-      const profileContent = savedAvatar 
-        ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` 
-        : `<span class="nav-icon">👤</span>`;
+      const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
 
       nav.innerHTML = `
         <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
@@ -682,16 +658,9 @@
     window.renderUsersFromCloud = function(cloudUsers) {
       users = cloudUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      
       const me = users.find(u => u.email === currentUser.email);
-      if (me) {
-          currentUser = me;
-          localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-      }
-      
-      renderUsers(); 
-      updateStats();
-      renderBottomNav();
+      if (me) { currentUser = me; localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser)); }
+      renderUsers(); updateStats(); renderBottomNav();
     };
 
     window.renderItemsFromCloud = function(cloudItems) {
@@ -705,9 +674,26 @@
 
     // ================== شروع برنامه ==================
     async function init() {
-        // 1. لود اولیه از سرور
-        users = await window.getUsersFromCloud();
-        items = await window.getItemsFromCloud();
+        // 1. لود اولیه (با مدیریت خطا و فالبک به حافظه)
+        try {
+            users = await window.getUsersFromCloud();
+            if (!users || users.length === 0) {
+                users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+            }
+        } catch (error) {
+            console.warn("فایربیس پاسخ نداد، استفاده از حافظه محلی برای کاربران");
+            users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+
+        try {
+            items = await window.getItemsFromCloud();
+            if (!items || items.length === 0) {
+                items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+            }
+        } catch (error) {
+            console.warn("فایربیس پاسخ نداد، استفاده از حافظه محلی برای آثار");
+            items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
+        }
         
         // 2. رندر اولیه
         renderUsers(); 
@@ -716,7 +702,7 @@
         renderBottomNav();
         loadSettings();
 
-        // 3. گوش دادن به تغییرات
+        // 3. گوش دادن به تغییرات زنده (Live Sync)
         onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
           if (docSnap.exists()) {
             const cloudUsers = JSON.parse(docSnap.data().value);
