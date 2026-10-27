@@ -597,7 +597,6 @@
     document.getElementById('profileName').textContent = user.fullname || 'کاربر';
     document.getElementById('profileEmail').textContent = user.email || '';
 
-    const subEl = document.getElementById('profileSub');
     let subHtml = '';
     if (user.hasSubscription) {
       let label = '✅ فعال';
@@ -1304,6 +1303,20 @@
       return alert('❌ شماره کارت معتبر نیست!');
     }
 
+    if (!confirm(`💸 درخواست برداشت ${formatMoney(amt)} تومان ثبت شود؟\nمبلغ از موجودی شما قفل می‌شود.`)) return;
+
+    // 🔥 قفل کردن موجودی کاربر برای جلوگیری از برداشت همزمان
+    const freshUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    const myIdx = freshUsers.findIndex(u => u.email === user.email);
+    if (myIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
+    if ((freshUsers[myIdx].balance || 0) < amt) return alert('❌ موجودی کافی نیست!');
+
+    freshUsers[myIdx].balance -= amt;
+    localStorage.setItem(USERS_KEY, JSON.stringify(freshUsers));
+    
+    user.balance = freshUsers[myIdx].balance;
+    localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
     const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
     requests.push({
       id: Date.now(),
@@ -1316,7 +1329,8 @@
       time: Date.now()
     });
     localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-    alert('✅ درخواست برداشت ثبت شد!');
+    
+    alert('✅ درخواست برداشت ثبت شد! مبلغ از موجودی شما کسر شد.');
     renderWallet();
   });
 
@@ -1465,7 +1479,11 @@
 
   <script type="module">
     import './js/firebase-db.js';
-    await window.FirebaseStorage.init();
+    try {
+      await window.FirebaseStorage.init();
+    } catch (e) {
+      console.error('❌ خطا در اتصال به فایربیس:', e);
+    }
   </script>
 
 </body>
