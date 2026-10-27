@@ -95,7 +95,7 @@
     #gallery.gallery {
       display: flex !important;
       flex-wrap: wrap !important;
-      justify-content: flex-start !important; /* 🔥 تغییر به راست‌چین */
+      justify-content: flex-start !important; /* راست‌چین */
       align-items: flex-start !important;
       gap: 1.5rem !important;
       width: 100% !important;
@@ -118,7 +118,7 @@
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
-    /* 🔥 پیام "هنوز اثری نیست" باز هم وسط‌چین می‌مونه */
+    /* 🔥 پیام "هنوز اثری نیست" دقیقاً وسط‌چین */
     .gallery > .empty {
       width: 100% !important;
       display: flex !important;
@@ -624,6 +624,7 @@
   
   <script src="js/app.js"></script>
 
+  <!-- 🔥 اتصال به Firebase با سینک زنده و دقیق -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -642,6 +643,7 @@
     const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
+    // توابع ذخیره‌سازی
     window.saveItemsToCloud = async function(items) {
       try {
         await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
@@ -656,6 +658,20 @@
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
     };
 
+    // توابع خواندن از سرور (برای استفاده در app.js)
+    window.getItemsFromCloud = async function() {
+      const snap = await getDoc(docRefItems);
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(docRefUsers);
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    // 1. لود اولیه
     async function loadInitialData() {
       try {
         const snap = await getDoc(docRefItems);
@@ -674,6 +690,7 @@
     }
     loadInitialData();
 
+    // 2. گوش دادن زنده به تغییرات فایل‌ها
     onSnapshot(docRefItems, (docSnap) => {
       if (window.isUploading) return; 
       
@@ -683,7 +700,25 @@
           window.DB.items = cloudItems;
           localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
           if (typeof window.renderGallery === 'function') window.renderGallery();
-          console.log('🔔 تغییرات جدید از سرور دریافت شد.');
+          console.log('🔔 تغییرات جدید فایل‌ها از سرور دریافت شد.');
+        }
+      }
+    });
+
+    // 3. گوش دادن زنده به تغییرات کاربران (اگه کسی به ما پول زد)
+    onSnapshot(docRefUsers, (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudUsers = JSON.parse(docSnap.data().value);
+        localStorage.setItem('navaa_users', JSON.stringify(cloudUsers));
+        
+        const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+        if (currentUser) {
+          const freshMe = cloudUsers.find(u => u.email === currentUser.email);
+          if (freshMe) {
+            localStorage.setItem('navaa_current_user', JSON.stringify(freshMe));
+            const greeting = document.getElementById('userGreeting');
+            if (greeting) greeting.textContent = freshMe.fullname;
+          }
         }
       }
     });
