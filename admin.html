@@ -82,6 +82,58 @@
     </section>
   </main>
 
+  <!-- 🔥 مودال هدیه اشتراک -->
+  <div id="giftSubModal" class="modal hidden">
+    <div class="modal-content sub-content">
+      <button class="modal-close" id="giftSubClose">✕</button>
+      <div class="sub-icon">🎁</div>
+      <h2>هدیه اشتراک به <span id="giftTargetName" style="color:#00f0d4;"></span></h2>
+      <p class="sub-desc">یک پلن انتخاب کنید (مبلغ از کیف پول شما کسر می‌شود)</p>
+
+      <div class="plans" style="margin-top:1rem;">
+        <div class="plan plan-bronze" onclick="applyGift('bronze', 50000, 30)">
+          <div class="plan-header">
+            <span class="plan-name">🥉 برنزی</span>
+            <div class="plan-duration">۱ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <button class="plan-btn">🎁 هدیه</button>
+        </div>
+
+        <div class="plan plan-silver" onclick="applyGift('silver', 100000, 180)">
+          <div class="plan-header">
+            <span class="plan-name">🥈 طلایی</span>
+            <div class="plan-duration">۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۱۰۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <button class="plan-btn">🎁 هدیه</button>
+        </div>
+
+        <div class="plan plan-diamond" onclick="applyGift('diamond', 250000, 540)">
+          <div class="plan-header">
+            <span class="plan-name">💎 الماسی</span>
+            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۲۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <button class="plan-btn">🎁 هدیه</button>
+        </div>
+      </div>
+
+      <p style="text-align:center; margin-top:1rem; color:#a0a0a0; font-size:0.85rem;">
+        💰 موجودی شما: <strong id="adminGiftBalance" style="color:#ffc93c;">0</strong> تومان
+      </p>
+    </div>
+  </div>
+
   <nav class="bottom-nav" id="bottomNav"></nav>
 
   <script>
@@ -103,7 +155,6 @@
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
-    // 🔥 مدیریت تب‌ها
     document.querySelectorAll('.admin-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
@@ -123,12 +174,18 @@
       document.getElementById('statItems').textContent = items.length;
     }
 
-    // 🔥 آپدیت کردن دیتابیس ابری
     async function saveUsersToCloud() {
       if (window.saveToCloud) {
         await window.saveToCloud('navaa_users', JSON.stringify(users));
       }
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      
+      const me = users.find(u => u.email === currentUser.email);
+      if (me) {
+          currentUser = me;
+          localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+      }
+      
       renderUsers(); updateStats();
     }
 
@@ -155,7 +212,10 @@
             <div class="user-actions">
               <button class="btn-action" onclick="toggleAdmin(${u.id})">${isUserAdmin ? '❌ برکناری ادمین' : '🛡️ ادمین کن'}</button>
               <button class="btn-action danger" onclick="toggleBan(${u.id})">${u.banned ? '✅ آنبن' : '🚫 بن'}</button>
-              <button class="btn-action success" onclick="toggleSub(${u.id})">${u.hasSubscription ? '🚫 لغو اشتراک' : '🎁 هدیه اشتراک'}</button>
+              ${u.hasSubscription 
+                ? `<button class="btn-action danger" onclick="cancelSub(${u.id})">🚫 لغو اشتراک</button>`
+                : `<button class="btn-action success" onclick="openGiftModal(${u.id})">🎁 هدیه اشتراک</button>`
+              }
             </div>
           `;
         }
@@ -182,7 +242,84 @@
       });
     }
 
-    // 🔥 رندر کردن آثار
+    // 🔥 باز کردن مودال هدیه
+    let giftTargetId = null;
+    window.openGiftModal = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      giftTargetId = id;
+      document.getElementById('giftTargetName').textContent = user.fullname;
+      document.getElementById('adminGiftBalance').textContent = formatMoney(currentUser.balance || 0);
+      document.getElementById('giftSubModal').classList.remove('hidden');
+    };
+
+    document.getElementById('giftSubClose')?.addEventListener('click', () => {
+      document.getElementById('giftSubModal').classList.add('hidden');
+      giftTargetId = null;
+    });
+
+    // 🔥 اعمال هدیه و کسر پول از ادمین
+    window.applyGift = function(planName, price, days) {
+      const targetUser = users.find(u => u.id === giftTargetId);
+      if (!targetUser) return;
+
+      if ((currentUser.balance || 0) < price) {
+        alert(`❌ موجودی کیف پول شما برای این هدیه کافی نیست!\nموجودی شما: ${formatMoney(currentUser.balance)} تومان`);
+        return;
+      }
+
+      if (!confirm(`آیا مطمئن هستید که می‌خواهید پلن ${planName} را به ${targetUser.fullname} هدیه دهید؟\nمبلغ ${formatMoney(price)} تومان از کیف پول شما کسر می‌شود.`)) return;
+
+      // کسر از ادمین
+      const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+      if (adminIdx !== -1) {
+        users[adminIdx].balance -= price;
+      }
+
+      // اعمال روی کاربر
+      const targetIdx = users.findIndex(u => u.id === giftTargetId);
+      if (targetIdx !== -1) {
+        users[targetIdx].hasSubscription = true;
+        users[targetIdx].subscriptionPlan = planName;
+        users[targetIdx].subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
+      }
+
+      saveUsersToCloud();
+      document.getElementById('giftSubModal').classList.add('hidden');
+      giftTargetId = null;
+      alert('✅ هدیه اشتراک با موفقیت اعمال شد!');
+    };
+
+    // 🔥 لغو اشتراک کاربر
+    window.cancelSub = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      if (!confirm(`اشتراک ${user.fullname} لغو شود؟`)) return;
+      
+      const idx = users.findIndex(u => u.id === id);
+      if (idx !== -1) {
+        users[idx].hasSubscription = false;
+        users[idx].subscriptionPlan = null;
+        users[idx].subscriptionExpiry = null;
+      }
+      saveUsersToCloud();
+    };
+
+    window.toggleAdmin = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      user.role = user.role === 'admin' ? 'user' : 'admin';
+      if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; }
+      saveUsersToCloud();
+    };
+
+    window.toggleBan = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      user.banned = !user.banned;
+      saveUsersToCloud();
+    };
+
     function renderItems(search = '') {
       const grid = document.getElementById('adminItems');
       if (!grid) return;
@@ -209,36 +346,6 @@
       });
     }
 
-    // 🔥 توابع عملیات ادمین
-    window.toggleAdmin = function(id) {
-      const user = users.find(u => u.id === id);
-      if (!user) return;
-      user.role = user.role === 'admin' ? 'user' : 'admin';
-      if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; }
-      saveUsersToCloud();
-    };
-
-    window.toggleBan = function(id) {
-      const user = users.find(u => u.id === id);
-      if (!user) return;
-      user.banned = !user.banned;
-      saveUsersToCloud();
-    };
-
-    window.toggleSub = function(id) {
-      const user = users.find(u => u.id === id);
-      if (!user) return;
-      if (user.hasSubscription) {
-        user.hasSubscription = false;
-        user.subscriptionPlan = null;
-      } else {
-        user.hasSubscription = true;
-        user.subscriptionPlan = 'diamond';
-        user.subscriptionExpiry = Date.now() + (365 * 24 * 60 * 60 * 1000);
-      }
-      saveUsersToCloud();
-    };
-
     function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
     function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
 
@@ -259,7 +366,6 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // 🔥 آپدیت کردن لیست کاربرا از سرور
     window.renderUsersFromCloud = function(cloudUsers) {
       users = cloudUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -273,7 +379,6 @@
       renderUsers(); updateStats();
     };
 
-    // 🔥 آپدیت کردن لیست آثار از سرور
     window.renderItemsFromCloud = function(cloudItems) {
       items = cloudItems;
       localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
@@ -299,7 +404,6 @@
       await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
     };
 
-    // 🔥 گوش دادن به تغییرات کاربران
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
@@ -307,7 +411,6 @@
       }
     });
 
-    // 🔥 گوش دادن به تغییرات آثار
     onSnapshot(doc(db, 'navaa_storage', 'navaa_items_v3'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
