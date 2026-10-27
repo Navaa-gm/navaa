@@ -213,26 +213,32 @@
     }
 
     /* ==========================================
-       🌟 افکت شیشه‌ای واقعی (Real Glassmorphism)
+       🔥 افکت شیشه‌ای واقعی و خفن (Glassmorphism)
        ========================================== */
+    
+    /* پس‌زمینه مودال با نورهای رنگی تا شیشه رو نشون بده */
     .modal {
-      background: rgba(0, 0, 0, 0.5) !important;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: radial-gradient(circle at 10% 20%, rgba(0, 240, 212, 0.15), transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15), transparent 40%),
+                  radial-gradient(circle at 50% 50%, rgba(255, 201, 60, 0.05), transparent 50%),
+                  rgba(5, 8, 10, 0.75) !important; 
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       position: fixed; inset: 0; 
       z-index: 2000 !important;
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* بدنه اصلی مودال */
+    /* بدنه اصلی مودال (شیشه بسیار شفاف) */
     .modal-content {
-      background: rgba(20, 24, 28, 0.25) !important; /* شفافیت بالا */
-      backdrop-filter: blur(50px) saturate(200%) !important; 
-      -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.4) !important; /* نور از بالا */
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 30px rgba(255,255,255,0.05) !important;
-      border-radius: 24px !important;
+      background: rgba(30, 35, 40, 0.2) !important; 
+      backdrop-filter: blur(40px) saturate(250%) !important; 
+      -webkit-backdrop-filter: blur(40px) saturate(250%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+      border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.03) !important;
+      border-radius: 28px !important;
       max-width: 600px;
       width: 90%;
       max-height: 85vh;
@@ -242,7 +248,12 @@
       user-select: none;
     }
 
-    /* دکمه ضربدر */
+    /* اسکرول‌بار داخلی مودال */
+    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar-track { background: transparent; }
+    .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+    /* دکمه ضربدر (شیشه‌ای و کارا) */
     .modal-close {
       position: absolute;
       top: 15px;
@@ -250,7 +261,7 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1) !important;
+      background: rgba(255, 255, 255, 0.08) !important;
       border: 1px solid rgba(255, 255, 255, 0.2) !important;
       color: #fff !important;
       font-size: 1.2rem !important;
@@ -261,75 +272,120 @@
       z-index: 2100 !important;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      pointer-events: auto !important;
+      backdrop-filter: blur(5px);
     }
     .modal-close:hover {
-      background: rgba(255, 46, 77, 0.9) !important;
-      border-color: var(--red) !important;
+      background: rgba(255, 46, 77, 0.8) !important;
+      border-color: rgba(255, 46, 77, 1) !important;
       transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 46, 77, 0.5);
     }
 
-    /* 🔥 بخش‌های آپلود (شیشه‌ای کردن کادرها) */
+    /* 🔥 بخش‌های آپلود (کادرهای شیشه‌ای شفاف) */
     .upload-section {
-      background: rgba(255, 255, 255, 0.04) !important; 
-      backdrop-filter: blur(15px) !important;
-      -webkit-backdrop-filter: blur(15px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-radius: 16px;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.02) !important;
+      background: rgba(255, 255, 255, 0.02) !important; 
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.06) !important;
+      border-radius: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important;
+      transition: all 0.3s ease;
+    }
+    .upload-section:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
     }
     
     /* کادر انتخاب فایل */
     .upload-file-box {
-      background: rgba(0, 0, 0, 0.15) !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
-      border: 2px dashed rgba(255, 255, 255, 0.25) !important;
+      background: rgba(0, 0, 0, 0.1) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1.5px dashed rgba(255, 255, 255, 0.2) !important;
       border-radius: 16px;
       transition: all 0.3s;
     }
     .upload-file-box:hover {
       border-color: var(--turquoise) !important;
-      background: rgba(0, 240, 212, 0.08) !important;
+      background: rgba(0, 240, 212, 0.05) !important;
+      box-shadow: 0 0 20px rgba(0, 240, 212, 0.1);
     }
 
     /* 🔥 اینپوت‌های متنی (شیشه‌ای شفاف) */
     .upload-field input, .upload-field textarea, .upload-field select {
-      background: rgba(255, 255, 255, 0.05) !important;
+      background: rgba(0, 0, 0, 0.15) !important;
       backdrop-filter: blur(5px) !important;
-      -webkit-backdrop-filter: blur(5px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
       color: #fff !important;
       border-radius: 12px;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
       padding: 0.85rem 1rem;
+      transition: all 0.3s ease;
     }
     .upload-field input:focus, .upload-field textarea:focus, .upload-field select:focus {
-      background: rgba(255, 255, 255, 0.1) !important;
+      background: rgba(0, 0, 0, 0.3) !important;
       border-color: var(--turquoise) !important;
-      box-shadow: 0 0 15px rgba(0,240,212,0.3), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.2), inset 0 2px 4px rgba(0,0,0,0.2) !important;
     }
     
     /* بخش ویژه */
     #premiumSection {
-      background: rgba(255, 201, 60, 0.05) !important;
-      backdrop-filter: blur(10px) !important;
-      border: 1.5px dashed rgba(255, 201, 60, 0.4) !important;
+      background: rgba(255, 201, 60, 0.03) !important;
+      backdrop-filter: blur(5px) !important;
+      border: 1.5px dashed rgba(255, 201, 60, 0.3) !important;
       border-radius: 14px;
       padding: 1rem;
     }
 
-    .sub-content { background: rgba(15, 20, 25, 0.4) !important; }
+    /* 🔥 پلن‌های اشتراک (شیشه‌ای) */
+    .sub-content { background: rgba(30, 35, 40, 0.25) !important; }
     .plan {
-      background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(15px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: rgba(255, 255, 255, 0.02) !important;
+      backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 16px;
       transition: 0.3s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
-    .plan:hover { background: rgba(255, 255, 255, 0.08) !important; transform: translateY(-4px); }
+    .plan:hover { 
+      background: rgba(255, 255, 255, 0.06) !important; 
+      transform: translateY(-4px); 
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
     .plan-silver {
-      background: linear-gradient(135deg, rgba(255, 201, 60, 0.1), rgba(255, 140, 0, 0.05)) !important;
-      border: 1.5px solid rgba(255, 201, 60, 0.4) !important;
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.08), rgba(255, 140, 0, 0.03)) !important;
+      border: 1px solid rgba(255, 201, 60, 0.3) !important;
+    }
+    .plan-silver:hover {
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.15), rgba(255, 140, 0, 0.05)) !important;
+      border-color: rgba(255, 201, 60, 0.6) !important;
+    }
+
+    /* 🔥 استایل دکمه انصراف جدید (شیک و شیشه‌ای) */
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #a0a0a0;
+      padding: 1rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-cancel:hover {
+      background: rgba(255, 46, 77, 0.1);
+      border-color: rgba(255, 46, 77, 0.4);
+      color: var(--red);
+      box-shadow: 0 0 20px rgba(255, 46, 77, 0.15);
     }
   </style>
 </head>
@@ -377,7 +433,6 @@
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- نوار پایین -->
   <nav class="bottom-nav" id="bottomNav">
     <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
       <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
@@ -515,6 +570,12 @@
           <span class="btn-publish-icon">🚀</span>
           <span>انتشار اثر</span>
         </button>
+        
+        <!-- 🔥 دکمه انصراف جدید -->
+        <button type="button" class="btn-cancel" id="cancelUploadBtn">
+          <span>✕</span>
+          <span>انصراف و بستن</span>
+        </button>
       </form>
     </div>
   </div>
@@ -522,7 +583,7 @@
   <!-- مودال اشتراک -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
-      <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
+      <button class="modal-close" id="subClose">✕</button>
       
       <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
       <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
@@ -588,7 +649,15 @@
         </div>
       </div>
 
-      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding-bottom: 1.5rem;">💳 پرداخت امن از طریق درگاه بانکی</p>
+      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding: 0 0 1.5rem 0;">💳 پرداخت امن از طریق درگاه بانکی</p>
+      
+      <!-- 🔥 دکمه انصراف جدید -->
+      <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+        <button type="button" class="btn-cancel" id="cancelSubBtn" style="margin-top: 0;">
+          <span>✕</span>
+          <span>انصراف و بستن</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -616,15 +685,44 @@
         }
       }, 500);
 
+      // 🔥 تابع هوشمند برای بستن مودال آپلود و ریست کردن فرم
+      function closeUploadModal() {
+        const modal = document.getElementById('uploadModal');
+        modal.classList.add('hidden');
+        const form = document.getElementById('uploadForm');
+        if (form) form.reset();
+        const previewWrap = document.getElementById('previewWrap');
+        if (previewWrap) previewWrap.classList.add('hidden');
+        const audioFileBox = document.getElementById('audioFileBox');
+        if (audioFileBox) audioFileBox.classList.add('hidden');
+        if (window.compressedImageData) window.compressedImageData = null;
+      }
+
+      // اتصال دکمه X آپلود
+      document.getElementById('uploadClose')?.addEventListener('click', closeUploadModal);
+      // اتصال دکمه انصراف جدید آپلود
+      document.getElementById('cancelUploadBtn')?.addEventListener('click', closeUploadModal);
+
+      // اتصال دکمه X اشتراک
+      document.getElementById('subClose')?.addEventListener('click', () => {
+        document.getElementById('subModal').classList.add('hidden');
+      });
+      // اتصال دکمه انصراف جدید اشتراک
+      document.getElementById('cancelSubBtn')?.addEventListener('click', () => {
+        document.getElementById('subModal').classList.add('hidden');
+      });
+
+      // بستن با کلیک روی پس‌زمینه
       const modal = document.getElementById('modal');
       if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
       
       const uploadModal = document.getElementById('uploadModal');
-      if (uploadModal) uploadModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
+      if (uploadModal) uploadModal.addEventListener('click', function(e) { if (e.target === this) closeUploadModal(); });
       
       const subModal = document.getElementById('subModal');
       if (subModal) subModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
 
+      // بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
