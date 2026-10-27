@@ -772,8 +772,8 @@
       }
     };
 
-    window.saveUsersToCloud = async function() {
-      const users = JSON.parse(localStorage.getItem('navaa_users')) || [];
+    window.saveUsersToCloud = async function(usersArray) {
+      const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
     };
 
@@ -794,12 +794,10 @@
         const snap = await getDoc(docRefItems);
         if (snap.exists()) {
           const cloudItems = JSON.parse(snap.data().value);
-          if (cloudItems && cloudItems.length > 0) {
-            window.DB.items = cloudItems;
-            localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
-            if (typeof window.renderGallery === 'function') window.renderGallery();
-            console.log('🔄 اطلاعات اولیه از سرور لود شد.');
-          }
+          window.DB.items = cloudItems;
+          localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
+          if (typeof window.renderGallery === 'function') window.renderGallery();
+          console.log('🔄 اطلاعات اولیه از سرور لود شد.');
         }
       } catch (error) {
         console.error('❌ خطا در لود اولیه از سرور:', error);
@@ -812,12 +810,10 @@
       
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
-        if (cloudItems.length > 0) {
-          window.DB.items = cloudItems;
-          localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
-          if (typeof window.renderGallery === 'function') window.renderGallery();
-          console.log('🔔 تغییرات جدید فایل‌ها از سرور دریافت شد.');
-        }
+        window.DB.items = cloudItems;
+        localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
+        if (typeof window.renderGallery === 'function') window.renderGallery();
+        console.log('🔔 تغییرات جدید فایل‌ها از سرور دریافت شد.');
       }
     });
 
