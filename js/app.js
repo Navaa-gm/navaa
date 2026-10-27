@@ -31,7 +31,7 @@ function getUserPlanLimit() {
   return PLAN_LIMITS.bronze;
 }
 
-function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
 function save() { try { localStorage.setItem(ITEMS_KEY, JSON.stringify(DB.items)); return true; } catch (e) { return false; } }
 function formatLimitSize(bytes) {
@@ -42,31 +42,22 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
-// 🔥 سینک کردن اطلاعات کاربر با آرایه کاربران و دیتابیس ابری
-function syncCurrentUserToArray() {
-    const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+// 🔥 سینک کردن اطلاعات کاربر با آرایه کاربران و دیتابیس ابری (اتمیک)
+async function syncCurrentUserToArray() {
+    let users = await window.getUsersFromCloud() || [];
+    if (users.length === 0) users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    
     const idx = users.findIndex(u => u.email === currentUser.email);
     if (idx !== -1) {
         users[idx] = { ...users[idx], ...currentUser };
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        if (window.saveUsersToCloud) window.saveUsersToCloud();
+        await window.saveUsersToCloud(users);
     }
 }
 
-// 🎁 هدیه آپلود (با دریافت اطلاعات تازه از سرور)
+// 🎁 هدیه آپلود (اتمیک و ابری)
 async function giveUploadReward(uploaderEmail) {
-  // دریافت آخرین اطلاعات از سرور برای جلوگیری از بازنویسی
-  let users = [];
-  if (window.getUsersFromCloud) {
-      try {
-          users = await window.getUsersFromCloud();
-      } catch (e) { 
-          console.error("خطا در خواندن کاربران از سرور:", e);
-          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      }
-  } else {
-      users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-  }
+  let users = await window.getUsersFromCloud() || [];
+  if (users.length === 0) users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
 
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
   const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
@@ -79,8 +70,7 @@ async function giveUploadReward(uploaderEmail) {
     users[adminIdx].balance = Math.max(0, (users[adminIdx].balance || 0) - UPLOAD_REWARD); 
   }
   
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  if (window.saveUsersToCloud) await window.saveUsersToCloud();
+  await window.saveUsersToCloud(users);
   
   if (uploaderEmail === currentUser.email) {
     currentUser.balance = users[uploaderIdx].balance;
@@ -239,6 +229,24 @@ function initPremiumSection() {
   });
 }
 
+// ================== 🔥 مخفی و نمایش کردن اثر ==================
+window.toggleItemVisibility = async function(id) {
+    window.isUploading = true; // جلوگیری از تداخل
+    
+    let items = await window.getItemsFromCloud() || [];
+    if (items.length === 0) items = [...DB.items];
+
+    const idx = items.findIndex(i => i.id === id);
+    if (idx !== -1) {
+        items[idx].isHidden = !items[idx].isHidden;
+        await window.saveItemsToCloud(items);
+        DB.items = items;
+        save();
+        renderGallery();
+    }
+    window.isUploading = false;
+};
+
 // ================== مودال نمایش جزئیات ==================
 function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
@@ -264,19 +272,19 @@ function openDetail(id) {
 
   const deleteBtn = document.getElementById('modalDelete');
   const isMyItem = item.uploadedByEmail === currentUser.email;
-  if (isMyItem || currentUser.role === 'admin') {
+  const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
+
+  if (isMyItem || isAdminUser) {
     deleteBtn.style.display = 'inline-block';
     deleteBtn.onclick = async () => {
       if (confirm('حذف بشه؟')) {
-        // 🔥 گرفتن آخرین لیست از سرور، حذف آیتم و آپدیت سرور
-        let cloudItems = DB.items;
-        if (window.getItemsFromCloud) {
-            try { cloudItems = await window.getItemsFromCloud(); } catch(e) {}
-        }
+        window.isUploading = true;
+        let cloudItems = await window.getItemsFromCloud() || [...DB.items];
         const updatedItems = cloudItems.filter(p => p.id !== id);
         DB.items = updatedItems;
         save();
-        if (window.saveItemsToCloud) await window.saveItemsToCloud(updatedItems);
+        await window.saveItemsToCloud(updatedItems);
+        window.isUploading = false;
         document.getElementById('modal').classList.add('hidden');
         renderGallery();
       }
@@ -302,12 +310,22 @@ function bindDetailModal() {
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
-// ✅ گالری
+// ✅ گالری (با فیلتر مخفی بودن)
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
+  
+  const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
+  
   let list = [...DB.items].sort((a, b) => b.time - a.time);
   
+  // 🔥 فیلتر کردن آیتم‌های مخفی
+  list = list.filter(item => {
+    const isMyItem = item.uploadedByEmail === currentUser.email;
+    if (item.isHidden && !isMyItem && !isAdminUser) return false; // اگه مخفی بود و مال من نبود، نشون نده
+    return true;
+  });
+
   if (list.length === 0) { 
     gallery.innerHTML = `<div class="empty"><h3>🎭 هنوز اثری نیست</h3><p>اولین اثر رو آپلود کن!</p></div>`; 
     return; 
@@ -316,12 +334,15 @@ function renderGallery() {
   list.forEach(item => {
     const card = document.createElement('div'); card.className = 'card';
     const isMyItem = item.uploadedByEmail === currentUser.email;
+    
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
       ${item.isPremium ? '<span class="premium-badge">💎 ویژه</span>' : ''}
+      ${item.isHidden ? '<span class="hidden-badge" style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:#fff;padding:0.2rem 0.5rem;border-radius:6px;font-size:0.7rem;">🙈 مخفی</span>' : ''}
       <div class="card-actions">
         <button class="action-btn like-btn">${item.likedByMe ? '❤️' : '🤍'}</button>
-        ${isMyItem || currentUser.role === 'admin' ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
+        ${isMyItem || isAdminUser ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
+        ${isMyItem ? `<button class="action-btn visibility-btn" data-id="${item.id}" title="${item.isHidden ? 'نمایش برای همه' : 'مخفی کردن'}">${item.isHidden ? '👁️' : '🙈'}</button>` : ''}
       </div>
       <div class="card-overlay">
         <p class="card-title">${escapeHtml(item.title)}</p>
@@ -338,17 +359,22 @@ function renderGallery() {
     card.querySelector('.delete-btn')?.addEventListener('click', async e => { 
         e.stopPropagation(); 
         if(confirm('حذف بشه؟')) {
-            let cloudItems = DB.items;
-            if (window.getItemsFromCloud) {
-                try { cloudItems = await window.getItemsFromCloud(); } catch(err) {}
-            }
+            window.isUploading = true;
+            let cloudItems = await window.getItemsFromCloud() || [...DB.items];
             const updatedItems = cloudItems.filter(i => i.id !== item.id); 
             DB.items = updatedItems;
             save(); 
-            if(window.saveItemsToCloud) await window.saveItemsToCloud(updatedItems);
+            await window.saveItemsToCloud(updatedItems);
+            window.isUploading = false;
             renderGallery(); 
         }
     });
+
+    card.querySelector('.visibility-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        if (window.toggleItemVisibility) window.toggleItemVisibility(item.id);
+    });
+
     gallery.appendChild(card);
   });
 }
@@ -378,19 +404,21 @@ function bindUploadModal() {
   }
 
   let compressedImageData = null;
+  window.compressedImageData = null;
 
   fileIn.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
     compressImage(file, 800, 0.7).then(compressed => {
       compressedImageData = compressed;
+      window.compressedImageData = compressed;
       preview.src = compressed;
       previewWrap.classList.remove('hidden');
     });
   });
 
   previewRemove?.addEventListener('click', () => {
-    fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null;
+    fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null; window.compressedImageData = null;
   });
 
   audioIn?.addEventListener('change', e => {
@@ -403,12 +431,6 @@ function bindUploadModal() {
     audioIn.value = ''; audioFileName.textContent = ''; audioFileBox.classList.add('hidden');
   });
 
-  document.getElementById('uploadClose')?.addEventListener('click', () => {
-    modal.classList.add('hidden'); form.reset(); previewWrap.classList.add('hidden'); audioFileBox.classList.add('hidden'); compressedImageData = null;
-  });
-
-  document.getElementById('uploadBtn')?.addEventListener('click', () => modal.classList.remove('hidden'));
-  
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
@@ -442,21 +464,14 @@ function bindUploadModal() {
           price: itemPrice,
           time: Date.now(), 
           uploadedByEmail: currentUser.email, 
-          likes: 0 
+          likes: 0,
+          isHidden: false // 🔥 پیش‌فرض روی مخفی نیست
       };
       
       window.isUploading = true; 
       
-      // 🔥 گرفتن آخرین لیست فایل‌ها از سرور و اضافه کردن فایل جدید به اون
-      let cloudItems = DB.items;
-      if (window.getItemsFromCloud) {
-          try {
-             cloudItems = await window.getItemsFromCloud();
-          } catch (err) {
-             console.error("خطا در خواندن فایل‌ها از سرور:", err);
-          }
-      }
-      
+      // 🔥 گرفتن آخرین لیست از سرور و اضافه کردن به آن (اتمیک)
+      let cloudItems = await window.getItemsFromCloud() || [];
       const mergedItems = [...cloudItems, newItem];
       
       DB.items = mergedItems; 
@@ -465,22 +480,24 @@ function bindUploadModal() {
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-        syncCurrentUserToArray(); 
+        await syncCurrentUserToArray(); 
       }
 
-      // ارسال لیست کامل و ادغام شده به فایربیس
-      if (window.saveItemsToCloud) { 
-        try { 
-          await window.saveItemsToCloud(mergedItems); 
-        } catch(err) { 
-          console.error(err); 
-        } 
-      }
+      await window.saveItemsToCloud(mergedItems);
       
       window.isUploading = false; 
       
       const reward = await giveUploadReward(currentUser.email);
-      modal.classList.add('hidden'); form.reset(); previewWrap.classList.add('hidden'); audioFileBox.classList.add('hidden'); compressedImageData = null;
+      
+      // بستن فرم و ریست کردن
+      const uploadModal = document.getElementById('uploadModal');
+      uploadModal.classList.add('hidden'); 
+      form.reset(); 
+      previewWrap.classList.add('hidden'); 
+      audioFileBox.classList.add('hidden'); 
+      compressedImageData = null; 
+      window.compressedImageData = null;
+      
       renderGallery();
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
