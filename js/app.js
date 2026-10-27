@@ -2,6 +2,7 @@
 // ══════════════════ Navaa — app.js ═════════════════════════
 // ============================================================
 
+// ================== 1. CONFIG ==================
 const CURRENT_KEY = 'navaa_current_user';
 const USERS_KEY = 'navaa_users';
 const ITEMS_KEY = 'navaa_items_v3';
@@ -11,15 +12,16 @@ const UPLOAD_REWARD = 5000;
 let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY)) || null;
 if (!currentUser) window.location.href = 'home.html';
 
+// ================== 2. PLAN LIMITS ==================
 const PLAN_LIMITS = {
-  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین' },
-  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی' },
-  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, maxDailyTotalSize: 200 * 1024 * 1024 * 1024, label: '🥈 طلایی' },
-  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, maxDailyTotalSize: 25 * 1024 * 1024 * 1024, label: '🥉 برنزی' }
+  admin: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '🛡️ ادمین', color: '#ffc93c' },
+  diamond: { maxImageSize: Infinity, maxDailyUploads: Infinity, maxDailyTotalSize: Infinity, label: '💎 الماسی', color: '#00f0d4' },
+  silver: { maxImageSize: 250 * 1024 * 1024 * 1024, maxDailyUploads: 200, maxDailyTotalSize: 200 * 1024 * 1024 * 1024, label: '🥈 طلایی', color: '#ffc93c' },
+  bronze: { maxImageSize: 20 * 1024 * 1024 * 1024, maxDailyUploads: 50, maxDailyTotalSize: 25 * 1024 * 1024 * 1024, label: '🥉 برنزی', color: '#cd7f32' }
 };
 
 let hasSubscription = currentUser.hasSubscription || false;
-if (currentUser.email === ADMIN_EMAIL) hasSubscription = true;
+if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin') hasSubscription = true;
 
 const DB = { items: JSON.parse(localStorage.getItem(ITEMS_KEY)) || [] };
 window.DB = DB;
@@ -41,64 +43,80 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
-// 🎁 هدیه آپلود
+// ================== 3. REWARD & LIMITS ==================
 function giveUploadReward(uploaderEmail) {
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
   const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
   if (uploaderIdx === -1) return { success: false };
+  
   const isUploaderAdmin = users[uploaderIdx].email === ADMIN_EMAIL || users[uploaderIdx].role === 'admin';
   users[uploaderIdx].balance = (users[uploaderIdx].balance || 0) + UPLOAD_REWARD;
-  if (!isUploaderAdmin && adminIdx !== -1) { users[adminIdx].balance = Math.max(0, (users[adminIdx].balance || 0) - UPLOAD_REWARD); }
+  
+  if (!isUploaderAdmin && adminIdx !== -1) { 
+    users[adminIdx].balance = Math.max(0, (users[adminIdx].balance || 0) - UPLOAD_REWARD); 
+  }
+  
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
   if (window.saveUsersToCloud) window.saveUsersToCloud();
+  
   if (uploaderEmail === currentUser.email) {
     currentUser.balance = users[uploaderIdx].balance;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
   }
-  return { success: true, isUploaderAdmin };
+  return { success: true, isAdmin: isUploaderAdmin };
 }
 
-// 📊 سیستم ۵۰ فایل رایگان
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
+  
   const currentMonth = new Date().getMonth();
   if (currentUser.lastUploadMonth !== currentMonth) {
     currentUser.monthlyUploads = 0;
     currentUser.lastUploadMonth = currentMonth;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
   }
+  
   if ((currentUser.monthlyUploads || 0) >= 50) {
-    return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، اشتراک تهیه کنید.' };
+    return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
   }
   return { allowed: true };
 }
 
-// 🗂️ دسته‌بندی‌ها (شامل عکس پروفایل و تبلیغاتی)
+// ================== 4. SUBCATS (اضافه شدن عکس پروفایل و تبلیغاتی) ==================
 const SUBCATS = {
   music: {
-    'music-pop': { label: '🎵 پاپ' }, 'music-classic': { label: '🎼 سنتی' },
-    'music-rock': { label: '🎸 راک' }, 'music-electronic': { label: '🎧 الکترونیک' },
-    'music-classical': { label: '🎻 کلاسیک' }, 'music-rap': { label: '🎤 رپ' }
+    'music-pop':        { label: '🎵 پاپ' },
+    'music-classic':    { label: '🎼 سنتی' },
+    'music-rock':       { label: '🎸 راک' },
+    'music-electronic': { label: '🎧 الکترونیک' },
+    'music-classical':  { label: '🎻 کلاسیک' },
+    'music-rap':        { label: '🎤 رپ' }
   },
   photo: {
-    'photo-nature': { label: '🌿 طبیعت' }, 'photo-arch': { label: '🏛️ معماری' },
-    'photo-bw': { label: '⚫ سیاه و سفید' }, 'photo-animal': { label: '🐾 حیوانات' },
-    'photo-nostalgic': { label: '📻 نوستالژیک' }, 'photo-phone-bg': { label: '📱 پس‌زمینه گوشی' },
-    'photo-pc-bg': { label: '💻 پس‌زمینه کامپیوتر' },
-    'photo-profile': { label: '👤 عکس پروفایل' },
-    'photo-ad': { label: '📢 عکس تبلیغاتی' }
+    'photo-nature':    { label: '🌿 طبیعت' },
+    'photo-arch':      { label: '🏛️ معماری' },
+    'photo-bw':        { label: '⚫ سیاه و سفید' },
+    'photo-animal':    { label: '🐾 حیوانات' },
+    'photo-nostalgic': { label: '📻 نوستالژیک' },
+    'photo-phone-bg':  { label: '📱 پس‌زمینه گوشی' },
+    'photo-pc-bg':     { label: '💻 پس‌زمینه کامپیوتر' },
+    'photo-profile':   { label: '👤 عکس پروفایل' },
+    'photo-ad':        { label: '📢 عکس تبلیغاتی' }
   },
   car: {
-    'car-super': { label: '🏎️ سوپراسپرت' }, 'car-classic': { label: '🚙 کلاسیک' },
-    'car-offroad': { label: '🚙 آفرود' }, 'car-sport': { label: '🏁 اسپرت' },
-    'car-luxury': { label: '💎 لوکس' }, 'car-motorcycle': { label: '🏍️ موتور' }
+    'car-super':      { label: '🏎️ سوپراسپرت' },
+    'car-classic':    { label: '🚙 کلاسیک' },
+    'car-offroad':    { label: '🚙 آفرود' },
+    'car-sport':      { label: '🏁 اسپرت' },
+    'car-luxury':     { label: '💎 لوکس' },
+    'car-motorcycle': { label: '🏍️ موتور' }
   }
 };
 
+// ================== 5. GALLERY ==================
 function setupUserHeader() { const greeting = document.getElementById('userGreeting'); if (greeting) greeting.textContent = currentUser.fullname; }
 
-// ✅ گالری (نمایش کارت‌ها)
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -109,7 +127,7 @@ function renderGallery() {
     const card = document.createElement('div'); card.className = 'card';
     const isMyItem = item.uploadedByEmail === currentUser.email;
     card.innerHTML = `
-      <img src="${item.image}" alt="">
+      <img src="${item.image}" alt="" loading="lazy">
       <div class="card-actions">
         <button class="action-btn like-btn">${item.likedByMe ? '❤️' : '🤍'}</button>
         ${isMyItem || currentUser.role === 'admin' ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
@@ -133,7 +151,7 @@ function renderGallery() {
   });
 }
 
-// ✅ فرم آپلود
+// ================== 6. UPLOAD MODAL (تگ‌های چندگانه و دسته‌بندی) ==================
 function bindUploadModal() {
   const modal = document.getElementById('uploadModal'); 
   const form = document.getElementById('uploadForm');
@@ -150,7 +168,7 @@ function bindUploadModal() {
     catSel.innerHTML = allSubs.join('');
   }
 
-  document.getElementById('uploadClose').addEventListener('click', () => modal.classList.add('hidden'));
+  document.getElementById('uploadClose')?.addEventListener('click', () => modal.classList.add('hidden'));
   document.getElementById('uploadBtn')?.addEventListener('click', () => modal.classList.remove('hidden'));
   
   form.addEventListener('submit', async e => {
@@ -201,7 +219,7 @@ function bindUploadModal() {
   });
 }
 
-// ✅ نوار پایین (اصلاح شده - دقیقا همون دکمه‌های اصلی)
+// ================== 7. BOTTOM NAV (اصلاح شده - دقیقا همون دکمه‌های اصلی) ==================
 function renderBottomNav() {
   const nav = document.getElementById('bottomNav'); 
   if (!nav) return;
@@ -228,6 +246,7 @@ function renderBottomNav() {
   `;
 }
 
+// ================== 8. INIT ==================
 setupUserHeader(); 
 renderGallery(); 
 bindUploadModal(); 
