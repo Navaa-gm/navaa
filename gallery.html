@@ -7,35 +7,35 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 کوچیک‌تر کردن کل مقیاس صفحه */
-    html {
-      font-size: 14px; 
-    }
-
+    /* 🌟 تنظیمات پایه */
+    html { font-size: 14px; }
     body {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
       margin: 0;
+      overflow-x: hidden;
     }
 
-    /* 🌟 کشیده‌تر کردن عرض کل صفحه */
+    /* 🌟 کشیده‌تر شدن کل صفحه (حذف محدودیت عرض) */
     header, .topbar-wrap, main#gallery {
-      max-width: 1400px;
-      margin: 0 auto;
       width: 100%;
+      max-width: 100%;
+      padding-left: 4%;
+      padding-right: 4%;
       box-sizing: border-box;
     }
 
     main#gallery {
       flex: 1 0 auto;
-      padding: 1.5rem 2rem 3rem 2rem;
+      padding-top: 1.5rem;
+      padding-bottom: 4rem;
     }
 
     footer {
       flex-shrink: 0;
       margin-top: auto;
-      padding: 1.5rem 1rem 100px 1rem; 
+      padding: 1.5rem 1rem 80px 1rem; 
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--black-2);
@@ -46,30 +46,21 @@
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 1rem 2rem;
+      padding: 1rem 0;
       width: 100%;
     }
     
-    .logo-name-sm {
-      font-size: 1.8rem !important;
-      font-weight: 900 !important;
-      letter-spacing: -0.5px;
-    }
-    
-    .logo-icon-sm {
-      font-size: 1.8rem !important;
-    }
+    .logo-name-sm { font-size: 1.8rem !important; font-weight: 900 !important; letter-spacing: -0.5px; }
+    .logo-icon-sm { font-size: 1.8rem !important; }
 
     /* 🌟 استایل کادر سرچ */
     .topbar-wrap {
-      padding: 0.5rem 2rem 1rem 2rem;
+      padding-top: 0.5rem;
+      padding-bottom: 1rem;
       display: flex;
       justify-content: center;
     }
-    .topbar {
-      width: 100%;
-      max-width: 500px;
-    }
+    .topbar { width: 100%; max-width: 500px; }
     .search-box {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(12px);
@@ -89,53 +80,65 @@
       box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
     }
     .search-box input {
-      background: transparent !important;
-      border: none !important;
-      color: #fff;
-      width: 100%;
-      outline: none;
-      font-family: inherit;
-      font-size: 0.85rem;
-      padding-right: 0.5rem;
-    }
-    .search-box input::placeholder {
-      color: #777;
+      background: transparent !important; border: none !important; color: #fff;
+      width: 100%; outline: none; font-family: inherit; font-size: 0.85rem; padding-right: 0.5rem;
     }
 
-    /* 🌟 تنظیمات گالری */
+    /* 🌟 تنظیمات گالری (کشیده و ریسپانسیو) */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1.5rem;
       justify-content: center; 
     }
-
     #gallery > * {
-      max-width: 240px; 
+      max-width: 260px; 
       width: 100%;
       margin: 0 auto; 
       border-radius: 16px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
     #gallery > *:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
     }
 
     /* ==========================================
-       🌟 افکت شیشه‌ای (Glassmorphism) برای مودال‌ها
+       🌟 کوچیک کردن نوار پایین (Bottom Nav)
        ========================================== */
+    .bottom-nav {
+      height: 60px !important;
+      padding: 0.2rem 3% !important;
+      border-radius: 16px 16px 0 0 !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5) !important;
+    }
+    .nav-pill-btn {
+      padding: 0.3rem 0.8rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+      border-radius: 10px !important;
+    }
+    .nav-pill-icon { font-size: 1rem !important; }
+    .nav-center-profile {
+      width: 50px !important;
+      height: 50px !important;
+      margin-top: -15px !important; /* کمتر بیرون زده بشه */
+    }
+    .nav-center-label {
+      font-size: 0.6rem !important;
+      bottom: -12px !important;
+    }
+    .profile-btn-avatar { width: 28px !important; height: 28px !important; }
 
-    /* 1. پس‌زمینه تاریک مودال (کمی روشن‌تر تا شیشه دیده بشه) */
+    /* ==========================================
+       🌟 افکت شیشه‌ای مودال‌ها
+       ========================================== */
     .modal {
       background: rgba(0, 0, 0, 0.5) !important;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
-
-    /* 2. بدنه اصلی مودال (شیشه مات و شفاف) */
     .modal-content {
       background: rgba(20, 24, 28, 0.4) !important; 
       backdrop-filter: blur(30px) saturate(150%) !important; 
@@ -146,48 +149,28 @@
       max-width: 600px;
       margin: 2rem auto;
     }
-
-    /* 3. بخش‌های آپلود اثر (تب‌های داخلی) */
     .upload-section {
       background: rgba(255, 255, 255, 0.04) !important;
       backdrop-filter: blur(12px) !important;
       -webkit-backdrop-filter: blur(12px) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       border-radius: 16px;
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
     }
-
-    /* 4. کادرهای انتخاب فایل (تصویر و صدا) */
     .upload-file-box {
       background: rgba(0, 0, 0, 0.3) !important;
       backdrop-filter: blur(10px) !important;
       -webkit-backdrop-filter: blur(10px) !important;
       border: 2px dashed rgba(255, 255, 255, 0.2) !important;
       border-radius: 16px;
-      transition: all 0.3s;
     }
     .upload-file-box:hover {
       border-color: var(--turquoise) !important;
       background: rgba(0, 240, 212, 0.05) !important;
     }
-
-    /* 5. فیلدهای متنی داخل آپلود */
     .upload-field input, .upload-field textarea, .upload-field select {
       background: rgba(255, 255, 255, 0.03) !important;
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       color: #fff !important;
-    }
-    .upload-field input:focus, .upload-field textarea:focus, .upload-field select:focus {
-      border-color: var(--turquoise) !important;
-      background: rgba(255, 255, 255, 0.08) !important;
-      box-shadow: 0 0 15px rgba(0, 240, 212, 0.2) !important;
-    }
-
-    /* 6. برای مودال نمایش اثر (عکس دوم) که سمت متن شفاف بشه */
-    .modal-info {
-      background: transparent !important;
     }
   </style>
 </head>
@@ -196,7 +179,7 @@
   <header>
     <div class="header-inner">
       
-      <!-- سمت راست -->
+      <!-- سمت راست: تاریخ و صفحه اصلی -->
       <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.3rem;">
         <div id="shamsiDate" style="font-size: 0.75rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap;"></div>
         <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
@@ -204,7 +187,7 @@
         </a>
       </div>
 
-      <!-- وسط -->
+      <!-- وسط: لوگو -->
       <div style="display: flex; justify-content: center; align-items: center;">
         <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
           <span class="logo-icon-sm">🎵</span>
@@ -212,10 +195,18 @@
         </a>
       </div>
 
-      <!-- سمت چپ -->
-      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.8rem;">
+      <!-- سمت چپ: دکمه آپلود، عکس پروفایل و اسم کاربر -->
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
         <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
-        <a href="profile.html" class="user-greeting" id="userGreeting" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; white-space: nowrap;"></a>
+        
+        <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; white-space: nowrap;">
+          <!-- کادر عکس پروفایل در هدر -->
+          <div id="headerAvatar" style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--turquoise), var(--sky)); background-size: cover; background-position: center; box-shadow: 0 0 10px rgba(0,240,212,0.4); display: flex; align-items: center; justify-content: center; color: #001a1c; font-weight: bold; font-size: 1rem;">
+            <!-- عکس با جاوااسکریپت لود میشه، این آیکون پیش‌فرضه -->
+            👤
+          </div>
+          <span id="userGreeting" class="user-greeting"></span>
+        </a>
       </div>
 
     </div>
@@ -235,12 +226,11 @@
 
   <main id="gallery" class="gallery"></main>
 
-  <!-- فوتر -->
   <footer>
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- مودال نمایش اثر -->
+  <!-- مودال‌های شیشه‌ای -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">✕</button>
@@ -265,7 +255,6 @@
     </div>
   </div>
 
-  <!-- مودال آپلود اثر -->
   <div id="uploadModal" class="modal hidden">
     <div class="modal-content upload-content">
       <button class="modal-close" id="uploadClose">✕</button>
@@ -277,14 +266,12 @@
       </div>
 
       <form id="uploadForm" class="form upload-form" novalidate>
-
         <div class="upload-section">
           <div class="section-title">
             <span class="section-num">۱</span>
             <span>تصویر اثر</span>
             <span class="optional-badge">اختیاری</span>
           </div>
-
           <label class="upload-file-box" for="fileInput">
             <input type="file" id="fileInput" accept="image/*" hidden>
             <div class="upload-file-icon">🖼️</div>
@@ -293,7 +280,6 @@
               <small>JPG · PNG · WEBP — اختیاری</small>
             </div>
           </label>
-
           <div id="previewWrap" class="preview-wrap hidden">
             <img id="preview" class="preview-img" alt="پیش‌نمایش">
             <button type="button" class="preview-remove" id="previewRemove" title="حذف تصویر">✕</button>
@@ -307,7 +293,6 @@
             <span>فایل صوتی</span>
             <span class="optional-badge">اختیاری</span>
           </div>
-
           <label class="upload-file-box upload-file-audio" for="audioInput">
             <input type="file" id="audioInput" accept="audio/*" hidden>
             <div class="upload-file-icon">🎧</div>
@@ -316,7 +301,6 @@
               <small>MP3 · WAV · OGG — برای موسیقی</small>
             </div>
           </label>
-
           <div id="audioFileBox" class="audio-file-box hidden">
             <span class="audio-file-icon">🎵</span>
             <span id="audioFileName" class="audio-file-name"></span>
@@ -329,27 +313,22 @@
             <span class="section-num">۳</span>
             <span>اطلاعات اثر</span>
           </div>
-
           <div class="upload-field">
             <label>عنوان اثر <span class="req">*</span></label>
             <input type="text" name="title" required maxlength="80" placeholder="مثلاً: آهنگ پاپ روز">
           </div>
-
           <div class="upload-field">
             <label>نام هنرمند</label>
             <input type="text" name="artist" maxlength="60" placeholder="اسم خودت یا نام هنری‌ات">
           </div>
-
           <div class="upload-field">
             <label>توضیح</label>
             <textarea name="desc" rows="3" maxlength="300" placeholder="یه توضیح کوتاه درباره اثری که آپلود می‌کنی..."></textarea>
           </div>
-
           <div class="upload-field">
             <label>دسته‌بندی <span class="req">*</span></label>
             <select name="category" id="catSelect" required></select>
           </div>
-
           <div class="upload-field">
             <label>تگ‌ها</label>
             <input type="text" name="tags" placeholder="پاپ, جدید, عاشقانه (با کاما جدا کن)">
@@ -369,7 +348,6 @@
           <span class="btn-publish-icon">🚀</span>
           <span>انتشار اثر</span>
         </button>
-
       </form>
     </div>
   </div>
@@ -449,12 +427,25 @@
 
   <script>
     window.addEventListener('load', function() {
+      // 1. تنظیم تاریخ شمسی
       const dateEl = document.getElementById('shamsiDate');
       if (dateEl) {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
       }
 
+      // 2. لود کردن عکس پروفایل در هدر
+      const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+      if (currentUser && currentUser.email) {
+        const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
+        if (avatarData) {
+          const headerAvatar = document.getElementById('headerAvatar');
+          headerAvatar.style.backgroundImage = `url(${avatarData})`;
+          headerAvatar.textContent = ''; // حذف آیکون پیش‌فرض
+        }
+      }
+
+      // 3. بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
