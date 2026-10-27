@@ -66,15 +66,17 @@ function giveUploadReward(uploaderEmail) {
   return { success: true, isAdmin: isUploaderAdmin };
 }
 
-// 📊 سیستم ۵۰ فایل رایگان
+// 📊 سیستم ۵۰ فایل رایگان ماهانه
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
+  
   const currentMonth = new Date().getMonth();
   if (currentUser.lastUploadMonth !== currentMonth) {
     currentUser.monthlyUploads = 0;
     currentUser.lastUploadMonth = currentMonth;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
   }
+  
   if ((currentUser.monthlyUploads || 0) >= 50) {
     return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
   }
@@ -218,7 +220,6 @@ function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
   if (!item) return;
   
-  // تنظیم اطلاعات متنی
   document.getElementById('modalImg').src = item.image;
   document.getElementById('modalTitle').textContent = item.title;
   document.getElementById('modalArtist').textContent = item.artist ? `👤 ${item.artist}` : '';
@@ -226,7 +227,6 @@ function openDetail(id) {
   document.getElementById('modalTags').innerHTML = (item.tags || []).map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
   document.getElementById('modalLikes').textContent = item.likes || 0;
 
-  // مدیریت فایل صوتی
   const audioWrap = document.getElementById('modalAudioWrap');
   const audioEl = document.getElementById('modalAudio');
   if (item.audio) {
@@ -238,7 +238,6 @@ function openDetail(id) {
     audioWrap.classList.add('hidden');
   }
 
-  // دکمه حذف
   const deleteBtn = document.getElementById('modalDelete');
   const isMyItem = item.uploadedByEmail === currentUser.email;
   if (isMyItem || currentUser.role === 'admin') {
@@ -256,7 +255,6 @@ function openDetail(id) {
     deleteBtn.style.display = 'none';
   }
 
-  // نمایش مودال
   document.getElementById('modal').classList.remove('hidden');
 }
 
@@ -298,9 +296,8 @@ function renderGallery() {
       </div>
     `;
     
-    // 🔥 کلیک روی کارت برای باز کردن مودال
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.action-btn')) return; // اگه روی دکمه لایک یا حذف کلیک شد، مودال باز نشه
+      if (e.target.closest('.action-btn')) return; 
       openDetail(item.id);
     });
 
@@ -380,6 +377,7 @@ function bindUploadModal() {
     const audioFile = audioIn ? audioIn.files[0] : null;
     if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
     
+    // 🔥 چک کردن سهمیه ۵۰ فایل رایگان
     const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
     if (!perm.allowed) return alert(perm.reason);
 
@@ -413,9 +411,20 @@ function bindUploadModal() {
       DB.items.push(newItem); 
       save();
       
+      // 🔥 افزایش شمارنده آپلود ماهانه
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+        
+        // سینک کردن شمارنده با دیتابیس
+        const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        const uIdx = users.findIndex(u => u.email === currentUser.email);
+        if (uIdx !== -1) {
+            users[uIdx].monthlyUploads = currentUser.monthlyUploads;
+            users[uIdx].lastUploadMonth = currentUser.lastUploadMonth;
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            if (window.saveUsersToCloud) window.saveUsersToCloud();
+        }
       }
 
       if (window.saveItemsToCloud) { try { await window.saveItemsToCloud(DB.items); } catch(err) { console.error(err); } }
@@ -463,7 +472,7 @@ function renderBottomNav() {
   `;
 }
 
-// 🎨 تزریق CSS برای حالت شیشه‌ای مودال (اگه توی style.css نبود)
+// 🎨 تزریق CSS برای حالت شیشه‌ای مودال
 function injectGlassCSS() {
   if (document.getElementById('glass-css-inject')) return;
   const style = document.createElement('style');
