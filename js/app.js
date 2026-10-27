@@ -393,6 +393,12 @@ function bindUploadModal() {
   const audioFileName = document.getElementById('audioFileName');
   const audioFileRemove = document.getElementById('audioFileRemove');
   
+  // 🔥 دکمه‌های هدر و نوار پایین
+  const uploadBtnHeader = document.getElementById('uploadBtn');
+  const uploadBtnNav = document.getElementById('uploadNavBtn');
+  const uploadClose = document.getElementById('uploadClose');
+  const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+
   if (!modal || !form) return;
 
   if (catSel) {
@@ -405,6 +411,22 @@ function bindUploadModal() {
 
   let compressedImageData = null;
   window.compressedImageData = null;
+
+  // 🔥 تابع بستن مودال
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    form.reset();
+    if (previewWrap) previewWrap.classList.add('hidden');
+    if (audioFileBox) audioFileBox.classList.add('hidden');
+    compressedImageData = null;
+    window.compressedImageData = null;
+  };
+
+  // 🔥 اتصال دکمه‌ها
+  uploadBtnHeader?.addEventListener('click', () => modal.classList.remove('hidden'));
+  uploadBtnNav?.addEventListener('click', () => modal.classList.remove('hidden'));
+  uploadClose?.addEventListener('click', closeModal);
+  cancelUploadBtn?.addEventListener('click', closeModal);
 
   fileIn.addEventListener('change', e => {
     const file = e.target.files[0];
@@ -490,13 +512,7 @@ function bindUploadModal() {
       const reward = await giveUploadReward(currentUser.email);
       
       // بستن فرم و ریست کردن
-      const uploadModal = document.getElementById('uploadModal');
-      uploadModal.classList.add('hidden'); 
-      form.reset(); 
-      previewWrap.classList.add('hidden'); 
-      audioFileBox.classList.add('hidden'); 
-      compressedImageData = null; 
-      window.compressedImageData = null;
+      closeModal();
       
       renderGallery();
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
@@ -532,7 +548,7 @@ function renderBottomNav() {
       <button class="nav-pill-btn admin-pill" onclick="window.location.href='admin.html'">
         <span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیریت</span>
       </button>` : '<span style="width:60px;"></span>'}
-    <button class="nav-pill-btn upload-pill" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+    <button class="nav-pill-btn upload-pill" id="uploadNavBtn">
       <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
     </button>
   `;
