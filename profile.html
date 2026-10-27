@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>پروفایل | Navaa</title>
+  
   <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
+    html { font-size: 14px; }
+    
     .profile-avatar-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 1rem; }
     .profile-avatar {
       width: 110px; height: 110px; border-radius: 50%;
@@ -319,6 +322,125 @@
       background: rgba(255, 46, 77, 0.2);
       border-color: var(--red);
     }
+
+    /* 🌟 نوار پایین و دایره عکس پروفایل */
+    .profile-main { padding-bottom: 100px !important; }
+
+    .bottom-nav {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 64px !important;
+      padding: 0.2rem 3% !important;
+      border-radius: 16px 16px 0 0 !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      z-index: 99999 !important;
+      background: var(--black-2) !important;
+    }
+
+    .nav-pill-btn {
+      padding: 0.3rem 0.8rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+      border-radius: 10px !important;
+    }
+    .nav-pill-icon { font-size: 1rem !important; }
+
+    .nav-center-profile {
+      position: relative !important; 
+      width: 56px !important;
+      height: 56px !important;
+      min-width: 56px !important;
+      min-height: 56px !important;
+      flex: 0 0 56px !important; 
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin-top: -18px !important;
+      box-sizing: border-box !important;
+    }
+    
+    .profile-btn-avatar {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      background-size: cover !important;
+      background-position: center !important;
+      box-sizing: border-box !important;
+      border: 3px solid var(--black-2) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important; 
+    }
+
+    .nav-center-profile .nav-icon {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      color: #001a1c !important;
+      font-size: 1.2rem !important;
+      box-sizing: border-box !important;
+    }
+
+    .nav-center-label {
+      position: absolute !important;
+      bottom: -18px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      font-size: 0.65rem !important;
+      white-space: nowrap !important;
+      color: #fff !important;
+    }
+
+    /* 🌟 افکت شیشه‌ای مودال اشتراک */
+    .modal {
+      background: rgba(0, 0, 0, 0.6) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
+      background: rgba(20, 24, 28, 0.35) !important; 
+      backdrop-filter: blur(40px) saturate(180%) !important; 
+      -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.05) !important;
+      border-radius: 24px !important;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      left: 15px; 
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important;
+      font-size: 1.2rem !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 9999 !important;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: auto !important;
+    }
+    .modal-close:hover {
+      background: rgba(255, 46, 77, 0.9) !important;
+      border-color: var(--red) !important;
+      transform: rotate(90deg) scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -327,7 +449,7 @@
     <div class="header-inner">
       <a href="gallery.html" class="logo-small">
         <span class="logo-icon-sm">🎵</span>
-        <span class="logo-name-sm">Navaa<span class="dot">.</span></span>
+        <span class="logo-name-sm">Navaa</span>
       </a>
       <div class="header-actions">
         <a href="gallery.html" class="profile-back-btn">
@@ -435,12 +557,13 @@
 
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
-      <button class="modal-close" id="subClose">✕</button>
-      <div class="sub-icon">✨</div>
-      <h2>پلن‌های اشتراک Navaa</h2>
-      <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
+      <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
+      
+      <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
+      <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc" style="text-align:center; margin-bottom: 2rem;">پلن مناسب خودت رو انتخاب کن</p>
 
-      <div class="plans">
+      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
         <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
           <div class="plan-header">
             <span class="plan-name">🥉 برنزی</span>
@@ -460,7 +583,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- ✅ پلن طلایی ۱۲ ماهه (365 روز) -->
         <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="365">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
           <div class="plan-header">
@@ -481,7 +603,6 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
         <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
@@ -502,7 +623,7 @@
         </div>
       </div>
 
-      <p class="sub-hint">💳 پرداخت امن از طریق درگاه بانکی</p>
+      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding-bottom: 1.5rem;">💳 پرداخت امن از طریق درگاه بانکی</p>
     </div>
   </div>
 
@@ -602,17 +723,41 @@
     document.getElementById('profileEmail').textContent = user.email || '';
 
     let subHtml = '';
+    let subTimeHtml = ''; // 🔥 متغیر جدید برای زمان اشتراک
+
     if (user.hasSubscription) {
       let label = '✅ فعال';
       const plans = { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی', admin: '🛡️ ادمین' };
       if (user.subscriptionPlan) label += ` — ${plans[user.subscriptionPlan] || ''}`;
+      
+      if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
+      subHtml = `<span class="sub-status-active">${label}</span>`;
+
+      // 🔥 محاسبه زمان باقی‌مانده
       if (user.subscriptionExpiry && user.subscriptionPlan !== 'admin') {
         const expDate = new Date(user.subscriptionExpiry);
         const daysLeft = Math.ceil((expDate - Date.now()) / (1000 * 60 * 60 * 24));
-        label += `<br><small style="color:#a0a0a0;font-size:.75rem;">تا ${expDate.toLocaleDateString('fa-IR')} (${daysLeft} روز)</small>`;
+        
+        if (daysLeft > 0) {
+          subTimeHtml = `
+            <div class="info-row">
+              <span>⏳ زمان باقی‌مانده:</span>
+              <strong style="color: var(--turquoise);">${daysLeft.toLocaleString('fa-IR')} روز</strong>
+            </div>
+            <div class="info-row">
+              <span>📅 تاریخ انقضا:</span>
+              <strong>${expDate.toLocaleDateString('fa-IR')}</strong>
+            </div>
+          `;
+        } else {
+          subTimeHtml = `
+            <div class="info-row">
+              <span>⏳ زمان باقی‌مانده:</span>
+              <strong style="color: var(--red);">منقضی شده</strong>
+            </div>
+          `;
+        }
       }
-      if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
-      subHtml = `<span class="sub-status-active">${label}</span>`;
     } else {
       subHtml = '<span class="sub-status-inactive">❌ غیرفعال</span>';
     }
@@ -625,6 +770,7 @@
 
     const box = document.getElementById('profileInfoBox');
     if (!box) return;
+    
     box.innerHTML = `
       <div class="info-row">
         <span>👤 نام:</span>
@@ -649,6 +795,7 @@
         <span>💎 اشتراک:</span>
         <strong>${subHtml}</strong>
       </div>
+      ${subTimeHtml} <!-- 🔥 اینجا زمان و تاریخ رو نشون میده -->
     `;
   }
 
@@ -1309,7 +1456,6 @@
 
     if (!confirm(`💸 درخواست برداشت ${formatMoney(amt)} تومان ثبت شود؟\nمبلغ از موجودی شما قفل می‌شود.`)) return;
 
-    // 🔥 قفل کردن موجودی کاربر برای جلوگیری از برداشت همزمان
     const freshUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
     const myIdx = freshUsers.findIndex(u => u.email === user.email);
     if (myIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
@@ -1347,7 +1493,7 @@
     if (subModal) subModal.classList.remove('hidden');
   });
 
-  document.getElementById('subClose').addEventListener('click', () => {
+  document.getElementById('subClose')?.addEventListener('click', () => {
     document.getElementById('subModal').classList.add('hidden');
   });
 
