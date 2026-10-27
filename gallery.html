@@ -89,24 +89,43 @@
       width: 100%; outline: none; font-family: inherit; font-size: 0.85rem; padding-right: 0.5rem;
     }
 
-    /* 🌟 تنظیمات گالری */
+    /* ==========================================
+       🔥 اصلاح اساسی گالری (استفاده از Flexbox برای وسط‌چین شدن)
+       ========================================== */
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
       gap: 1.5rem;
-      justify-content: center; 
-    }
-    #gallery > * {
-      max-width: 260px; 
       width: 100%;
-      margin: 0 auto; 
+    }
+
+    /* تنظیم سایز کارت‌ها */
+    #gallery > *:not(.no-items):not(.empty-state) {
+      flex: 0 0 auto;
+      width: 240px; 
+      max-width: 100%;
       border-radius: 16px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    #gallery > *:hover {
+    #gallery > *:not(.no-items):not(.empty-state):hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
+    }
+
+    /* 🔥 وسط چین کردن پیام "هنوز اثری نیست" */
+    .no-items, .empty-state {
+      width: 100% !important;
+      text-align: center !important;
+      padding: 4rem 1rem !important;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     /* ==========================================
@@ -124,7 +143,7 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      z-index: 1000 !important;
+      z-index: 9999 !important;
       background: var(--black-2) !important;
     }
 
@@ -187,10 +206,8 @@
     }
 
     /* ==========================================
-       🔥 افکت شیشه‌ای واقعی (Glassmorphism) و دکمه ضربدر
+       🌟 افکت شیشه‌ای مودال‌ها
        ========================================== */
-    
-    /* پس‌زمینه تاریک پشت مودال */
     .modal {
       background: rgba(0, 0, 0, 0.6) !important;
       backdrop-filter: blur(10px);
@@ -199,7 +216,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* بدنه شیشه‌ای مودال */
     .modal-content {
       background: rgba(20, 24, 28, 0.35) !important; 
       backdrop-filter: blur(40px) saturate(180%) !important; 
@@ -213,17 +229,12 @@
       overflow-y: auto;
       margin: 0 auto;
       position: relative;
-      
-      /* 🔥 جلوگیری از انتخاب شدن متن با کلیک */
-      user-select: none; 
-      -webkit-user-select: none;
     }
 
-    /* 🔥 دکمه ضربدر (کاملاً شفاف، واضح و کارا) */
     .modal-close {
       position: absolute;
       top: 15px;
-      left: 15px; /* در RTL این یعنی گوشه بالا سمت راست */
+      left: 15px; 
       width: 38px;
       height: 38px;
       border-radius: 50%;
@@ -235,10 +246,10 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 9999 !important; /* تضمین کلیک شدن */
+      z-index: 9999 !important;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      pointer-events: auto !important; /* تضمین کلیک پذیری */
+      pointer-events: auto !important;
     }
     .modal-close:hover {
       background: rgba(255, 46, 77, 0.9) !important;
@@ -246,7 +257,6 @@
       transform: rotate(90deg) scale(1.1);
     }
 
-    /* شیشه‌ای کردن المان‌های داخل آپلود */
     .upload-section {
       background: rgba(255, 255, 255, 0.03) !important;
       backdrop-filter: blur(10px) !important;
@@ -267,7 +277,6 @@
       background: rgba(0, 240, 212, 0.05) !important;
     }
 
-    /* استایل دادن به فیلدهای متنی داخل آپلود */
     .upload-field input, .upload-field textarea, .upload-field select {
       background: rgba(0, 0, 0, 0.4) !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -279,20 +288,14 @@
       box-shadow: 0 0 10px rgba(0,240,212,0.2) !important;
     }
 
-    /* شفاف کردن پلن‌های اشتراک */
-    .sub-content {
-      background: rgba(15, 20, 25, 0.5) !important;
-    }
+    .sub-content { background: rgba(15, 20, 25, 0.5) !important; }
     .plan {
       background: rgba(255, 255, 255, 0.02) !important;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       transition: 0.3s;
     }
-    .plan:hover {
-      background: rgba(255, 255, 255, 0.05) !important;
-      transform: translateY(-4px);
-    }
+    .plan:hover { background: rgba(255, 255, 255, 0.05) !important; transform: translateY(-4px); }
     .plan-silver {
       background: linear-gradient(135deg, rgba(255, 201, 60, 0.1), rgba(255, 140, 0, 0.05)) !important;
       border: 1.5px solid rgba(255, 201, 60, 0.4) !important;
@@ -343,7 +346,14 @@
 
   <nav class="sub-nav hidden" id="subNav"></nav>
 
-  <main id="gallery" class="gallery"></main>
+  <!-- گالری اصلی -->
+  <main id="gallery" class="gallery">
+    <!-- این بخش توسط app.js پر می‌شود. اگر خالی بود، حالت زیر نمایش داده می‌شود -->
+    <div class="no-items" id="emptyFallback">
+      <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🖼️ هنوز اثری نیست</p>
+      <p style="font-size: 0.9rem;">اولین اثر رو آپلود کن!</p>
+    </div>
+  </main>
 
   <footer>
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
@@ -377,7 +387,6 @@
   <!-- مودال آپلود اثر -->
   <div id="uploadModal" class="modal hidden">
     <div class="modal-content upload-content">
-      <!-- 🔥 اضافه کردن onclick مستقیم به دکمه ضربدر -->
       <button class="modal-close" onclick="document.getElementById('uploadModal').classList.add('hidden')">✕</button>
 
       <div class="upload-header" style="padding-top: 2rem; text-align: center;">
@@ -476,7 +485,6 @@
   <!-- مودال اشتراک -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
-      <!-- 🔥 اضافه کردن onclick مستقیم به دکمه ضربدر اشتراک -->
       <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
       
       <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
@@ -588,16 +596,15 @@
         setTimeout(() => clearInterval(injectAvatarToNav), 3000);
       }
 
-      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه تیره
-      document.getElementById('modal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.add('hidden');
-      });
-      document.getElementById('uploadModal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.add('hidden');
-      });
-      document.getElementById('subModal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.add('hidden');
-      });
+      // 3. بستن مودال‌ها با کلیک روی پس‌زمینه تیره (محافظت شده با if تا ارور نده)
+      const modal = document.getElementById('modal');
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
+      
+      const uploadModal = document.getElementById('uploadModal');
+      if (uploadModal) uploadModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
+      
+      const subModal = document.getElementById('subModal');
+      if (subModal) subModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
 
       // 4. بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
