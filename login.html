@@ -68,7 +68,6 @@
     </form>
   </div>
 
-  <!-- ✅ کدهای اسکریپت اصلی -->
   <script>
     const CURRENT_KEY = 'navaa_current_user';
     const USERS_KEY = 'navaa_users';
@@ -87,12 +86,23 @@
       tab.addEventListener('click', (e) => { e.preventDefault(); switchTab(tab.dataset.target); });
     });
 
-    document.getElementById('loginForm').addEventListener('submit', e => {
+    // 🔥 ورود: الان از دیتابیس ابری هم می‌خونه تا از هر مرورگری کار کنه
+    document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
       const password = e.target.password.value;
 
-      let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      let users = [];
+      try {
+        if (window.getUsersFromCloud) {
+           users = await window.getUsersFromCloud(); // گرفتن لیست از سرور
+        } else {
+           users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+      } catch (err) {
+         users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      }
+
       const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
 
       if (!user) return alert('❌ ایمیل یا رمز عبور اشتباهه!');
@@ -102,6 +112,7 @@
       window.location.href = 'gallery.html';
     });
 
+    // 🔥 ثبت‌نام: لیست از سرور میاد، اضافه میشه و دوباره ذخیره میشه
     document.getElementById('signupForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = e.target.email.value.trim().toLowerCase();
@@ -109,11 +120,10 @@
       const fullname = e.target.fullname.value.trim();
       const password = e.target.password.value;
 
-      // 🔥 اینجا لیست کاربرا رو از سرور می‌گیریم تا کاربرای قبلی پاک نشن
       let users = [];
       try {
         if (window.getUsersFromCloud) {
-           users = await window.getUsersFromCloud();
+           users = await window.getUsersFromCloud(); 
         } else {
            users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
         }
@@ -146,6 +156,7 @@
       } catch (err) {
         console.error(err);
         alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message);
+        return; // جلوگیری از ورود در صورت خطا
       }
       
       localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
@@ -154,7 +165,7 @@
     });
   </script>
 
-  <!-- 🔥 اتصال به Firebase با کانفیگ کامل -->
+  <!-- 🔥 اتصال به Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -171,25 +182,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // تابع ذخیره
     window.saveToCloud = async function(key, value) {
       await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
     };
 
-    // تابع خوندن لیست کاربرا از سرور
     window.getUsersFromCloud = async function() {
       const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
       if (snap.exists()) return JSON.parse(snap.data().value);
       return [];
     };
 
-    // سینک اولیه موقع لود شدن صفحه
     async function syncOnLoad() {
         try {
             const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
-            if (snap.exists()) {
-                localStorage.setItem('navaa_users', snap.data().value);
-            }
+            if (snap.exists()) localStorage.setItem('navaa_users', snap.data().value);
         } catch(e) { console.error("خطا در سینک اولیه:", e); }
     }
     syncOnLoad();
