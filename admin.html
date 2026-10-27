@@ -89,13 +89,21 @@
     }
 
     /* 🌟 افکت شیشه‌ای مودال هدیه */
-    .modal { background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(8px); }
+    .modal { background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(8px); z-index: 2000 !important; }
     .modal-content { 
       background: rgba(20, 24, 28, 0.7) !important; 
       backdrop-filter: blur(24px) !important; 
       border: 1px solid rgba(255,255,255,0.15) !important; 
       border-radius: 20px !important; 
     }
+    .modal-close {
+      position: absolute; top: 15px; left: 15px; width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important; font-size: 1.2rem !important; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2100 !important; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: auto !important;
+    }
+    .modal-close:hover { background: rgba(255, 46, 77, 0.9) !important; border-color: var(--red) !important; transform: rotate(90deg) scale(1.1); }
   </style>
 </head>
 <body>
@@ -165,12 +173,13 @@
   <!-- 🔥 مودال هدیه اشتراک -->
   <div id="giftSubModal" class="modal hidden">
     <div class="modal-content sub-content">
-      <button class="modal-close" id="giftSubClose">✕</button>
-      <div class="sub-icon">🎁</div>
-      <h2>هدیه اشتراک به <span id="giftTargetName" style="color:#00f0d4;"></span></h2>
-      <p class="sub-desc">یک پلن انتخاب کنید (مبلغ از کیف پول شما کسر می‌شود)</p>
+      <button class="modal-close" onclick="document.getElementById('giftSubModal').classList.add('hidden')">✕</button>
+      
+      <div class="sub-icon" style="text-align:center; font-size:2.5rem; margin-top:1rem;">🎁</div>
+      <h2 style="text-align:center;">هدیه اشتراک به <span id="giftTargetName" style="color:#00f0d4;"></span></h2>
+      <p class="sub-desc" style="text-align:center; margin-bottom:2rem;">یک پلن انتخاب کنید (مبلغ از کیف پول شما کسر می‌شود)</p>
 
-      <div class="plans" style="margin-top:1rem;">
+      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
         <div class="plan plan-bronze" onclick="applyGift('bronze', 50000, 30)">
           <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
           <div class="plan-price"><span class="price-num">۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
@@ -239,12 +248,10 @@
       document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin').length;
       document.getElementById('statItems').textContent = items.length;
       
-      // آمار درخواست‌های در انتظار
       const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const pending = withdraws.filter(w => w.status === 'pending').length;
       document.getElementById('statPending').textContent = pending;
 
-      // آمار درآمد مدیر (کمیسیون)
       const purchases = JSON.parse(localStorage.getItem(PURCHASES_KEY)) || [];
       const commission = purchases.reduce((s, p) => s + (p.adminShare || 0), 0);
       document.getElementById('statCommission').textContent = formatMoney(commission);
@@ -325,21 +332,26 @@
       giftTargetId = id;
       document.getElementById('giftTargetName').textContent = user.fullname;
       
-      // گرفتن موجودی جدید خود ادمین از آرایه
       const me = users.find(u => u.email === currentUser.email);
       document.getElementById('adminGiftBalance').textContent = formatMoney(me ? (me.balance || 0) : 0);
       
       document.getElementById('giftSubModal').classList.remove('hidden');
     };
 
-    document.getElementById('giftSubClose')?.addEventListener('click', () => {
-      document.getElementById('giftSubModal').classList.add('hidden');
-      giftTargetId = null;
-    });
-
-    window.applyGift = function(planName, price, days) {
+    window.applyGift = async function(planName, price, days) {
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
+
+      // 🔥 خواندن اطلاعات جدید از سرور قبل از تغییر موجودی
+      if (window.getUsersFromCloud) {
+          try {
+              const freshUsers = await window.getUsersFromCloud();
+              if (freshUsers && freshUsers.length > 0) {
+                  users = freshUsers;
+                  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+              }
+          } catch(e) { console.error(e); }
+      }
 
       const gifterIdx = users.findIndex(u => u.email === currentUser.email);
       if (gifterIdx === -1) return alert('❌ خطا در پیدا کردن حساب شما!');
@@ -351,7 +363,6 @@
 
       if (!confirm(`آیا مطمئن هستید که می‌خواهید پلن ${planName} را به ${targetUser.fullname} هدیه دهید؟\nمبلغ ${formatMoney(price)} تومان از کیف پول شما کسر می‌شود.`)) return;
 
-      // 🔥 کم کردن از حساب خود ادمینی که هدیه میده (نه فقط مدیر کل)
       users[gifterIdx].balance -= price;
 
       const targetIdx = users.findIndex(u => u.id === giftTargetId);
@@ -360,7 +371,6 @@
         users[targetIdx].subscriptionPlan = planName;
         users[targetIdx].subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
         
-        // ثبت در تاریخچه
         if (!users[targetIdx].subscriptionHistory) users[targetIdx].subscriptionHistory = [];
         users[targetIdx].subscriptionHistory.push({
           plan: planName,
@@ -372,39 +382,59 @@
         });
       }
 
-      saveUsersToCloud();
+      await saveUsersToCloud();
       document.getElementById('giftSubModal').classList.add('hidden');
       giftTargetId = null;
       alert('✅ هدیه اشتراک با موفقیت اعمال شد!');
     };
 
-    window.cancelSub = function(id) {
+    window.cancelSub = async function(id) {
       const user = users.find(u => u.id === id);
       if (!user) return;
       if (!confirm(`اشتراک ${user.fullname} لغو شود؟`)) return;
       
+      // 🔥 سینک با سرور
+      if (window.getUsersFromCloud) {
+          try {
+              const freshUsers = await window.getUsersFromCloud();
+              if (freshUsers && freshUsers.length > 0) users = freshUsers;
+          } catch(e) {}
+      }
+
       const idx = users.findIndex(u => u.id === id);
       if (idx !== -1) {
         users[idx].hasSubscription = false;
         users[idx].subscriptionPlan = null;
         users[idx].subscriptionExpiry = null;
       }
-      saveUsersToCloud();
+      await saveUsersToCloud();
     };
 
-    window.toggleAdmin = function(id) {
+    window.toggleAdmin = async function(id) {
+      if (window.getUsersFromCloud) {
+          try {
+              const freshUsers = await window.getUsersFromCloud();
+              if (freshUsers && freshUsers.length > 0) users = freshUsers;
+          } catch(e) {}
+      }
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.role = user.role === 'admin' ? 'user' : 'admin';
       if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; }
-      saveUsersToCloud();
+      await saveUsersToCloud();
     };
 
-    window.toggleBan = function(id) {
+    window.toggleBan = async function(id) {
+      if (window.getUsersFromCloud) {
+          try {
+              const freshUsers = await window.getUsersFromCloud();
+              if (freshUsers && freshUsers.length > 0) users = freshUsers;
+          } catch(e) {}
+      }
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.banned = !user.banned;
-      saveUsersToCloud();
+      await saveUsersToCloud();
     };
 
     function renderItems(search = '') {
@@ -511,7 +541,7 @@
       });
     }
 
-    window.approveWithdraw = function(id) {
+    window.approveWithdraw = async function(id) {
       const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const req = requests.find(r => r.id === id);
       if (!req || req.status !== 'pending') return;
@@ -527,11 +557,19 @@
       updateStats();
     };
 
-    window.rejectWithdraw = function(id) {
+    window.rejectWithdraw = async function(id) {
       const requests = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const req = requests.find(r => r.id === id);
       if (!req || req.status !== 'pending') return;
       if (!confirm(`رد برداشت ${formatMoney(req.amount)} تومان؟\nمبلغ به کیف پول کاربر برگردانده می‌شود.`)) return;
+
+      // 🔥 خواندن از سرور برای برگرداندن پول
+      if (window.getUsersFromCloud) {
+          try {
+              const freshUsers = await window.getUsersFromCloud();
+              if (freshUsers && freshUsers.length > 0) users = freshUsers;
+          } catch(e) {}
+      }
 
       const userIdx = users.findIndex(u => u.email === req.userEmail);
       if (userIdx !== -1) {
@@ -543,7 +581,7 @@
       req.rejectedBy = currentUser.email;
       
       localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-      saveUsersToCloud();
+      await saveUsersToCloud();
       alert('❌ درخواست رد شد و مبلغ به کاربر بازگشت داده شد.');
       renderWithdraws();
       updateStats();
@@ -599,7 +637,7 @@
   <!-- 🔥 اتصال به Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294", authDomain: "navaa-409cb.firebaseapp.com", projectId: "navaa-409cb", storageBucket: "navaa-409cb.firebasestorage.app", messagingSenderId: "81312395623", appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2" };
     const app = initializeApp(firebaseConfig);
@@ -609,6 +647,19 @@
       await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
     };
 
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    window.getItemsFromCloud = async function() {
+      const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_items_v3'));
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    // سینک زنده کاربران
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
@@ -616,6 +667,7 @@
       }
     });
 
+    // سینک زنده آثار
     onSnapshot(doc(db, 'navaa_storage', 'navaa_items_v3'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudItems = JSON.parse(docSnap.data().value);
