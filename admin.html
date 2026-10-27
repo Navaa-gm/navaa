@@ -17,6 +17,15 @@
     .admin-main { padding-bottom: 120px !important; }
     .admin-section { background: var(--black-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; max-width: 500px; }
     .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
+    
+    /* دکمه‌های عملیات کاربران */
+    .user-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .btn-action { background: var(--black-3); border: 1px solid var(--border); color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.2s; flex: 1; min-width: 100px; text-align: center; }
+    .btn-action:hover { background: var(--turquoise); color: #001a1c; border-color: var(--turquoise); }
+    .btn-action.danger { color: var(--red); border-color: rgba(255,46,77,0.3); }
+    .btn-action.danger:hover { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-action.success { color: var(--gold); border-color: rgba(255,201,60,0.3); }
+    .btn-action.success:hover { background: var(--gold); color: #1a1100; border-color: var(--gold); }
   </style>
 </head>
 <body>
@@ -56,11 +65,7 @@
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
-    <section id="tab-items" class="admin-panel hidden">
-      <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
-      <div class="items-grid" id="adminItems"></div>
-    </section>
-    
+    <section id="tab-items" class="admin-panel hidden"><div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div><div class="items-grid" id="adminItems"></div></section>
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
@@ -90,7 +95,6 @@
     
     localStorage.setItem(CURRENT_KEY, JSON.stringify(adminData));
     let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    // اطمینان از وجود مدیر با اطلاعات درست
     users = users.filter(u => u.email !== ADMIN_EMAIL);
     users.push(adminData);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -116,6 +120,15 @@
       document.getElementById('statItems').textContent = items.length;
     }
 
+    // 🔥 آپدیت کردن دیتابیس ابری
+    async function saveUsersToCloud() {
+      if (window.saveToCloud) {
+        await window.saveToCloud('navaa_users', JSON.stringify(users));
+      }
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      renderUsers(); updateStats();
+    }
+
     function renderUsers(search = '') {
       const grid = document.getElementById('usersGrid');
       grid.innerHTML = '';
@@ -131,6 +144,19 @@
         
         let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
+        let banBadge = u.banned ? '<span class="badge-no">🚫 بن شده</span>' : '';
+
+        // دکمه‌های عملیات برای هر کاربر
+        let actionsHtml = '';
+        if (!isMe && !isSuper) {
+          actionsHtml = `
+            <div class="user-actions">
+              <button class="btn-action" onclick="toggleAdmin(${u.id})">${isUserAdmin ? '❌ برکناری ادمین' : '🛡️ ادمین کن'}</button>
+              <button class="btn-action danger" onclick="toggleBan(${u.id})">${u.banned ? '✅ آنبن' : '🚫 بن'}</button>
+              <button class="btn-action success" onclick="toggleSub(${u.id})">${u.hasSubscription ? '🚫 لغو اشتراک' : '🎁 هدیه اشتراک'}</button>
+            </div>
+          `;
+        }
 
         const card = document.createElement('div');
         card.className = 'user-card';
@@ -139,7 +165,7 @@
             <div class="user-avatar">${escapeHtml(getInitials(u.fullname))}</div>
             <div class="user-main">
               <h4>${escapeHtml(u.fullname)} ${isMe ? '<small style="color:#00f0d4;">(شما)</small>' : ''}</h4>
-              <div class="user-badges">${roleBadge}${subBadge}</div>
+              <div class="user-badges">${roleBadge}${subBadge}${banBadge}</div>
             </div>
           </div>
           <div class="user-info-grid">
@@ -148,10 +174,41 @@
             <div class="info-cell"><span>💰 موجودی</span><strong style="color:#ffc93c;">${formatMoney(u.balance || 0)}</strong></div>
             <div class="info-cell"><span>📅 عضویت</span><strong>${new Date(u.joinDate || Date.now()).toLocaleDateString('fa-IR')}</strong></div>
           </div>
+          ${actionsHtml}
         `;
         grid.appendChild(card);
       });
     }
+
+    // توابع عملیات ادمین
+    window.toggleAdmin = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      user.role = user.role === 'admin' ? 'user' : 'admin';
+      if (user.role === 'admin') { user.hasSubscription = true; user.subscriptionPlan = 'bronze'; } // ادمین جدید اشتراک برنزی بگیره
+      saveUsersToCloud();
+    };
+
+    window.toggleBan = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      user.banned = !user.banned;
+      saveUsersToCloud();
+    };
+
+    window.toggleSub = function(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      if (user.hasSubscription) {
+        user.hasSubscription = false;
+        user.subscriptionPlan = null;
+      } else {
+        user.hasSubscription = true;
+        user.subscriptionPlan = 'diamond';
+        user.subscriptionExpiry = Date.now() + (365 * 24 * 60 * 60 * 1000);
+      }
+      saveUsersToCloud();
+    };
 
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
@@ -170,35 +227,29 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // 🔥 دریافت زنده دیتا از فایربیس (هر لحظه کاربر جدیدی اضافه شد، نشون بده)
     window.renderUsersFromCloud = function(cloudUsers) {
       let updatedUsers = cloudUsers.filter(u => u.email !== ADMIN_EMAIL);
-      updatedUsers.push(adminData); // اضافه کردن اجباری مدیر
-      
+      updatedUsers.push(adminData); 
       users = updatedUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      renderUsers();
-      updateStats();
+      renderUsers(); updateStats();
     };
 
     renderUsers(); updateStats(); renderBottomNav();
   </script>
 
+  <!-- 🔥 اتصال به Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
-      authDomain: "navaa-409cb.firebaseapp.com",
-      projectId: "navaa-409cb",
-      storageBucket: "navaa-409cb.firebasestorage.app",
-      messagingSenderId: "81312395623",
-      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294", authDomain: "navaa-409cb.firebaseapp.com", projectId: "navaa-409cb", storageBucket: "navaa-409cb.firebasestorage.app", messagingSenderId: "81312395623", appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    window.saveToCloud = async function(key, value) {
+      await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
+    };
 
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
