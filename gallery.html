@@ -273,7 +273,7 @@
   
   <script src="js/app.js"></script>
 
-  <!-- 🔥 اتصال به Firebase برای ذخیره دائمی آثار -->
+  <!-- 🔥 اتصال به Firebase برای ذخیره دائمی آثار و کاربران -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -289,16 +289,24 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const docRef = doc(db, 'navaa_storage', 'navaa_items_v3');
+    const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
+    const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // تابع ذخیره در دیتابیس ابری
+    // ✅ تابع ذخیره آثار در دیتابیس ابری
     window.saveItemsToCloud = async function(items) {
-      await setDoc(docRef, { value: JSON.stringify(items), updatedAt: Date.now() });
+      await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() });
       console.log('✅ اثر در دیتابیس ابری ذخیره شد.');
     };
 
-    // گوش دادن به تغییرات دیتابیس
-    onSnapshot(docRef, (docSnap) => {
+    // ✅ تابع ذخیره کاربران در دیتابیس ابری (این خط برای ۵۰ فایل رایگان و ۱۰,۰۰۰ تومن لازمه)
+    window.saveUsersToCloud = async function() {
+      const users = JSON.parse(localStorage.getItem('navaa_users')) || [];
+      await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
+      console.log('✅ کاربران در دیتابیس ابری ذخیره شدند.');
+    };
+
+    // گوش دادن به تغییرات دیتابیس آثار
+    onSnapshot(docRefItems, (docSnap) => {
       // 🔥 این خط کلید حل مشکل است! وقتی در حال آپلود هستیم، دیتا رو آپدیت نکن
       if (window.isUploading) return; 
 
