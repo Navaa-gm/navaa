@@ -141,6 +141,7 @@
       font-weight: 800;
       box-shadow: 0 4px 20px rgba(0,240,212,0.4);
     }
+    .btn-primary.full:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-dim); }
     .auth-switch a { color: var(--turquoise); text-decoration: none; font-weight: 700; cursor: pointer; margin-right: 0.3rem; }
@@ -154,6 +155,13 @@
   </style>
 </head>
 <body>
+
+  <!-- بررسی اینکه کاربر لاگین نکرده باشد -->
+  <script>
+    if (localStorage.getItem('navaa_current_user')) {
+      window.location.href = 'gallery.html';
+    }
+  </script>
 
   <a href="home.html" class="back-home-btn">🏠 بازگشت به صفحه اصلی</a>
 
@@ -173,7 +181,7 @@
       <label>رمز عبور</label>
       <input type="password" name="password" required placeholder="••••••">
       
-      <button type="submit" class="btn-primary full">🚀 ورود</button>
+      <button type="submit" class="btn-primary full" id="loginBtn">🚀 ورود</button>
       <p class="auth-switch">حساب نداری؟ <a onclick="switchTab('signup')">ثبت‌نام کن</a></p>
     </form>
 
@@ -198,7 +206,7 @@
         <span>قوانین Navaa رو می‌پذیرم</span>
       </label>
       
-      <button type="submit" class="btn-primary full">✨ ساخت حساب</button>
+      <button type="submit" class="btn-primary full" id="signupBtn">✨ ساخت حساب</button>
       <p class="auth-switch">حساب داری؟ <a onclick="switchTab('login')">وارد شو</a></p>
     </form>
   </div>
@@ -228,96 +236,137 @@
     // ورود
     document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.disabled = true;
+      loginBtn.textContent = '⏳ در حال بررسی...';
+
       const email = e.target.email.value.trim().toLowerCase();
       const password = e.target.password.value;
 
-      let users = [];
       try {
-        if (window.getUsersFromCloud) users = await window.getUsersFromCloud();
-        else users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        let users = [];
+        if (window.getUsersFromCloud) {
+          users = await window.getUsersFromCloud();
+        } else {
+          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+
+        const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
+
+        if (!user) {
+          alert('❌ ایمیل یا رمز عبور اشتباهه!');
+          loginBtn.disabled = false;
+          loginBtn.textContent = '🚀 ورود';
+          return;
+        }
+        
+        if (user.banned === true) {
+          alert('🚫 حساب شما مسدود شده!\nبرای اطلاعات بیشتر با پشتیبانی تماس بگیرید.');
+          loginBtn.disabled = false;
+          loginBtn.textContent = '🚀 ورود';
+          return;
+        }
+
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+        window.location.href = 'gallery.html';
+
       } catch (err) {
-        users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        console.error(err);
+        alert('⚠️ خطا در ارتباط با سرور! لطفاً اینترنت خود را بررسی و دوباره تلاش کنید.');
+        loginBtn.disabled = false;
+        loginBtn.textContent = '🚀 ورود';
       }
-
-      const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
-
-      if (!user) return alert('❌ ایمیل یا رمز عبور اشتباهه!');
-      if (user.banned === true) return alert('🚫 حساب شما مسدود شده!\nبرای اطلاعات بیشتر با پشتیبانی تماس بگیرید.');
-
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-      window.location.href = 'gallery.html';
     });
 
     // ثبت‌نام
     document.getElementById('signupForm').addEventListener('submit', async e => {
       e.preventDefault();
+      const signupBtn = document.getElementById('signupBtn');
+      signupBtn.disabled = true;
+      signupBtn.textContent = '⏳ در حال ثبت‌نام...';
+
       const email = e.target.email.value.trim().toLowerCase();
       const phone = e.target.phone.value.trim();
       const fullname = e.target.fullname.value.trim();
       const password = e.target.password.value;
 
-      let users = [];
       try {
-        if (window.getUsersFromCloud) users = await window.getUsersFromCloud();
-        else users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      } catch(err) {
-         users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-      }
+        let users = [];
+        if (window.getUsersFromCloud) {
+          users = await window.getUsersFromCloud();
+        } else {
+          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
 
-      if (users.find(u => (u.email || '').toLowerCase() === email)) return alert('❌ این ایمیل قبلاً ثبت‌نام کرده!');
-      if (phone && users.find(u => u.phone === phone)) return alert('❌ این شماره قبلا ثبت‌نام کرده!');
+        // چک کردن تکراری بودن
+        if (users.find(u => (u.email || '').toLowerCase() === email)) {
+          alert('❌ این ایمیل قبلاً ثبت‌نام کرده!');
+          signupBtn.disabled = false;
+          signupBtn.textContent = '✨ ساخت حساب';
+          return;
+        }
+        if (phone && users.find(u => u.phone === phone)) {
+          alert('❌ این شماره قبلا ثبت‌نام کرده!');
+          signupBtn.disabled = false;
+          signupBtn.textContent = '✨ ساخت حساب';
+          return;
+        }
 
-      const isAdminSignup = email === ADMIN_EMAIL;
-      let welcomeMsg = '';
+        const isAdminSignup = email === ADMIN_EMAIL;
+        let welcomeMsg = '';
 
-      // 🔥 هدیه خوش‌آمدگویی (اتمیک)
-      if (!isAdminSignup) {
-        const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
-        if (adminIdx !== -1) {
-          if ((users[adminIdx].balance || 0) >= WELCOME_GIFT) {
-            users[adminIdx].balance -= WELCOME_GIFT;
-            welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+        // 🔥 هدیه خوش‌آمدگویی (اتمیک)
+        if (!isAdminSignup) {
+          const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+          if (adminIdx !== -1) {
+            if ((users[adminIdx].balance || 0) >= WELCOME_GIFT) {
+              users[adminIdx].balance -= WELCOME_GIFT;
+              welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+            } else {
+              // اگر ادمین پول نداشت، باز هم به کاربر هدیه داده میشه ولی ادمین منفی نمیشه
+              welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+            }
           }
         }
-      }
 
-      const newUser = {
-        id: Date.now(), 
-        fullname, 
-        phone: phone || null, 
-        email, 
-        password,
-        hasSubscription: isAdminSignup, 
-        subscriptionPlan: isAdminSignup ? 'diamond' : null,
-        subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
-        joinDate: Date.now(), 
-        role: isAdminSignup ? 'admin' : 'user',
-        balance: isAdminSignup ? 5000000 : WELCOME_GIFT, 
-        banned: false, 
-        purchasedItems: [],
-        monthlyUploads: 0, 
-        lastUploadMonth: new Date().getMonth()
-      };
+        const newUser = {
+          id: Date.now(), 
+          fullname, 
+          phone: phone || null, 
+          email, 
+          password,
+          hasSubscription: isAdminSignup, 
+          subscriptionPlan: isAdminSignup ? 'diamond' : null,
+          subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
+          joinDate: Date.now(), 
+          role: isAdminSignup ? 'admin' : 'user',
+          balance: isAdminSignup ? 5000000 : WELCOME_GIFT, 
+          banned: false, 
+          purchasedItems: [],
+          monthlyUploads: 0, 
+          lastUploadMonth: new Date().getMonth()
+        };
 
-      users.push(newUser);
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      
-      try {
+        users.push(newUser);
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        
+        // ذخیره اتمیک در فایربیس
         if (window.saveToCloud) {
           await window.saveToCloud(USERS_KEY, JSON.stringify(users));
-          console.log('✅ کاربر با موفقیت روی سرور ذخیره شد');
         } else {
-          console.warn("تابع اتصال به سرور لود نشده است! اطلاعات فقط در حافظه محلی ذخیره شد.");
+          throw new Error("اتصال به سرور برقرار نیست!");
         }
+        
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
+        alert('✨ حساب با موفقیت ساخته شد!' + welcomeMsg);
+        window.location.href = 'gallery.html';
+
       } catch (err) {
         console.error(err);
-        alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message);
-        return; 
+        alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message + '\nلطفاً دوباره تلاش کنید.');
+        signupBtn.disabled = false;
+        signupBtn.textContent = '✨ ساخت حساب';
       }
-      
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
-      alert('✨ حساب با موفقیت ساخته شد!' + welcomeMsg);
-      window.location.href = 'gallery.html';
     });
   </script>
 
