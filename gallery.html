@@ -17,7 +17,7 @@
       overflow-x: hidden;
     }
 
-    /* 🌟 کشیده‌تر شدن کل صفحه (حذف محدودیت عرض) */
+    /* 🌟 کشیده‌تر شدن کل صفحه */
     header, .topbar-wrap, main#gallery {
       width: 100%;
       max-width: 100%;
@@ -84,7 +84,7 @@
       width: 100%; outline: none; font-family: inherit; font-size: 0.85rem; padding-right: 0.5rem;
     }
 
-    /* 🌟 تنظیمات گالری (کشیده و ریسپانسیو) */
+    /* 🌟 تنظیمات گالری */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -105,13 +105,16 @@
     }
 
     /* ==========================================
-       🌟 کوچیک کردن نوار پایین (Bottom Nav)
+       🌟 نوار پایین و اصلاح دایره عکس پروفایل
        ========================================== */
     .bottom-nav {
       height: 60px !important;
       padding: 0.2rem 3% !important;
       border-radius: 16px 16px 0 0 !important;
       box-shadow: 0 -4px 20px rgba(0,0,0,0.5) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
     }
     .nav-pill-btn {
       padding: 0.3rem 0.8rem !important;
@@ -120,16 +123,51 @@
       border-radius: 10px !important;
     }
     .nav-pill-icon { font-size: 1rem !important; }
+
+    /* 🔥 اصلاح فرم دایره‌ای عکس وسط */
     .nav-center-profile {
-      width: 50px !important;
-      height: 50px !important;
-      margin-top: -15px !important; /* کمتر بیرون زده بشه */
+      width: 54px !important;
+      height: 54px !important;
+      min-width: 54px !important;
+      min-height: 54px !important;
+      border-radius: 50% !important;
+      aspect-ratio: 1 / 1 !important; /* تضمین دایره بودن */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin-top: -18px !important;
+      box-sizing: border-box !important;
+      flex-shrink: 0 !important;
     }
+    
+    .profile-btn-avatar {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      background-size: cover !important;
+      background-position: center !important;
+      box-sizing: border-box !important;
+      border: 3px solid var(--black-2) !important; /* حاشیه مشکی برای جدا شدن از نور پس‌زمینه */
+    }
+
+    .nav-center-profile .nav-icon {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      color: #001a1c !important;
+      font-size: 1.2rem !important;
+      box-sizing: border-box !important;
+    }
+
     .nav-center-label {
       font-size: 0.6rem !important;
-      bottom: -12px !important;
+      bottom: -14px !important;
     }
-    .profile-btn-avatar { width: 28px !important; height: 28px !important; }
 
     /* ==========================================
        🌟 افکت شیشه‌ای مودال‌ها
@@ -179,7 +217,7 @@
   <header>
     <div class="header-inner">
       
-      <!-- سمت راست: تاریخ و صفحه اصلی -->
+      <!-- سمت راست -->
       <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.3rem;">
         <div id="shamsiDate" style="font-size: 0.75rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap;"></div>
         <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
@@ -187,7 +225,7 @@
         </a>
       </div>
 
-      <!-- وسط: لوگو -->
+      <!-- وسط -->
       <div style="display: flex; justify-content: center; align-items: center;">
         <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
           <span class="logo-icon-sm">🎵</span>
@@ -195,14 +233,12 @@
         </a>
       </div>
 
-      <!-- سمت چپ: دکمه آپلود، عکس پروفایل و اسم کاربر -->
+      <!-- سمت چپ -->
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
         <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
         
         <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; white-space: nowrap;">
-          <!-- کادر عکس پروفایل در هدر -->
           <div id="headerAvatar" style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--turquoise), var(--sky)); background-size: cover; background-position: center; box-shadow: 0 0 10px rgba(0,240,212,0.4); display: flex; align-items: center; justify-content: center; color: #001a1c; font-weight: bold; font-size: 1rem;">
-            <!-- عکس با جاوااسکریپت لود میشه، این آیکون پیش‌فرضه -->
             👤
           </div>
           <span id="userGreeting" class="user-greeting"></span>
@@ -230,7 +266,7 @@
     <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
   </footer>
 
-  <!-- مودال‌های شیشه‌ای -->
+  <!-- مودال‌ها -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modalClose">✕</button>
@@ -427,25 +463,24 @@
 
   <script>
     window.addEventListener('load', function() {
-      // 1. تنظیم تاریخ شمسی
+      // تنظیم تاریخ شمسی
       const dateEl = document.getElementById('shamsiDate');
       if (dateEl) {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
       }
 
-      // 2. لود کردن عکس پروفایل در هدر
+      // لود کردن عکس پروفایل در هدر
       const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
       if (currentUser && currentUser.email) {
         const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
         if (avatarData) {
           const headerAvatar = document.getElementById('headerAvatar');
           headerAvatar.style.backgroundImage = `url(${avatarData})`;
-          headerAvatar.textContent = ''; // حذف آیکون پیش‌فرض
+          headerAvatar.textContent = ''; 
         }
       }
 
-      // 3. بررسی پارامترهای خرید اشتراک
       setTimeout(function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
