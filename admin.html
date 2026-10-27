@@ -64,7 +64,11 @@
       <div class="users-grid" id="usersGrid"></div>
     </section>
 
-    <section id="tab-items" class="admin-panel hidden"><div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div><div class="items-grid" id="adminItems"></div></section>
+    <section id="tab-items" class="admin-panel hidden">
+      <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
+      <div class="items-grid" id="adminItems"></div>
+    </section>
+    
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
@@ -86,7 +90,6 @@
     const ITEMS_KEY = 'navaa_items_v3';
     const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 
-    // 🔥 اطلاعات ادمین از حافظه خونده میشه، دیگه فیک نیست
     let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY));
     if (!currentUser || (currentUser.role !== 'admin' && currentUser.email !== ADMIN_EMAIL)) {
         alert('⛔ دسترسی نداری!');
@@ -100,12 +103,17 @@
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
 
+    // 🔥 مدیریت تب‌ها
     document.querySelectorAll('.admin-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
         tab.classList.add('active');
         document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+
+        if (tab.dataset.tab === 'items') renderItems();
+        if (tab.dataset.tab === 'payments') renderPayments();
+        if (tab.dataset.tab === 'withdraws') renderWithdraws();
       });
     });
 
@@ -135,7 +143,7 @@
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
-        const isMe = u.id === currentUser.id; // 🔥 از currentUser استفاده میکنیم
+        const isMe = u.id === currentUser.id;
         
         let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
@@ -174,6 +182,34 @@
       });
     }
 
+    // 🔥 رندر کردن آثار
+    function renderItems(search = '') {
+      const grid = document.getElementById('adminItems');
+      if (!grid) return;
+      grid.innerHTML = '';
+      let list = [...items].sort((a, b) => b.time - a.time);
+      if (search) list = list.filter(i => i.title.toLowerCase().includes(search) || (i.artist || '').toLowerCase().includes(search));
+      
+      if (list.length === 0) { grid.innerHTML = '<div class="empty-grid">اثری پیدا نشد</div>'; return; }
+
+      list.forEach(item => {
+        const uploader = users.find(u => u.id === item.uploadedBy || u.email === item.uploadedByEmail);
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="item-thumb">
+            <img src="${item.image}" alt="" loading="lazy">
+          </div>
+          <div class="item-info">
+            <p class="item-title">${escapeHtml(item.title)}</p>
+            <p class="item-artist">👤 ${escapeHtml(uploader ? uploader.fullname : 'ناشناس')}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // 🔥 توابع عملیات ادمین
     window.toggleAdmin = function(id) {
       const user = users.find(u => u.id === id);
       if (!user) return;
@@ -203,9 +239,12 @@
       saveUsersToCloud();
     };
 
+    function renderPayments() { document.getElementById('paymentsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
+    function renderWithdraws() { document.getElementById('withdrawsList').innerHTML = '<div class="empty-grid">درخواستی وجود ندارد</div>'; }
+
     function renderBottomNav() {
       const nav = document.getElementById('bottomNav'); if (!nav) return;
-      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email); // 🔥 از currentUser استفاده میکنیم
+      let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email);
       const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
       nav.innerHTML = `
         <button class="nav-pill-btn logout-pill" id="logoutNavBtn"><span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خروج</span></button>
@@ -220,12 +259,11 @@
       nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
     }
 
-    // 🔥 آپدیت کردن لیست کاربرا از سرور (بدون دستکاری ادمین)
+    // 🔥 آپدیت کردن لیست کاربرا از سرور
     window.renderUsersFromCloud = function(cloudUsers) {
       users = cloudUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
       
-      // اگه اطلاعات خود ادمین تغییر کرده بود، آپدیتش کن
       const me = users.find(u => u.email === currentUser.email);
       if (me) {
           currentUser = me;
@@ -235,7 +273,17 @@
       renderUsers(); updateStats();
     };
 
-    renderUsers(); updateStats(); renderBottomNav();
+    // 🔥 آپدیت کردن لیست آثار از سرور
+    window.renderItemsFromCloud = function(cloudItems) {
+      items = cloudItems;
+      localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+      renderItems(); updateStats();
+    };
+
+    document.getElementById('userSearch')?.addEventListener('input', e => renderUsers(e.target.value.trim().toLowerCase()));
+    document.getElementById('itemSearch')?.addEventListener('input', e => renderItems(e.target.value.trim().toLowerCase()));
+
+    renderUsers(); renderItems(); updateStats(); renderBottomNav();
   </script>
 
   <!-- 🔥 اتصال به Firebase -->
@@ -251,10 +299,19 @@
       await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
     };
 
+    // 🔥 گوش دادن به تغییرات کاربران
     onSnapshot(doc(db, 'navaa_storage', 'navaa_users'), (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
         if (typeof window.renderUsersFromCloud === 'function') window.renderUsersFromCloud(cloudUsers);
+      }
+    });
+
+    // 🔥 گوش دادن به تغییرات آثار
+    onSnapshot(doc(db, 'navaa_storage', 'navaa_items_v3'), (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudItems = JSON.parse(docSnap.data().value);
+        if (typeof window.renderItemsFromCloud === 'function') window.renderItemsFromCloud(cloudItems);
       }
     });
   </script>
