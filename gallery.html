@@ -220,10 +220,11 @@
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="540">
+        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
+        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+            <div class="plan-duration">۳ سال و ۶ ماهه</div>
           </div>
           <div class="plan-price">
             <span class="price-num">۲۵۰,۰۰۰</span>
@@ -298,7 +299,7 @@
       console.log('✅ اثر در دیتابیس ابری ذخیره شد.');
     };
 
-    // ✅ تابع ذخیره کاربران در دیتابیس ابری (این خط برای ۵۰ فایل رایگان و ۱۰,۰۰۰ تومن لازمه)
+    // ✅ تابع ذخیره کاربران در دیتابیس ابری (برای ۵۰ فایل رایگان و ۱۰,۰۰۰ تومن)
     window.saveUsersToCloud = async function() {
       const users = JSON.parse(localStorage.getItem('navaa_users')) || [];
       await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
@@ -307,7 +308,7 @@
 
     // گوش دادن به تغییرات دیتابیس آثار
     onSnapshot(docRefItems, (docSnap) => {
-      // 🔥 این خط کلید حل مشکل است! وقتی در حال آپلود هستیم، دیتا رو آپدیت نکن
+      // 🔥 وقتی در حال آپلود هستیم، دیتا رو آپدیت نکن
       if (window.isUploading) return; 
 
       if (docSnap.exists()) {
