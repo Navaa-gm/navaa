@@ -42,6 +42,7 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
+// 🎁 هدیه آپلود
 function giveUploadReward(uploaderEmail) {
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
@@ -65,6 +66,7 @@ function giveUploadReward(uploaderEmail) {
   return { success: true, isAdmin: isUploaderAdmin };
 }
 
+// 📊 سیستم ۵۰ فایل رایگان
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
   const currentMonth = new Date().getMonth();
@@ -111,7 +113,7 @@ function makeSVG(color1, color2, emoji, label) {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-// 🤖 ربات قیمت‌گذاری (برگردانده شد)
+// ================== بخش‌های مربوط به قیمت‌گذاری ==================
 function botPriceItem(itemData) {
   const details = []; let basePrice = 10000; details.push({ label: 'قیمت پایه', value: basePrice });
   if (itemData.hasAudio) { basePrice += 30000; details.push({ label: '🎵 فایل صوتی', value: 30000 }); }
@@ -135,7 +137,6 @@ function botPriceItem(itemData) {
   return { suggestedPrice: finalPrice, details: details, quality: finalPrice >= 100000 ? 'A+' : finalPrice >= 50000 ? 'A' : finalPrice >= 25000 ? 'B' : 'C' };
 }
 
-// ✅ راه‌اندازی بخش محتوای ویژه (برگردانده شد)
 function initPremiumSection() {
   const modal = document.getElementById('uploadModal'); if (!modal) return;
   const premiumSection = document.getElementById('premiumSection'); if (!premiumSection) return;
@@ -212,6 +213,68 @@ function initPremiumSection() {
   });
 }
 
+// ================== مودال نمایش جزئیات (اصلاح شده) ==================
+function openDetail(id) {
+  const item = DB.items.find(p => p.id === id);
+  if (!item) return;
+  
+  // تنظیم اطلاعات متنی
+  document.getElementById('modalImg').src = item.image;
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalArtist').textContent = item.artist ? `👤 ${item.artist}` : '';
+  document.getElementById('modalDesc').textContent = item.desc || '';
+  document.getElementById('modalTags').innerHTML = (item.tags || []).map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
+  document.getElementById('modalLikes').textContent = item.likes || 0;
+
+  // مدیریت فایل صوتی
+  const audioWrap = document.getElementById('modalAudioWrap');
+  const audioEl = document.getElementById('modalAudio');
+  if (item.audio) {
+    audioEl.src = item.audio;
+    audioWrap.classList.remove('hidden');
+  } else {
+    audioEl.pause();
+    audioEl.src = '';
+    audioWrap.classList.add('hidden');
+  }
+
+  // دکمه حذف
+  const deleteBtn = document.getElementById('modalDelete');
+  const isMyItem = item.uploadedByEmail === currentUser.email;
+  if (isMyItem || currentUser.role === 'admin') {
+    deleteBtn.style.display = 'inline-block';
+    deleteBtn.onclick = () => {
+      if (confirm('حذف بشه؟')) {
+        DB.items = DB.items.filter(p => p.id !== id);
+        save();
+        if (window.saveItemsToCloud) window.saveItemsToCloud(DB.items);
+        document.getElementById('modal').classList.add('hidden');
+        renderGallery();
+      }
+    };
+  } else {
+    deleteBtn.style.display = 'none';
+  }
+
+  // نمایش مودال
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function bindDetailModal() {
+  const modal = document.getElementById('modal');
+  const audioEl = document.getElementById('modalAudio');
+  if (!modal) return;
+  
+  const closeModal = () => {
+    audioEl.pause();
+    modal.classList.add('hidden');
+  };
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+}
+
+// ✅ گالری (با قابلیت کلیک برای باز کردن مودال)
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -234,6 +297,13 @@ function renderGallery() {
         <div class="card-tags">${(item.tags || []).map(t => `#${escapeHtml(t)}`).join(' ')}</div>
       </div>
     `;
+    
+    // 🔥 کلیک روی کارت برای باز کردن مودال
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.action-btn')) return; // اگه روی دکمه لایک یا حذف کلیک شد، مودال باز نشه
+      openDetail(item.id);
+    });
+
     card.querySelector('.delete-btn')?.addEventListener('click', e => { 
         e.stopPropagation(); 
         if(confirm('حذف بشه؟')) {
@@ -247,6 +317,7 @@ function renderGallery() {
   });
 }
 
+// ================== فرم آپلود ==================
 function bindUploadModal() {
   const modal = document.getElementById('uploadModal'); 
   const form = document.getElementById('uploadForm');
@@ -392,8 +463,39 @@ function renderBottomNav() {
   `;
 }
 
+// 🎨 تزریق CSS برای حالت شیشه‌ای مودال (اگه توی style.css نبود)
+function injectGlassCSS() {
+  if (document.getElementById('glass-css-inject')) return;
+  const style = document.createElement('style');
+  style.id = 'glass-css-inject';
+  style.innerHTML = `
+    .modal-content {
+      background: rgba(20, 20, 20, 0.6) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+    }
+    #modalImg {
+      max-height: 70vh !important;
+      width: 100% !important;
+      object-fit: contain !important;
+      border-radius: 12px !important;
+    }
+    .modal-media {
+      background: rgba(0,0,0,0.3) !important;
+      border-radius: 12px !important;
+      padding: 10px !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ================== INIT ==================
+injectGlassCSS();
 setupUserHeader(); 
 initPremiumSection();
 renderGallery(); 
 bindUploadModal(); 
+bindDetailModal();
 renderBottomNav();
