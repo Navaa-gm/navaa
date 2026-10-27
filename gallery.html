@@ -12,12 +12,13 @@
   <link rel="stylesheet" href="css/style.css">
   <style>
     /* 🌟 تنظیمات پایه */
-    html { font-size: 14px; }
+    html { font-size: 14px; margin: 0; padding: 0; }
     body {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
       margin: 0;
+      padding: 0;
       overflow-x: hidden;
     }
 
@@ -33,13 +34,13 @@
     main#gallery {
       flex: 1 0 auto;
       padding-top: 1.5rem;
-      padding-bottom: 4rem;
+      padding-bottom: 4rem; /* فاصله برای اینکه زیر نوار پایین نره */
     }
 
     footer {
       flex-shrink: 0;
       margin-top: auto;
-      padding: 1.5rem 1rem 80px 1rem; 
+      padding: 1.5rem 1rem 90px 1rem; /* فاصله 90 پیکسلی برای نوار پایین */
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--black-2);
@@ -109,17 +110,26 @@
     }
 
     /* ==========================================
-       🌟 نوار پایین و اصلاح دایره عکس پروفایل
+       🔥 اصلاح نهایی نوار پایین و دایره عکس پروفایل
        ========================================== */
+    
+    /* چسبیدن کامل نوار به پایین صفحه */
     .bottom-nav {
-      height: 60px !important;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 64px !important;
       padding: 0.2rem 3% !important;
       border-radius: 16px 16px 0 0 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.5) !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
+      z-index: 1000 !important;
+      background: var(--black-2) !important; /* مطمئن میشیم پس‌زمینه داره */
     }
+
     .nav-pill-btn {
       padding: 0.3rem 0.8rem !important;
       font-size: 0.75rem !important;
@@ -128,23 +138,24 @@
     }
     .nav-pill-icon { font-size: 1rem !important; }
 
-    /* 🔥 دایره وسط نوار پایین */
+    /* 🔥 تنظیمات سخت‌گیرانه برای دایره شدن عکس */
     .nav-center-profile {
-      width: 54px !important;
-      height: 54px !important;
-      min-width: 54px !important;
-      min-height: 54px !important;
+      position: relative !important; /* برای قرارگیری متن */
+      width: 56px !important;
+      height: 56px !important;
+      min-width: 56px !important;
+      min-height: 56px !important;
+      flex: 0 0 56px !important; /* جلوگیری از فشرده شدن افقی */
       border-radius: 50% !important;
-      aspect-ratio: 1 / 1 !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       padding: 0 !important;
       margin-top: -18px !important;
       box-sizing: border-box !important;
-      flex-shrink: 0 !important;
     }
     
+    /* تنظیم دقیق عکس داخل دایره */
     .profile-btn-avatar {
       width: 100% !important;
       height: 100% !important;
@@ -153,6 +164,7 @@
       background-position: center !important;
       box-sizing: border-box !important;
       border: 3px solid var(--black-2) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important; /* نور پس‌زمینه */
     }
 
     .nav-center-profile .nav-icon {
@@ -168,9 +180,15 @@
       box-sizing: border-box !important;
     }
 
+    /* متن پروفایل رو از کادر جدا میکنیم که دایره رو خراب نکنه */
     .nav-center-label {
-      font-size: 0.6rem !important;
-      bottom: -14px !important;
+      position: absolute !important;
+      bottom: -18px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      font-size: 0.65rem !important;
+      white-space: nowrap !important;
+      color: #fff !important;
     }
 
     /* ==========================================
@@ -237,7 +255,7 @@
         </a>
       </div>
 
-      <!-- سمت چپ: دکمه آپلود و اسم کاربر (عکس پروفایل حذف شد) -->
+      <!-- سمت چپ: دکمه آپلود و اسم کاربر -->
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
         <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
         
@@ -476,14 +494,13 @@
       if (currentUser && currentUser.email) {
         const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
         
-        // اسکریپت برای تزریق عکس به وسط نوار پایین بعد از لود شدن توسط app.js
         const injectAvatarToNav = setInterval(() => {
           const navCenter = document.querySelector('.nav-center-profile');
           if (navCenter) {
             if (avatarData) {
               let avatarDiv = navCenter.querySelector('.profile-btn-avatar');
               if (!avatarDiv) {
-                navCenter.innerHTML = ''; // پاک کردن آیکون پیش‌فرض
+                navCenter.innerHTML = ''; 
                 avatarDiv = document.createElement('div');
                 avatarDiv.className = 'profile-btn-avatar';
                 navCenter.appendChild(avatarDiv);
@@ -495,11 +512,10 @@
               }
               avatarDiv.style.backgroundImage = `url(${avatarData})`;
             }
-            clearInterval(injectAvatarToNav); // وقتی انجام شد، متوقف میشه
+            clearInterval(injectAvatarToNav);
           }
         }, 100);
 
-        // تایم اوت امنیتی برای متوقف کردن حلقه بینهایت
         setTimeout(() => clearInterval(injectAvatarToNav), 3000);
       }
 
