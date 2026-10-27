@@ -723,7 +723,7 @@
     document.getElementById('profileEmail').textContent = user.email || '';
 
     let subHtml = '';
-    let subTimeHtml = ''; // 🔥 متغیر جدید برای زمان اشتراک
+    let subTimeHtml = '';
 
     if (user.hasSubscription) {
       let label = '✅ فعال';
@@ -733,7 +733,6 @@
       if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
       subHtml = `<span class="sub-status-active">${label}</span>`;
 
-      // 🔥 محاسبه زمان باقی‌مانده
       if (user.subscriptionExpiry && user.subscriptionPlan !== 'admin') {
         const expDate = new Date(user.subscriptionExpiry);
         const daysLeft = Math.ceil((expDate - Date.now()) / (1000 * 60 * 60 * 24));
@@ -795,7 +794,7 @@
         <span>💎 اشتراک:</span>
         <strong>${subHtml}</strong>
       </div>
-      ${subTimeHtml} <!-- 🔥 اینجا زمان و تاریخ رو نشون میده -->
+      ${subTimeHtml}
     `;
   }
 
@@ -846,6 +845,10 @@
     user = JSON.parse(localStorage.getItem(CURRENT_KEY));
 
     alert('✅ به‌روزرسانی شد!');
+    
+    // 🔥 ارسال تغییرات به سرور
+    if (window.saveUsersToCloud) window.saveUsersToCloud();
+
     renderInfo();
     renderBottomNav();
     loadAvatar();
@@ -906,6 +909,9 @@
 
         user.avatar = imgData;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+        // 🔥 ارسال تغییرات به سرور
+        if (window.saveUsersToCloud) window.saveUsersToCloud();
 
         loadAvatar();
         alert('✅ عکس پروفایل ذخیره شد!');
@@ -975,6 +981,10 @@
     if (!confirm(`🗑️ حذف «${item.title}»؟`)) return;
     items = items.filter(i => i.id !== id);
     localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+    
+    // 🔥 ارسال تغییرات به سرور
+    if (window.saveItemsToCloud) window.saveItemsToCloud(items);
+    
     alert('🗑️ حذف شد!');
     renderMyItems();
     renderWallet();
@@ -1312,7 +1322,8 @@
       if (val > balance) amountInput.value = balance;
     });
 
-    overlay.querySelector('#transferConfirm').addEventListener('click', () => {
+    // 🔥 اصلاح انتقال: تبدیل به async و ذخیره در فایربیس
+    overlay.querySelector('#transferConfirm').addEventListener('click', async () => {
       hideAlert();
       if (!foundRecipient) { showAlert('❌ اول شناسه گیرنده رو وارد کن یا از لیست انتخاب کن!'); return; }
 
@@ -1332,6 +1343,11 @@
       freshUsers[senderIdx].balance = (freshUsers[senderIdx].balance || 0) - amount;
       freshUsers[recipientIdx].balance = (freshUsers[recipientIdx].balance || 0) + amount;
       localStorage.setItem(USERS_KEY, JSON.stringify(freshUsers));
+
+      // 🔥 فرستادن به سرور
+      if (window.saveUsersToCloud) {
+        await window.saveUsersToCloud();
+      }
 
       const transfers = JSON.parse(localStorage.getItem(TRANSFERS_KEY)) || [];
       transfers.push({
@@ -1480,6 +1496,8 @@
     });
     localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
     
+    if (window.saveUsersToCloud) window.saveUsersToCloud(); // 🔥 سینک با سرور
+    
     alert('✅ درخواست برداشت ثبت شد! مبلغ از موجودی شما کسر شد.');
     renderWallet();
   });
@@ -1612,6 +1630,21 @@
     });
   }
 
+  // 🔥 این تابع توسط فایربیس صدا زده میشه تا اطلاعات مرورگر دیگه رو بگیره
+  window.updateUserDataFromCloud = function(cloudUsers) {
+      users = cloudUsers;
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      
+      const freshMe = users.find(u => u.email === user.email);
+      if (freshMe) {
+        user = freshMe;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+        renderInfo();
+        renderWallet();
+        renderTransfers();
+      }
+  };
+
   renderInfo();
   renderMyItems();
   renderSubscriptions();
@@ -1627,13 +1660,54 @@
   }
   </script>
 
+  <!-- 🔥 اتصال به Firebase و سینک زنده کاربران -->
   <script type="module">
-    import './js/firebase-db.js';
-    try {
-      await window.FirebaseStorage.init();
-    } catch (e) {
-      console.error('❌ خطا در اتصال به فایربیس:', e);
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
+
+    // تابع ذخیره کاربران در دیتابیس ابری
+    window.saveUsersToCloud = async function() {
+      const users = JSON.parse(localStorage.getItem('navaa_users')) || [];
+      try {
+        await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
+        console.log('✅ کاربران در دیتابیس ابری ذخیره شدند.');
+      } catch (e) {
+        console.error('❌ خطا در ذخیره کاربران:', e);
+      }
+    };
+
+    // لود اولیه
+    async function loadInitialUsers() {
+        try {
+            const snap = await getDoc(docRefUsers);
+            if (snap.exists()) {
+                const cloudUsers = JSON.parse(snap.data().value);
+                if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
+            }
+        } catch(e) { console.error(e); }
     }
+    loadInitialUsers();
+
+    // گوش دادن زنده به تغییرات (اگه کسی به ما پول زد، آنی موجودی بالا بره)
+    onSnapshot(docRefUsers, (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudUsers = JSON.parse(docSnap.data().value);
+        if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
+      }
+    });
   </script>
 
 </body>
