@@ -115,10 +115,11 @@
           <button class="plan-btn">🎁 هدیه</button>
         </div>
 
-        <div class="plan plan-diamond" onclick="applyGift('diamond', 250000, 540)">
+        <!-- ✅ پلن الماسی ۳ سال و ۶ ماهه (1260 روز) -->
+        <div class="plan plan-diamond" onclick="applyGift('diamond', 250000, 1260)">
           <div class="plan-header">
             <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۱ سال و ۶ ماهه</div>
+            <div class="plan-duration">۳ سال و ۶ ماهه</div>
           </div>
           <div class="plan-price">
             <span class="price-num">۲۵۰,۰۰۰</span>
@@ -242,7 +243,6 @@
       });
     }
 
-    // 🔥 باز کردن مودال هدیه
     let giftTargetId = null;
     window.openGiftModal = function(id) {
       const user = users.find(u => u.id === id);
@@ -258,7 +258,6 @@
       giftTargetId = null;
     });
 
-    // 🔥 اعمال هدیه و کسر پول از ادمین
     window.applyGift = function(planName, price, days) {
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
@@ -270,13 +269,11 @@
 
       if (!confirm(`آیا مطمئن هستید که می‌خواهید پلن ${planName} را به ${targetUser.fullname} هدیه دهید؟\nمبلغ ${formatMoney(price)} تومان از کیف پول شما کسر می‌شود.`)) return;
 
-      // کسر از ادمین
       const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
       if (adminIdx !== -1) {
         users[adminIdx].balance -= price;
       }
 
-      // اعمال روی کاربر
       const targetIdx = users.findIndex(u => u.id === giftTargetId);
       if (targetIdx !== -1) {
         users[targetIdx].hasSubscription = true;
@@ -290,7 +287,6 @@
       alert('✅ هدیه اشتراک با موفقیت اعمال شد!');
     };
 
-    // 🔥 لغو اشتراک کاربر
     window.cancelSub = function(id) {
       const user = users.find(u => u.id === id);
       if (!user) return;
