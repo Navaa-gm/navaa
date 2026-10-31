@@ -221,7 +221,7 @@
     .gallery > .empty p { font-size: 0.95rem; }
 
     /* ==========================================
-       🌟 نوار پایین
+       🌟 نوار پایین (بازطراحی شده و درخشان)
        ========================================== */
     .bottom-nav {
       position: fixed !important;
@@ -231,16 +231,26 @@
       height: 66px !important;
       padding: 0.2rem 3% !important;
       border-radius: 20px 20px 0 0 !important;
-      box-shadow: 0 -8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
       z-index: 1000 !important;
-      background: rgba(10, 10, 10, 0.72) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(10, 10, 10, 0.85) !important;
+      backdrop-filter: blur(30px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+      border-top: 1px solid rgba(255,255,255,0.1);
       margin: 0 !important;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.15), 0 -2px 20px rgba(0,240,212,0.2) !important;
+    }
+
+    /* خط رنگی بالای نوار (ضخیم‌تر و درخشان‌تر) */
+    .bottom-nav::before {
+      content: '';
+      position: absolute; top: -2px; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #00f0d4 15%, #38bdf8 40%, #ffc93c 60%, #ff2e4d 85%, transparent 100%);
+      filter: drop-shadow(0 0 10px #00f0d4) drop-shadow(0 0 20px #ff2e4d);
+      opacity: 0.95;
     }
 
     .nav-pill-btn {
@@ -248,25 +258,39 @@
       font-size: 0.75rem !important;
       gap: 0.3rem !important;
       border-radius: 11px !important;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
       color: var(--text-dim, #a0a0a0);
       font-family: inherit;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
     .nav-pill-btn:hover {
       color: #fff;
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(0,240,212,0.35);
-      box-shadow: 0 0 16px rgba(0,240,212,0.12);
-      transform: translateY(-1px);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(0,240,212,0.5);
+      box-shadow: 0 4px 15px rgba(0,240,212,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+      transform: translateY(-2px);
     }
     .nav-pill-icon { font-size: 1rem !important; }
 
+    /* دکمه آپلود در نوار پایین */
+    .upload-pill {
+      background: linear-gradient(135deg, #00f0d4, #38bdf8) !important;
+      color: #001a1c !important;
+      border-color: transparent !important;
+      box-shadow: 0 0 0 1px rgba(0,240,212,0.6), 0 6px 20px rgba(0,240,212,0.5), 0 0 30px rgba(255,46,77,0.2) !important;
+    }
+    .upload-pill:hover {
+      box-shadow: 0 0 0 2px rgba(0,240,212,0.9), 0 8px 30px rgba(0,240,212,0.7), 0 0 40px rgba(255,46,77,0.4) !important;
+      filter: brightness(1.1);
+    }
+
+    /* دایره پروفایل وسط نوار */
     .nav-center-profile {
       position: relative !important;
       width: 58px !important;
@@ -292,7 +316,7 @@
       background-position: center !important;
       box-sizing: border-box !important;
       border: 3px solid #0a0a0a !important;
-      box-shadow: 0 0 0 2px rgba(0,240,212,0.6), 0 0 22px rgba(0,240,212,0.45), 0 0 18px rgba(255,46,77,0.15) !important;
+      box-shadow: 0 0 0 2px rgba(0,240,212,0.6), 0 0 22px rgba(0,240,212,0.5), 0 0 18px rgba(255,46,77,0.2) !important;
     }
 
     .nav-center-profile .nav-icon {
@@ -307,7 +331,7 @@
       font-size: 1.25rem !important;
       box-sizing: border-box !important;
       border: 3px solid #0a0a0a !important;
-      box-shadow: 0 0 22px rgba(0,240,212,0.5) !important;
+      box-shadow: 0 0 0 2px rgba(0,240,212,0.4), 0 0 25px rgba(0,240,212,0.8), 0 0 40px rgba(255,46,77,0.3) !important;
     }
 
     .nav-center-label {
@@ -400,42 +424,83 @@
       box-shadow: 0 0 24px var(--red-glow);
     }
 
-    /* 🔥 سکشن‌های فرم آپلود */
+    /* ==========================================
+       🔥 پنل آپلود اثر (کاملا بازطراحی شده)
+       ========================================== */
     .upload-section {
-      background: rgba(255, 255, 255, 0.025) !important;
-      backdrop-filter: blur(12px) !important;
-      -webkit-backdrop-filter: blur(12px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.07) !important;
-      border-radius: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important;
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 20px !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 24px rgba(0,0,0,0.2) !important;
       transition: all 0.3s ease;
-      padding: 1.1rem;
-      margin-bottom: 1rem;
+      padding: 1.2rem !important;
+      margin-bottom: 1.2rem !important;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.5), rgba(255,46,77,0.5), transparent);
+      opacity: 0.6;
+      pointer-events: none;
     }
     .upload-section:hover {
-      background: rgba(255, 255, 255, 0.045) !important;
-      border-color: rgba(255, 255, 255, 0.12) !important;
+      background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)) !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
     }
 
     .upload-file-box {
-      background: rgba(0, 0, 0, 0.15) !important;
-      backdrop-filter: blur(8px) !important;
-      border: 1.5px dashed rgba(255, 255, 255, 0.18) !important;
-      border-radius: 16px;
-      transition: all 0.3s;
+      background: linear-gradient(135deg, rgba(0,240,212,0.05), rgba(255,46,77,0.02)) !important;
+      backdrop-filter: blur(12px) !important;
+      border: 2px dashed rgba(0,240,212,0.3) !important;
+      border-radius: 16px !important;
+      transition: all 0.3s ease;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.9rem;
-      padding: 1rem;
+      gap: 1rem;
+      padding: 1.2rem !important;
+      position: relative;
     }
     .upload-file-box:hover {
-      border-color: var(--turquoise, #00f0d4) !important;
-      background: rgba(0, 240, 212, 0.05) !important;
-      box-shadow: 0 0 24px rgba(0, 240, 212, 0.12);
+      border-color: var(--red) !important;
+      background: linear-gradient(135deg, rgba(255,46,77,0.08), rgba(0,240,212,0.05)) !important;
+      box-shadow: 0 0 25px rgba(255,46,77,0.15), inset 0 0 20px rgba(0,240,212,0.05) !important;
+      transform: translateY(-2px);
     }
 
-    .upload-field { margin-bottom: 0.9rem; }
+    /* باکس فایل صوتی (طلایی/قرمز) */
+    .upload-file-audio {
+      background: linear-gradient(135deg, rgba(255,201,60,0.05), rgba(255,46,77,0.02)) !important;
+      border-color: rgba(255,201,60,0.4) !important;
+    }
+    .upload-file-audio:hover {
+      border-color: var(--gold) !important;
+      background: linear-gradient(135deg, rgba(255,201,60,0.1), rgba(255,46,77,0.05)) !important;
+      box-shadow: 0 0 25px rgba(255,201,60,0.25) !important;
+    }
+
+    .upload-file-icon {
+      width: 54px !important; height: 54px !important;
+      border-radius: 14px !important;
+      background: linear-gradient(135deg, rgba(0,240,212,0.15), rgba(255,46,77,0.15)) !important;
+      border: 1px solid rgba(255,255,255,0.15) !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      font-size: 1.6rem !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease !important;
+    }
+    .upload-file-box:hover .upload-file-icon {
+      transform: scale(1.1) rotate(-5deg);
+      box-shadow: 0 0 20px rgba(255,46,77,0.3);
+    }
+
+    .upload-field { margin-bottom: 1rem; }
     .upload-field:last-child { margin-bottom: 0; }
     .upload-field label {
       display: block;
@@ -446,19 +511,19 @@
     }
     .upload-field .req { color: var(--red); }
 
+    /* استایل اینپوت‌ها و سلکت */
     .upload-field input,
     .upload-field textarea,
     .upload-field select {
       width: 100%;
-      background: rgba(0, 0, 0, 0.25) !important;
-      backdrop-filter: blur(5px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: rgba(0, 0, 0, 0.3) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
       color: #fff !important;
-      border-radius: 12px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
-      padding: 0.8rem 1rem;
+      border-radius: 12px !important;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.3) !important;
+      padding: 0.9rem 1rem !important;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       outline: none;
       box-sizing: border-box;
       transition: all 0.3s ease;
@@ -469,9 +534,9 @@
     .upload-field input:focus,
     .upload-field textarea:focus,
     .upload-field select:focus {
-      background: rgba(0, 0, 0, 0.4) !important;
-      border-color: var(--turquoise, #00f0d4) !important;
-      box-shadow: 0 0 0 3px rgba(0,240,212,0.1), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+      background: rgba(0, 0, 0, 0.5) !important;
+      border-color: var(--red) !important;
+      box-shadow: 0 0 0 3px rgba(255,46,77,0.15), inset 0 2px 5px rgba(0,0,0,0.3) !important;
     }
 
     #premiumSection {
