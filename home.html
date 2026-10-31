@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navaa | جایی که هنر به صدا درمیاد</title>
+  <title>Navaa | جایی که هنر به صدا در می‌آید</title>
   
   <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
@@ -11,184 +11,142 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 هماهنگ کردن مقیاس فونت با بقیه صفحات */
-    html { font-size: 14px; }
-
-    body { 
-      margin: 0; 
-      padding: 0; 
-      background: var(--black); 
-      color: #fff; 
-      font-family: inherit; 
-      display: flex; 
-      flex-direction: column; 
-      min-height: 100vh; 
-    }
-
-    header { 
-      padding: 1.5rem 2rem; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      flex-wrap: wrap; /* جلوگیری از به‌هم‌ریختگی در موبایل */
-      gap: 1rem;
-    }
-
+    body { margin: 0; padding: 0; background: var(--black); color: #fff; font-family: inherit; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+    
+    /* 🌟 استایل هدر */
+    header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    
+    /* 🔥 لوگوی رنگی شده */
     .logo-box { 
-      display: flex; 
-      align-items: center; 
-      gap: .5rem; 
-      text-decoration: none; 
-      color: #fff; 
-      font-size: 1.8rem; 
-      font-weight: 900; 
-      letter-spacing: -0.5px;
-    }
-
-    .header-actions { 
-      display: flex; 
-      gap: 1rem; 
-    }
-
-    .btn-outline { 
-      background: transparent; 
-      border: 1.5px solid rgba(255,255,255,0.2); 
-      color: #fff; 
-      padding: .6rem 1.2rem; 
-      border-radius: 999px; 
-      text-decoration: none; 
-      font-weight: 700; 
-      font-size: .9rem; 
-      transition: .3s; 
-    }
-    .btn-outline:hover { border-color: #fff; }
-
-    .btn-primary { 
-      background: linear-gradient(135deg, var(--turquoise), var(--sky)); 
-      color: #001a1c; 
-      padding: .6rem 1.2rem; 
-      border-radius: 999px; 
-      text-decoration: none; 
-      font-weight: 800; 
-      font-size: .9rem; 
-      box-shadow: 0 0 15px rgba(0,240,212,0.4); 
-      transition: .3s; 
-    }
-    .btn-primary:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 0 25px rgba(0,240,212,0.6); 
-    }
-
-    main { 
-      flex: 1; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      text-align: center; 
-      padding: 2rem; 
-    }
-
-    h1 { 
-      font-size: 3.5rem; 
-      font-weight: 900; 
-      margin-bottom: 1rem; 
-      line-height: 1.3; 
-      background: linear-gradient(90deg, #00f0d4, #ffc93c, #ff2e4d); 
+      display: flex; align-items: center; gap: .5rem; text-decoration: none; font-size: 1.8rem; font-weight: 900; 
+      background: linear-gradient(90deg, #00f0d4, #38bdf8, #ffc93c); 
       -webkit-background-clip: text; 
       -webkit-text-fill-color: transparent; 
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(0, 240, 212, 0.4));
+      transition: 0.3s;
     }
+    .logo-box:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(0, 240, 212, 0.7)); }
+    
+    .header-actions { display: flex; gap: 1rem; }
+    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; padding: .6rem 1.2rem; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; transition: .3s; }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-primary { background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c; padding: .6rem 1.2rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: .9rem; box-shadow: 0 0 15px rgba(0,240,212,0.4); transition: .3s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(0,240,212,0.6); }
 
+    /* 🌟 بخش اصلی */
+    main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem 1rem; }
+    
+    h1 { 
+      font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.3; 
+      background: linear-gradient(90deg, #00f0d4, #ffc93c, #ff2e4d); 
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+      animation: fadeInDown 0.8s ease-out;
+    }
+    
+    /* 🔥 توضیحات کامل‌تر و جدید */
     p.subtitle { 
       font-size: 1.1rem; 
-      color: var(--text-dim); 
-      max-width: 600px; 
-      line-height: 1.8; 
+      color: #b0b0b0; 
+      max-width: 800px; 
+      line-height: 2; 
       margin-bottom: 2.5rem; 
+      text-align: justify;
+      text-align-last: center;
+      animation: fadeInUp 0.8s ease-out;
     }
     
-    /* ✅ دکمه شروع */
     .btn-start { 
       background: linear-gradient(135deg, var(--turquoise), var(--sky)); 
-      color: #001a1c; 
-      padding: 1rem 3rem; 
-      border-radius: 999px; 
-      text-decoration: none; 
-      font-weight: 800; 
-      font-size: 1.1rem; 
-      box-shadow: 0 0 30px rgba(0,240,212,0.5); 
-      transition: .3s; 
-      margin-bottom: 4rem; 
-      display: inline-block; 
+      color: #001a1c; padding: 1.1rem 3.5rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 1.2rem; 
+      box-shadow: 0 0 30px rgba(0,240,212,0.5); transition: .3s; margin-bottom: 4rem; display: inline-block; 
+      animation: pulse 2s infinite;
     }
-    .btn-start:hover { 
-      transform: translateY(-3px) scale(1.05); 
-      box-shadow: 0 0 40px rgba(0,240,212,0.8); 
-    }
+    .btn-start:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 0 40px rgba(0,240,212,0.8); }
     
-    .features { 
-      display: flex; 
-      gap: 1.5rem; 
-      flex-wrap: wrap; 
-      justify-content: center; 
-    }
-
+    /* 🌟 بخش ویژگی‌ها */
+    .features { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; max-width: 1000px; }
     .feature-card { 
-      background: #111; 
-      border: 1px solid rgba(255,255,255,0.05); 
-      padding: 1.5rem; 
-      border-radius: 20px; 
-      width: 180px; 
-      transition: .3s; 
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08); 
+      padding: 1.5rem; border-radius: 20px; width: 200px; transition: .3s; 
+      backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center;
     }
     .feature-card:hover { 
-      border-color: var(--turquoise); 
-      transform: translateY(-5px); 
-      box-shadow: 0 10px 30px rgba(0,240,212,0.1); 
+      border-color: var(--turquoise); background: rgba(0, 240, 212, 0.05);
+      transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,240,212,0.15); 
     }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+    .feature-title { font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 0.8rem; color: #a0a0a0; text-align: center; line-height: 1.6; }
+    
+    footer { text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; border-top: 1px solid rgba(255,255,255,0.05); }
 
-    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
-    .feature-title { font-weight: 700; font-size: 0.95rem; color: #fff; }
+    /* 🌟 انیمیشن‌ها */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,240,212,0.4); } 70% { box-shadow: 0 0 0 15px rgba(0,240,212,0); } 100% { box-shadow: 0 0 0 0 rgba(0,240,212,0); } }
 
-    footer { 
-      text-align: center; 
-      padding: 2rem; 
-      color: var(--text-dim); 
-      font-size: .85rem; 
-    }
-
-    /* 🌟 تنظیمات مخصوص موبایل */
+    /* 🌟 تنظیمات موبایل */
     @media (max-width: 768px) {
-      h1 { font-size: 2.2rem; }
+      h1 { font-size: 2.4rem; }
+      p.subtitle { font-size: 0.95rem; text-align: center; }
       header { justify-content: center; text-align: center; }
       .header-actions { width: 100%; justify-content: center; }
       .features { gap: 1rem; }
-      .feature-card { width: 130px; padding: 1rem; }
+      .feature-card { width: 140px; padding: 1rem; }
+      .feature-icon { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
   <header>
-    <!-- 🔥 نقطه آخر Navaa حذف شد تا با گالری یکدست باشه -->
-    <a href="home.html" class="logo-box"><span>🎵</span><span>Navaa</span></a>
     <div class="header-actions">
       <a href="login.html" class="btn-outline">ورود به حساب</a>
       <a href="login.html" class="btn-primary">ساخت حساب</a>
     </div>
+    <a href="home.html" class="logo-box">
+      <span>🎵</span>
+      <span>Navaa</span>
+    </a>
   </header>
 
   <main>
-    <h1>جایی که هنر به صدا درمیاد</h1>
-    <p class="subtitle">آثار هنری، موسیقی و طراحی خودت رو با دنیا به اشتراک بذار. کشف کن، الهام بگیر، و خلق کن.</p>
+    <!-- 🔥 متن اصلی تغییر کرد -->
+    <h1>جایی که هنر به صدا در می‌آید</h1>
     
-    <!-- ✅ دکمه شروع -->
+    <!-- 🔥 توضیحات کامل و حرفه‌ای -->
+    <p class="subtitle">
+      به دنیای <strong>Navaa</strong> خوش آمدید! اینجا یک پلتفرم اختصاصی برای هنرمندان، عکاسان و تولیدکنندگان محتواست. 
+      در Navaa می‌توانید آثار هنری و فایل‌های صوتی خود را با بالاترین کیفیت آپلود کنید، در گالری عمومی به نمایش بگذارید و با فروش آثار ویژه، از طریق کیف پول هوشمند درآمد کسب کنید. 
+      با خرید پلن‌های اشتراکی (برنزی، طلایی و الماسی) محدودیت‌های آپلود خود را بردارید و از امکاناتی نظیر دانلود نامحدود، پخش آنلاین موسیقی و نشان‌های ویژه روی پروفایل بهره‌مند شوید. 
+      هنر خود را به گوش جهانیان برسانید!
+    </p>
+    
+    <!-- دکمه شروع -->
     <a href="login.html" class="btn-start">🚀 شروع کن</a>
     
+    <!-- ویژگی‌ها با توضیحات بیشتر -->
     <div class="features">
-      <div class="feature-card"><div class="feature-icon">✨</div><div class="feature-title">الهام روزانه</div></div>
-      <div class="feature-card"><div class="feature-icon">📸</div><div class="feature-title">عکاسی هنری</div></div>
-      <div class="feature-card"><div class="feature-icon">🎵</div><div class="feature-title">موسیقی و صدا</div></div>
-      <div class="feature-card"><div class="feature-icon">🎨</div><div class="feature-title">نقاشی و طراحی</div></div>
+      <div class="feature-card">
+        <div class="feature-icon">✨</div>
+        <div class="feature-title">الهام روزانه</div>
+        <div class="feature-desc">هر روز آثار جدید و خلاقانه از هنرمندان سراسر جهان را کشف کنید.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📸</div>
+        <div class="feature-title">عکاسی هنری</div>
+        <div class="feature-desc">با کیفیت‌ترین عکس‌های طبیعت، معماری و پرتره را با دیگران به اشتراک بگذارید.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎵</div>
+        <div class="feature-title">موسیقی و صدا</div>
+        <div class="feature-desc">آهنگ‌های خود را آپلود کنید، به صورت آنلاین پخش کنید و از هنر شنیداری لذت ببرید.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">نقاشی و طراحی</div>
+        <div class="feature-desc">آثار گرافیکی و طراحی‌های خود را به نمایش بگذارید و به فروش برسانید.</div>
+      </div>
     </div>
   </main>
 
