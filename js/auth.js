@@ -14,6 +14,14 @@ const ADMIN_PASSWORD = 'MSsf17311731';
 // ================== WELCOME GIFT ==================
 const WELCOME_GIFT_AMOUNT = 5000; // ۵,۰۰۰ تومان هدیه خوش‌آمدگویی
 
+// 🎨 پالت تم (برای سازگاری با بقیهٔ پروژه)
+const THEME = {
+  turquoise: '#00f0d4',
+  sky: '#38bdf8',
+  gold: '#ffc93c',
+  red: '#ff2e4d'
+};
+
 // ================== STATE ==================
 let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
 
@@ -279,7 +287,7 @@ if (loginForm) {
       return;
     }
 
-        // ورود عادی
+    // ورود عادی
     const userIdx = users.findIndex(u => (u.email || '').toLowerCase() === email && u.password === password);
     if (userIdx === -1) {
       alert('❌ ایمیل یا رمز عبور اشتباهه!');
@@ -315,6 +323,8 @@ if (loginForm) {
     localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
     alert(`👋 خوش برگشتی، ${user.fullname}!`);
     window.location.href = 'gallery.html';
+  });   // ← ✅ FIX: این براکت جا افتاده بود
+}       // ← ✅ FIX: و این هم
 
 // ================== DEBUG ==================
 console.log('✅ auth.js بارگذاری شد');
