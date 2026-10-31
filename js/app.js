@@ -9,6 +9,18 @@ const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
 const UPLOAD_REWARD = 5000;
 const SETTINGS = { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
 
+// 🎨 پالت تم (شیشه + فیروزه‌ای + قرمز)
+const THEME = {
+  turquoise: '#00f0d4',
+  sky: '#38bdf8',
+  gold: '#ffc93c',
+  red: '#ff2e4d',
+  glassBg: 'linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+  glassBorder: 'rgba(255,255,255,0.1)',
+  redGlow: 'rgba(255,46,77,0.35)',
+  turquoiseGlow: 'rgba(0,240,212,0.35)'
+};
+
 let currentUser = JSON.parse(localStorage.getItem(CURRENT_KEY)) || null;
 if (!currentUser) window.location.href = 'home.html';
 
@@ -45,7 +57,7 @@ function formatLimitSize(bytes) {
 async function syncCurrentUserToArray() {
     let users = await window.getUsersFromCloud() || [];
     if (users.length === 0) users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    
+
     const idx = users.findIndex(u => u.email === currentUser.email);
     if (idx !== -1) {
         users[idx] = { ...users[idx], ...currentUser };
@@ -60,16 +72,16 @@ async function giveUploadReward(uploaderEmail) {
   const uploaderIdx = users.findIndex(u => u.email === uploaderEmail);
   const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
   if (uploaderIdx === -1) return { success: false };
-  
+
   const isUploaderAdmin = users[uploaderIdx].email === ADMIN_EMAIL || users[uploaderIdx].role === 'admin';
   users[uploaderIdx].balance = (users[uploaderIdx].balance || 0) + UPLOAD_REWARD;
-  
-  if (!isUploaderAdmin && adminIdx !== -1) { 
-    users[adminIdx].balance = Math.max(0, (users[adminIdx].balance || 0) - UPLOAD_REWARD); 
+
+  if (!isUploaderAdmin && adminIdx !== -1) {
+    users[adminIdx].balance = Math.max(0, (users[adminIdx].balance || 0) - UPLOAD_REWARD);
   }
-  
+
   await window.saveUsersToCloud(users);
-  
+
   if (uploaderEmail === currentUser.email) {
     currentUser.balance = users[uploaderIdx].balance;
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
@@ -79,7 +91,7 @@ async function giveUploadReward(uploaderEmail) {
 
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
-  
+
   const currentMonth = new Date().getMonth();
   if (currentUser.lastUploadMonth !== currentMonth) {
     currentUser.monthlyUploads = 0;
@@ -87,7 +99,7 @@ function checkUploadPermission(fileSize) {
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
     syncCurrentUserToArray();
   }
-  
+
   if ((currentUser.monthlyUploads || 0) >= 50) {
     return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
   }
@@ -121,6 +133,7 @@ function compressImage(file, maxWidth = 800, quality = 0.7) {
   });
 }
 
+// 🌈 ساخت fallback SVG با گرادیان تم (فیروزه‌ای → قرمز)
 function makeSVG(color1, color2, emoji, label) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${color1}"/><stop offset="100%" stop-color="${color2}"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="45%" font-size="180" text-anchor="middle" dominant-baseline="middle">${emoji}</text><text x="50%" y="75%" font-size="34" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-weight="700">${label}</text></svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -153,16 +166,30 @@ function initPremiumSection() {
   const modal = document.getElementById('uploadModal'); if (!modal) return;
   const premiumSection = document.getElementById('premiumSection'); if (!premiumSection) return;
 
+  // 🎨 استایل شیشه‌ای + اکسنت قرمز برای فیلد قیمت
+  if (!document.getElementById('navaaPremiumStyle')) {
+    const s = document.createElement('style');
+    s.id = 'navaaPremiumStyle';
+    s.textContent = `
+      #analyzeBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,46,77,0.4), 0 0 26px rgba(255,201,60,0.25) !important; }
+      #analyzeBtn:active { transform: translateY(0); }
+      #premiumPriceInput:focus { border-color: rgba(0,240,212,0.6) !important; box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.3) !important; }
+      #isPremiumCheck:checked { accent-color: #ff2e4d; }
+      #botResult .bot-price-final { background: linear-gradient(90deg,#00f0d4,#38bdf8,#ff2e4d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; font-size: 1.05rem; }
+    `;
+    document.head.appendChild(s);
+  }
+
   premiumSection.innerHTML = `
     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;">
-      <input type="checkbox" id="isPremiumCheck" style="width:18px;height:18px;accent-color:#ffc93c;">
+      <input type="checkbox" id="isPremiumCheck" style="width:18px;height:18px;accent-color:#ff2e4d;cursor:pointer;">
       <label for="isPremiumCheck" style="color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;">💎 این اثر رو ویژه بذار</label>
     </div>
     <div id="premiumOptions" style="display:none;">
-      <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.7rem;font-size:.85rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff8c00);color:#1a1100;">🤖 تحلیل ربات</button>
-      <div id="botResult" style="display:none;background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:.8rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;"></div>
+      <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.85rem;font-size:.9rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff2e4d);color:#1a1100;border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(255,46,77,0.3), inset 0 1px 0 rgba(255,255,255,0.3);transition:all .25s cubic-bezier(.4,0,.2,1);">🤖 تحلیل ربات</button>
+      <div id="botResult" style="display:none;background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:.9rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);"></div>
       <label style="display:block;font-size:.82rem;color:#fff;font-weight:700;margin-bottom:.4rem;">💰 قیمت نهایی (تومان):</label>
-      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.8rem;background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;">
+      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.85rem 1rem;background:rgba(0,0,0,0.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;box-sizing:border-box;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);transition:all .3s;">
     </div>`;
 
   const isPremiumCheck = premiumSection.querySelector('#isPremiumCheck');
@@ -183,7 +210,7 @@ function initPremiumSection() {
     const descInput = modal.querySelector('textarea[name="desc"]');
     const tagsInput = modal.querySelector('input[name="tags"]');
     const catSelect = document.getElementById('catSelect');
-    
+
     const tagsValue = tagsInput?.value || '';
     const tagsArr = tagsValue.split(/[,،]/).map(t => t.trim()).filter(Boolean);
 
@@ -196,23 +223,23 @@ function initPremiumSection() {
       imageSize: 0,
       audioDuration: 0
     };
-    
+
     if (!itemData.title) return alert('❌ اول عنوان!');
     const result = botPriceItem(itemData);
-    
+
     botResult.style.display = 'block';
     botResult.innerHTML = `
       <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
-        <strong style="color:#ffc93c;">🤖 امتیاز: ${result.quality}</strong>
+        <strong style="color:#ffc93c;font-weight:800;">🤖 امتیاز: ${result.quality}</strong>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:.5rem;margin-bottom:.5rem;">
-        ${result.details.map(d => `<div style="display:flex;justify-content:space-between;padding:.15rem 0;"><span>${d.label}</span><span style="color:#00f0d4;">+${formatMoney(d.value)}</span></div>`).join('')}
+        ${result.details.map(d => `<div style="display:flex;justify-content:space-between;padding:.15rem 0;"><span>${d.label}</span><span style="color:#00f0d4;font-weight:700;">+${formatMoney(d.value)}</span></div>`).join('')}
       </div>
-      <div style="display:flex;justify-content:space-between;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.1);">
         <strong style="color:#fff;">💰 پیشنهادی:</strong>
-        <strong style="color:#00f0d4;font-size:1rem;">${formatMoney(result.suggestedPrice)} تومان</strong>
+        <strong class="bot-price-final">${formatMoney(result.suggestedPrice)} تومان</strong>
       </div>`;
-      
+
     premiumPriceInput.value = result.suggestedPrice;
     window.__navaaPremium.price = result.suggestedPrice;
   });
@@ -227,7 +254,7 @@ function initPremiumSection() {
 
 window.toggleItemVisibility = async function(id) {
     window.isUploading = true;
-    
+
     let items = [...DB.items];
     const idx = items.findIndex(i => i.id === id);
     if (idx !== -1) {
@@ -235,7 +262,7 @@ window.toggleItemVisibility = async function(id) {
         DB.items = items;
         save();
         renderGallery();
-        
+
         if (window.updateItemInCloud) {
             await window.updateItemInCloud(items[idx]);
         }
@@ -246,7 +273,7 @@ window.toggleItemVisibility = async function(id) {
 function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
   if (!item) return;
-  
+
   document.getElementById('modalImg').src = item.image;
   document.getElementById('modalTitle').textContent = item.title;
   document.getElementById('modalArtist').textContent = item.artist ? `👤 ${item.artist}` : '';
@@ -276,11 +303,11 @@ function openDetail(id) {
         window.isUploading = true;
         DB.items = DB.items.filter(p => p.id !== id);
         save();
-        
+
         if (window.deleteItemFromCloud) {
             await window.deleteItemFromCloud(id);
         }
-        
+
         window.isUploading = false;
         document.getElementById('modal').classList.add('hidden');
         renderGallery();
@@ -297,7 +324,7 @@ function bindDetailModal() {
   const modal = document.getElementById('modal');
   const audioEl = document.getElementById('modalAudio');
   if (!modal) return;
-  
+
   const closeModal = () => {
     if(audioEl) audioEl.pause();
     modal.classList.add('hidden');
@@ -310,26 +337,26 @@ function bindDetailModal() {
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
-  
+
   const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
-  
+
   let list = [...DB.items].sort((a, b) => b.time - a.time);
-  
+
   list = list.filter(item => {
     const isMyItem = item.uploadedByEmail === currentUser.email;
     if (item.isHidden && !isMyItem && !isAdminUser) return false;
     return true;
   });
 
-  if (list.length === 0) { 
-    gallery.innerHTML = `<div class="empty"><h3>🎭 هنوز اثری نیست</h3><p>اولین اثر رو آپلود کن!</p></div>`; 
-    return; 
+  if (list.length === 0) {
+    gallery.innerHTML = `<div class="empty"><h3>🎭 هنوز اثری نیست</h3><p>اولین اثر رو آپلود کن!</p></div>`;
+    return;
   }
-  
+
   list.forEach(item => {
     const card = document.createElement('div'); card.className = 'card';
     const isMyItem = item.uploadedByEmail === currentUser.email;
-    
+
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
       ${item.isPremium ? '<span class="premium-badge">💎 ویژه</span>' : ''}
@@ -345,25 +372,25 @@ function renderGallery() {
         <div class="card-tags">${(item.tags || []).map(t => `#${escapeHtml(t)}`).join(' ')}</div>
       </div>
     `;
-    
+
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.action-btn')) return; 
+      if (e.target.closest('.action-btn')) return;
       openDetail(item.id);
     });
 
-    card.querySelector('.delete-btn')?.addEventListener('click', async e => { 
-        e.stopPropagation(); 
+    card.querySelector('.delete-btn')?.addEventListener('click', async e => {
+        e.stopPropagation();
         if(confirm('حذف بشه؟')) {
             window.isUploading = true;
-            DB.items = DB.items.filter(i => i.id !== item.id); 
-            save(); 
-            
+            DB.items = DB.items.filter(i => i.id !== item.id);
+            save();
+
             if (window.deleteItemFromCloud) {
                 await window.deleteItemFromCloud(item.id);
             }
-            
+
             window.isUploading = false;
-            renderGallery(); 
+            renderGallery();
         }
     });
 
@@ -377,7 +404,7 @@ function renderGallery() {
 }
 
 function bindUploadModal() {
-  const modal = document.getElementById('uploadModal'); 
+  const modal = document.getElementById('uploadModal');
   const form = document.getElementById('uploadForm');
   const catSel = document.getElementById('catSelect');
   const fileIn = document.getElementById('fileInput');
@@ -388,7 +415,7 @@ function bindUploadModal() {
   const audioFileBox = document.getElementById('audioFileBox');
   const audioFileName = document.getElementById('audioFileName');
   const audioFileRemove = document.getElementById('audioFileRemove');
-  
+
   const uploadBtnHeader = document.getElementById('uploadBtn');
   const uploadBtnNav = document.getElementById('uploadNavBtn');
   const uploadClose = document.getElementById('uploadClose');
@@ -438,7 +465,7 @@ function bindUploadModal() {
 
   audioIn?.addEventListener('change', e => {
     const file = e.target.files[0];
-    if (file) { audioFileName.textContent = file.name; audioFileBox.classList.remove('hidden'); } 
+    if (file) { audioFileName.textContent = file.name; audioFileBox.classList.remove('hidden'); }
     else { audioFileBox.classList.add('hidden'); }
   });
 
@@ -448,11 +475,11 @@ function bindUploadModal() {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    
+
     const imageFile = fileIn.files[0];
     const audioFile = audioIn ? audioIn.files[0] : null;
     if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
-    
+
     const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
     if (!perm.allowed) return alert(perm.reason);
 
@@ -466,25 +493,26 @@ function bindUploadModal() {
     const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
 
     const finish = async (finalImage, audioData) => {
-      const newItem = { 
-          id: Date.now(), 
-          image: finalImage || makeSVG('#00f0d4', '#38bdf8', '🎵', 'صوتی'),
+      const newItem = {
+          id: Date.now(),
+          // 🎨 fallback با گرادیان فیروزه‌ای → قرمز
+          image: finalImage || makeSVG(THEME.turquoise, THEME.red, '🎵', 'صوتی'),
           audio: audioData || null,
-          title: titleValue, 
-          artist: form.artist.value.trim() || currentUser.fullname, 
+          title: titleValue,
+          artist: form.artist.value.trim() || currentUser.fullname,
           desc: form.desc.value.trim(),
           category: form.category.value,
           tags: tagsArray,
           isPremium: isPremium,
           price: itemPrice,
-          time: Date.now(), 
-          uploadedByEmail: currentUser.email, 
+          time: Date.now(),
+          uploadedByEmail: currentUser.email,
           likes: 0,
-          isHidden: false 
+          isHidden: false
       };
-      
-      window.isUploading = true; 
-      
+
+      window.isUploading = true;
+
       let success = true;
       if (window.addItemToCloud) {
           success = await window.addItemToCloud(newItem);
@@ -492,24 +520,24 @@ function bindUploadModal() {
           DB.items.push(newItem);
           save();
       }
-      
+
       if (!success) {
           window.isUploading = false;
           return;
       }
-      
+
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-        await syncCurrentUserToArray(); 
+        await syncCurrentUserToArray();
       }
 
-      window.isUploading = false; 
-      
+      window.isUploading = false;
+
       const reward = await giveUploadReward(currentUser.email);
-      
+
       closeModal();
-      
+
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
 
@@ -524,11 +552,11 @@ function bindUploadModal() {
 }
 
 function renderBottomNav() {
-  const nav = document.getElementById('bottomNav'); 
+  const nav = document.getElementById('bottomNav');
   if (!nav) return;
-  
+
   const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
-  
+
   nav.innerHTML = `
     <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
       <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
@@ -550,9 +578,9 @@ function renderBottomNav() {
 }
 
 // ✅ ترتیب صحیح اجرا (renderBottomNav قبل از bindUploadModal)
-setupUserHeader(); 
+setupUserHeader();
 initPremiumSection();
-renderGallery(); 
+renderGallery();
 renderBottomNav();     // ← اول nav ساخته می‌شه
 bindUploadModal();     // ← بعد دکمه‌های nav بایند می‌شن
 bindDetailModal();
