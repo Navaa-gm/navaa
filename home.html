@@ -4,18 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Navaa | جایی که هنر به صدا در می‌آید</title>
-  
-  <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 تنظیمات پایه و انیمیشن‌ها */
     :root {
       --neon-blue: #00f0d4;
       --neon-purple: #38bdf8;
       --neon-gold: #ffc93c;
+      --neon-red: #ff2e4d;
       --bg-dark: #080a0c;
     }
 
@@ -30,67 +27,68 @@
       overflow-x: hidden; position: relative;
     }
 
-    /* 🌟 نورهای پس‌زمینه (Neon Orbs) */
+    /* 🌌 نورهای پس‌زمینه */
     .bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-    .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: float 10s infinite alternate; }
-    .orb-1 { width: 400px; height: 400px; background: var(--neon-blue); top: -100px; right: -100px; }
-    .orb-2 { width: 500px; height: 500px; background: var(--neon-purple); bottom: -150px; left: -150px; animation-delay: -5s; }
-    .orb-3 { width: 300px; height: 300px; background: var(--neon-gold); top: 40%; left: 30%; animation-delay: -2s; opacity: 0.2; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: float 12s infinite alternate ease-in-out; }
+    .orb-1 { width: 500px; height: 500px; background: var(--neon-blue); top: -150px; right: -100px; }
+    .orb-2 { width: 600px; height: 600px; background: var(--neon-red); bottom: -200px; left: -150px; animation-delay: -5s; opacity: 0.2; }
+    .orb-3 { width: 400px; height: 400px; background: var(--neon-gold); top: 30%; left: 20%; animation-delay: -2s; opacity: 0.15; }
 
     @keyframes float {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 50px) scale(1.1); }
+      100% { transform: translate(40px, 60px) scale(1.1); }
     }
 
     /* 🌟 هدر شیشه‌ای */
     header { 
-      padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; 
-      background: rgba(8, 10, 12, 0.6); backdrop-filter: blur(20px); 
-      border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100;
+      padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; 
+      background: rgba(8, 10, 12, 0.5); backdrop-filter: blur(24px) saturate(180%); 
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100;
       width: 100%; max-width: 100%;
     }
     
     .logo-box { 
       display: flex; align-items: center; gap: .5rem; text-decoration: none; font-size: 1.8rem; font-weight: 900; 
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-gold)); 
+      background: linear-gradient(90deg, #fff, var(--neon-blue), var(--neon-purple), var(--neon-red)); 
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      background-clip: text; filter: drop-shadow(0 0 10px rgba(0, 240, 212, 0.4));
+      background-clip: text; filter: drop-shadow(0 0 12px rgba(0, 240, 212, 0.4));
       transition: 0.3s;
     }
-    .logo-box:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(0, 240, 212, 0.7)); }
+    .logo-box:hover { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255, 46, 77, 0.6)); }
     
     .header-actions { display: flex; gap: 1rem; align-items: center; }
     .btn-header-outline { 
-      background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; 
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15); color: #fff; 
       padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; transition: .3s; 
     }
-    .btn-header-outline:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-header-outline:hover { border-color: var(--neon-red); background: rgba(255,46,77,0.1); box-shadow: 0 0 15px rgba(255,46,77,0.2); }
     
     .btn-header-primary { 
       background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #001a1c; 
       padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: .9rem; 
-      box-shadow: 0 0 20px rgba(0,240,212,0.3); transition: .3s; 
+      box-shadow: 0 0 20px rgba(0,240,212,0.3); transition: .3s; border: none;
     }
-    .btn-header-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,240,212,0.6); }
+    .btn-header-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,240,212,0.6), 0 0 20px rgba(255,46,77,0.3); }
 
     /* 🌟 بخش اصلی (Hero) */
-    main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 4rem 2rem 2rem 2rem; z-index: 1; }
+    main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 5rem 2rem 2rem 2rem; z-index: 1; }
     
     .hero-badge {
-      background: rgba(0, 240, 212, 0.1); border: 1px solid rgba(0, 240, 212, 0.3);
-      color: var(--neon-blue); padding: 0.5rem 1.2rem; border-radius: 99px;
-      font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem;
-      box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
+      background: rgba(255, 46, 77, 0.08); border: 1px solid rgba(255, 46, 77, 0.3);
+      color: var(--neon-red); padding: 0.6rem 1.4rem; border-radius: 99px;
+      font-size: 0.85rem; font-weight: 800; margin-bottom: 2rem;
+      box-shadow: 0 0 24px rgba(255, 46, 77, 0.15);
       animation: fadeInDown 0.8s ease-out;
     }
 
     h1 { 
       font-size: 4.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.2; 
-      background: linear-gradient(120deg, var(--neon-blue), var(--neon-purple), var(--neon-gold), var(--neon-blue)); 
+      background: linear-gradient(120deg, #fff, var(--neon-blue), var(--neon-purple), var(--neon-red), var(--neon-blue)); 
       background-size: 300% 300%;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      animation: shine 6s linear infinite, fadeInDown 0.8s ease-out;
-      text-shadow: 0 0 40px rgba(0, 240, 212, 0.2);
+      animation: shine 8s linear infinite, fadeInDown 0.8s ease-out;
+      text-shadow: 0 0 50px rgba(0, 240, 212, 0.2);
     }
 
     @keyframes shine {
@@ -106,15 +104,14 @@
     p.subtitle strong { color: var(--neon-blue); font-weight: 800; }
     
     /* 🌟 دکمه‌های CTA */
-    .cta-group { display: flex; gap: 1.5rem; margin-bottom: 5rem; animation: fadeInUp 1s ease-out; flex-wrap: wrap; justify-content: center; }
+    .cta-group { display: flex; gap: 1.5rem; margin-bottom: 6rem; animation: fadeInUp 1s ease-out; flex-wrap: wrap; justify-content: center; }
     
     .btn-start { 
       background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); 
       color: #001a1c; padding: 1.2rem 4rem; border-radius: 999px; text-decoration: none; 
       font-weight: 900; font-size: 1.3rem; 
-      box-shadow: 0 0 40px rgba(0,240,212,0.5); transition: .3s; 
+      box-shadow: 0 0 40px rgba(0,240,212,0.4); transition: .3s; 
       position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.8rem;
-      animation: pulse-glow 2s infinite;
     }
     .btn-start::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -122,97 +119,91 @@
       transition: .5s;
     }
     .btn-start:hover::before { left: 100%; }
-    .btn-start:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 60px rgba(0,240,212,0.8); }
+    .btn-start:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 50px rgba(0,240,212,0.6), 0 0 30px rgba(255,46,77,0.3); }
     
     .btn-explore {
       background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255,255,255,0.15);
       color: #fff; padding: 1.2rem 3rem; border-radius: 999px; text-decoration: none;
-      font-weight: 800; font-size: 1.1rem; backdrop-filter: blur(10px);
+      font-weight: 800; font-size: 1.1rem; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       transition: .3s; display: inline-flex; align-items: center; gap: 0.5rem;
     }
-    .btn-explore:hover { background: rgba(255,255,255,0.08); border-color: #fff; transform: translateY(-3px); }
+    .btn-explore:hover { background: rgba(255,255,255,0.08); border-color: var(--neon-red); transform: translateY(-3px); box-shadow: 0 0 20px rgba(255,46,77,0.2); }
 
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(0,240,212,0.4); }
-      70% { box-shadow: 0 0 0 20px rgba(0,240,212,0); }
-      100% { box-shadow: 0 0 0 0 rgba(0,240,212,0); }
-    }
-
-    /* 🌟 بخش ویژگی‌ها (Glassmorphism) */
-    .features-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 2.5rem; position: relative; }
+    /* 🌟 بخش ویژگی‌ها */
+    .features-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 3rem; position: relative; }
     .features-title::after {
-      content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-      width: 60px; height: 3px; background: var(--neon-blue); border-radius: 3px;
+      content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 3px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); border-radius: 3px;
     }
 
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1100px; margin-bottom: 5rem; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1100px; margin-bottom: 6rem; }
     
     .feature-card { 
-      background: rgba(255, 255, 255, 0.02); 
-      border: 1px solid rgba(255,255,255,0.06); 
+      background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)); 
+      border: 1px solid rgba(255,255,255,0.08); 
       padding: 2.5rem 1.5rem; border-radius: 24px; transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-      backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; text-align: center;
-      position: relative; overflow: hidden;
+      backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      position: relative; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
     .feature-card::before {
       content: ''; position: absolute; inset: 0; border-radius: 24px;
-      background: linear-gradient(135deg, rgba(0,240,212,0.1), transparent 50%);
+      background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(255,46,77,0.05), transparent 60%);
       opacity: 0; transition: .4s;
     }
     .feature-card:hover { 
-      border-color: var(--neon-blue); background: rgba(0, 240, 212, 0.03);
-      transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,212,0.1); 
+      border-color: rgba(255, 46, 77, 0.4); background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255,46,77,0.12); 
     }
     .feature-card:hover::before { opacity: 1; }
     
     .feature-icon-wrap {
       width: 70px; height: 70px; border-radius: 20px; margin-bottom: 1.5rem;
-      background: rgba(0, 240, 212, 0.08); border: 1px solid rgba(0, 240, 212, 0.2);
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
-      box-shadow: inset 0 0 20px rgba(0,240,212,0.1); transition: .3s;
+      box-shadow: inset 0 0 20px rgba(0,240,212,0.05); transition: .4s;
     }
-    .feature-card:hover .feature-icon-wrap { transform: scale(1.1) rotate(5deg); background: rgba(0, 240, 212, 0.15); }
+    .feature-card:hover .feature-icon-wrap { transform: scale(1.1) rotate(5deg); background: rgba(255, 46, 77, 0.1); border-color: rgba(255,46,77,0.3); box-shadow: 0 0 20px rgba(255,46,77,0.2); }
     
-    .feature-title { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.8rem; }
-    .feature-desc { font-size: 0.85rem; color: #a0a0a0; line-height: 1.8; }
+    .feature-title { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.8rem; z-index: 1; }
+    .feature-desc { font-size: 0.85rem; color: #a0a0a0; line-height: 1.8; z-index: 1; }
 
-    /* 🌟 بخش آمار زنده (Why Navaa) */
+    /* 🌟 بخش آمار */
     .why-section {
-      width: 100%; max-width: 1000px; background: linear-gradient(180deg, rgba(20,24,28,0.8), rgba(10,12,15,0.9));
+      width: 100%; max-width: 1000px; 
+      background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255,255,255,0.08); border-radius: 30px; padding: 3rem 2rem; margin-bottom: 5rem;
       display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
       position: relative; overflow: hidden;
     }
-    /* افکت نور پس‌زمینه آمار */
     .why-section::before {
       content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
-      width: 80%; height: 100%; background: radial-gradient(circle, rgba(255,201,60,0.05) 0%, transparent 70%);
+      width: 80%; height: 100%; background: radial-gradient(circle, rgba(255,201,60,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
     
     .stat-item { text-align: center; z-index: 1; position: relative; }
     .stat-number { 
       font-size: 2.8rem; font-weight: 900; color: var(--neon-gold); margin-bottom: 0.3rem; 
-      text-shadow: 0 0 20px rgba(255,201,60,0.3); 
-      display: flex; align-items: center; justify-content: center; gap: 0.2rem;
+      text-shadow: 0 0 25px rgba(255,201,60,0.4); 
+      display: flex; align-items: center; justify-content: center; gap: 0.3rem;
     }
     .stat-label { font-size: 0.95rem; color: #b0b0b0; font-weight: 700; }
     
-    /* انیمیشن برای اعداد که زنده بودنشون رو نشون بده */
     .live-pulse {
-      display: inline-block; width: 8px; height: 8px; background: #00ff88;
-      border-radius: 50%; margin-right: 5px; box-shadow: 0 0 10px #00ff88;
+      display: inline-block; width: 10px; height: 10px; background: var(--neon-red);
+      border-radius: 50%; margin-right: 5px; box-shadow: 0 0 12px var(--neon-red);
       animation: blink 1.5s infinite;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     footer { 
-      text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; 
-      border-top: 1px solid rgba(255,255,255,0.05); background: #050608;
+      text-align: center; padding: 2rem; color: var(--text-dim, #a0a0a0); font-size: .85rem; 
+      border-top: 1px solid rgba(255,255,255,0.06); background: rgba(5, 6, 8, 0.8); backdrop-filter: blur(10px);
     }
 
-    /* 🌟 انیمیشن‌ها و ریسپانسیو */
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -223,14 +214,15 @@
       .btn-start { padding: 1rem 2.5rem; font-size: 1.1rem; }
       .btn-explore { padding: 1rem 2rem; font-size: 1rem; }
       .features { grid-template-columns: 1fr; }
-      .why-section { flex-direction: column; gap: 1.5rem; }
+      .why-section { flex-direction: column; gap: 2rem; padding: 2rem 1rem; }
       .stat-number { font-size: 2.2rem; }
+      .header-actions { gap: 0.5rem; }
+      .btn-header-outline, .btn-header-primary { padding: 0.5rem 1rem; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🌟 نورهای پس‌زمینه -->
   <div class="bg-orbs">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -295,7 +287,6 @@
       </div>
     </div>
 
-    <!-- 🔥 بخش آمار آنلاین و زنده -->
     <div class="why-section">
       <div class="stat-item">
         <div class="stat-number" id="stat-total-items">...</div>
@@ -318,7 +309,6 @@
 
   <footer>🎵 Navaa — ساخته‌شده با ❤️ برای هنرمندان</footer>
 
-  <!-- 🔥 اتصال به فایربیس برای نمایش آمار واقعی و زنده -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -338,12 +328,10 @@
     const itemsCollection = collection(db, 'navaa_items');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // 🔥 تابع فرمت کردن اعداد به فارسی
     function formatNum(num) {
       return Number(num).toLocaleString('fa-IR');
     }
 
-    // 🔥 1. آپدیت کردن وضعیت "آخرین فعالیت" کاربر (اگه لاگین باشه)
     const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
     if (currentUser && currentUser.email) {
       const updateLastActive = async () => {
@@ -353,7 +341,7 @@
             let cloudUsers = JSON.parse(snap.data().value);
             const idx = cloudUsers.findIndex(u => u.email === currentUser.email);
             if (idx !== -1) {
-              cloudUsers[idx].lastActive = Date.now(); // ثبت زمان فعلی
+              cloudUsers[idx].lastActive = Date.now();
               await setDoc(docRefUsers, { value: JSON.stringify(cloudUsers), updatedAt: Date.now() });
             }
           }
@@ -362,34 +350,21 @@
       updateLastActive();
     }
 
-    // 🔥 2. محاسبه تعداد آثار (به صورت زنده)
     onSnapshot(itemsCollection, (snapshot) => {
       let totalItems = snapshot.size;
-      
-      // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۵۰ بود، ۵۰ نشون بده تا سایت خالی به نظر نرسه
       if (totalItems < 50) totalItems = 50; 
-      
       document.getElementById('stat-total-items').textContent = formatNum(totalItems) + '+';
     });
 
-    // 🔥 3. محاسبه کاربران و کاربران فعال (به صورت زنده)
     onSnapshot(docRefUsers, (docSnap) => {
       if (docSnap.exists()) {
         const users = JSON.parse(docSnap.data().value);
-        
-        // الف) تعداد کل کاربران
         let totalUsers = users.length;
-        // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۱۰۰ بود، ۱۰۰ نشون بده
         if (totalUsers < 100) totalUsers = 100; 
-        
         document.getElementById('stat-total-users').textContent = formatNum(totalUsers) + '+';
 
-        // ب) کاربران فعال در ۲۴ ساعت گذشته (DAU)
         const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-        // فقط کاربرانی که lastActive دارن و توی ۲۴ ساعت اخیر آپدیت شدن رو میشماریم
         let activeUsers = users.filter(u => u.lastActive && u.lastActive > oneDayAgo).length;
-        
-        // اگه هنوز کسی lastActive نداشت یا تعدادش خیلی کم بود، یه عدد پایه (مثلا ۱۲) نشون میدیم تا خالی نباشه
         if (activeUsers < 12) activeUsers = 12; 
 
         const activeEl = document.getElementById('stat-active-users');
