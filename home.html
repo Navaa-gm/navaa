@@ -11,98 +11,215 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { margin: 0; padding: 0; background: var(--black); color: #fff; font-family: inherit; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+    /* 🌟 تنظیمات پایه و انیمیشن‌ها */
+    :root {
+      --neon-blue: #00f0d4;
+      --neon-purple: #38bdf8;
+      --neon-gold: #ffc93c;
+      --bg-dark: #080a0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { 
+      margin: 0; padding: 0; 
+      background: var(--bg-dark); 
+      color: #fff; 
+      font-family: 'Vazirmatn', sans-serif; 
+      display: flex; flex-direction: column; min-height: 100vh; 
+      overflow-x: hidden; position: relative;
+    }
+
+    /* 🌟 نورهای پس‌زمینه (Neon Orbs) */
+    .bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: float 10s infinite alternate; }
+    .orb-1 { width: 400px; height: 400px; background: var(--neon-blue); top: -100px; right: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: var(--neon-purple); bottom: -150px; left: -150px; animation-delay: -5s; }
+    .orb-3 { width: 300px; height: 300px; background: var(--neon-gold); top: 40%; left: 30%; animation-delay: -2s; opacity: 0.2; }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 50px) scale(1.1); }
+    }
+
+    /* 🌟 هدر شیشه‌ای */
+    header { 
+      padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; 
+      background: rgba(8, 10, 12, 0.6); backdrop-filter: blur(20px); 
+      border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100;
+      width: 100%; max-width: 100%;
+    }
     
-    /* 🌟 استایل هدر */
-    header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    
-    /* 🔥 لوگوی رنگی شده */
     .logo-box { 
       display: flex; align-items: center; gap: .5rem; text-decoration: none; font-size: 1.8rem; font-weight: 900; 
-      background: linear-gradient(90deg, #00f0d4, #38bdf8, #ffc93c); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      background-clip: text;
-      filter: drop-shadow(0 0 10px rgba(0, 240, 212, 0.4));
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-gold)); 
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+      background-clip: text; filter: drop-shadow(0 0 10px rgba(0, 240, 212, 0.4));
       transition: 0.3s;
     }
     .logo-box:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(0, 240, 212, 0.7)); }
     
-    .header-actions { display: flex; gap: 1rem; }
-    .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; padding: .6rem 1.2rem; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; transition: .3s; }
-    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
-    .btn-primary { background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c; padding: .6rem 1.2rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: .9rem; box-shadow: 0 0 15px rgba(0,240,212,0.4); transition: .3s; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(0,240,212,0.6); }
-
-    /* 🌟 بخش اصلی */
-    main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem 1rem; }
+    .header-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn-header-outline { 
+      background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; 
+      padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; transition: .3s; 
+    }
+    .btn-header-outline:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
     
-    h1 { 
-      font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.3; 
-      background: linear-gradient(90deg, #00f0d4, #ffc93c, #ff2e4d); 
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+    .btn-header-primary { 
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #001a1c; 
+      padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: .9rem; 
+      box-shadow: 0 0 20px rgba(0,240,212,0.3); transition: .3s; 
+    }
+    .btn-header-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,240,212,0.6); }
+
+    /* 🌟 بخش اصلی (Hero) */
+    main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 4rem 2rem 2rem 2rem; z-index: 1; }
+    
+    .hero-badge {
+      background: rgba(0, 240, 212, 0.1); border: 1px solid rgba(0, 240, 212, 0.3);
+      color: var(--neon-blue); padding: 0.5rem 1.2rem; border-radius: 99px;
+      font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem;
+      box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
       animation: fadeInDown 0.8s ease-out;
     }
-    
-    /* 🔥 توضیحات کامل‌تر و جدید */
-    p.subtitle { 
-      font-size: 1.1rem; 
-      color: #b0b0b0; 
-      max-width: 800px; 
-      line-height: 2; 
-      margin-bottom: 2.5rem; 
-      text-align: justify;
-      text-align-last: center;
-      animation: fadeInUp 0.8s ease-out;
+
+    h1 { 
+      font-size: 4.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.2; 
+      background: linear-gradient(120deg, var(--neon-blue), var(--neon-purple), var(--neon-gold), var(--neon-blue)); 
+      background-size: 300% 300%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+      animation: shine 6s linear infinite, fadeInDown 0.8s ease-out;
+      text-shadow: 0 0 40px rgba(0, 240, 212, 0.2);
     }
+
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    
+    p.subtitle { 
+      font-size: 1.15rem; color: #b0b0b0; max-width: 800px; line-height: 2.2; margin-bottom: 3rem; 
+      text-align: center; animation: fadeInUp 0.8s ease-out;
+    }
+
+    p.subtitle strong { color: var(--neon-blue); font-weight: 800; }
+    
+    /* 🌟 دکمه‌های CTA */
+    .cta-group { display: flex; gap: 1.5rem; margin-bottom: 5rem; animation: fadeInUp 1s ease-out; flex-wrap: wrap; justify-content: center; }
     
     .btn-start { 
-      background: linear-gradient(135deg, var(--turquoise), var(--sky)); 
-      color: #001a1c; padding: 1.1rem 3.5rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 1.2rem; 
-      box-shadow: 0 0 30px rgba(0,240,212,0.5); transition: .3s; margin-bottom: 4rem; display: inline-block; 
-      animation: pulse 2s infinite;
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); 
+      color: #001a1c; padding: 1.2rem 4rem; border-radius: 999px; text-decoration: none; 
+      font-weight: 900; font-size: 1.3rem; 
+      box-shadow: 0 0 40px rgba(0,240,212,0.5); transition: .3s; 
+      position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.8rem;
+      animation: pulse-glow 2s infinite;
     }
-    .btn-start:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 0 40px rgba(0,240,212,0.8); }
+    .btn-start::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: .5s;
+    }
+    .btn-start:hover::before { left: 100%; }
+    .btn-start:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 60px rgba(0,240,212,0.8); }
     
-    /* 🌟 بخش ویژگی‌ها */
-    .features { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; max-width: 1000px; }
+    .btn-explore {
+      background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255,255,255,0.15);
+      color: #fff; padding: 1.2rem 3rem; border-radius: 999px; text-decoration: none;
+      font-weight: 800; font-size: 1.1rem; backdrop-filter: blur(10px);
+      transition: .3s; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-explore:hover { background: rgba(255,255,255,0.08); border-color: #fff; transform: translateY(-3px); }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 0 0 rgba(0,240,212,0.4); }
+      70% { box-shadow: 0 0 0 20px rgba(0,240,212,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,240,212,0); }
+    }
+
+    /* 🌟 بخش ویژگی‌ها (Glassmorphism) */
+    .features-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 2.5rem; position: relative; }
+    .features-title::after {
+      content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 3px; background: var(--neon-blue); border-radius: 3px;
+    }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1100px; margin-bottom: 5rem; }
+    
     .feature-card { 
-      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08); 
-      padding: 1.5rem; border-radius: 20px; width: 200px; transition: .3s; 
-      backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center;
+      background: rgba(255, 255, 255, 0.02); 
+      border: 1px solid rgba(255,255,255,0.06); 
+      padding: 2.5rem 1.5rem; border-radius: 24px; transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(0,240,212,0.1), transparent 50%);
+      opacity: 0; transition: .4s;
     }
     .feature-card:hover { 
-      border-color: var(--turquoise); background: rgba(0, 240, 212, 0.05);
-      transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,240,212,0.15); 
+      border-color: var(--neon-blue); background: rgba(0, 240, 212, 0.03);
+      transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,212,0.1); 
     }
-    .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
-    .feature-title { font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
-    .feature-desc { font-size: 0.8rem; color: #a0a0a0; text-align: center; line-height: 1.6; }
+    .feature-card:hover::before { opacity: 1; }
     
-    footer { text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; border-top: 1px solid rgba(255,255,255,0.05); }
+    .feature-icon-wrap {
+      width: 70px; height: 70px; border-radius: 20px; margin-bottom: 1.5rem;
+      background: rgba(0, 240, 212, 0.08); border: 1px solid rgba(0, 240, 212, 0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
+      box-shadow: inset 0 0 20px rgba(0,240,212,0.1); transition: .3s;
+    }
+    .feature-card:hover .feature-icon-wrap { transform: scale(1.1) rotate(5deg); background: rgba(0, 240, 212, 0.15); }
+    
+    .feature-title { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.8rem; }
+    .feature-desc { font-size: 0.85rem; color: #a0a0a0; line-height: 1.8; }
 
-    /* 🌟 انیمیشن‌ها */
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,240,212,0.4); } 70% { box-shadow: 0 0 0 15px rgba(0,240,212,0); } 100% { box-shadow: 0 0 0 0 rgba(0,240,212,0); } }
+    /* 🌟 بخش جدید: چرا Navaa؟ (آمار و ارقام) */
+    .why-section {
+      width: 100%; max-width: 1000px; background: linear-gradient(180deg, rgba(20,24,28,0.8), rgba(10,12,15,0.9));
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 30px; padding: 3rem 2rem; margin-bottom: 5rem;
+      display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--neon-gold); margin-bottom: 0.3rem; text-shadow: 0 0 20px rgba(255,201,60,0.3); }
+    .stat-label { font-size: 0.9rem; color: #b0b0b0; font-weight: 700; }
 
-    /* 🌟 تنظیمات موبایل */
+    footer { 
+      text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; 
+      border-top: 1px solid rgba(255,255,255,0.05); background: #050608;
+    }
+
+    /* 🌟 انیمیشن‌ها و ریسپانسیو */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
     @media (max-width: 768px) {
-      h1 { font-size: 2.4rem; }
-      p.subtitle { font-size: 0.95rem; text-align: center; }
-      header { justify-content: center; text-align: center; }
-      .header-actions { width: 100%; justify-content: center; }
-      .features { gap: 1rem; }
-      .feature-card { width: 140px; padding: 1rem; }
-      .feature-icon { font-size: 2rem; }
+      header { padding: 1rem 1.5rem; }
+      h1 { font-size: 2.8rem; }
+      p.subtitle { font-size: 1rem; text-align: justify; text-align-last: center; }
+      .btn-start { padding: 1rem 2.5rem; font-size: 1.1rem; }
+      .btn-explore { padding: 1rem 2rem; font-size: 1rem; }
+      .features { grid-template-columns: 1fr; }
+      .why-section { flex-direction: column; gap: 1.5rem; }
     }
   </style>
 </head>
 <body>
+
+  <!-- 🌟 نورهای پس‌زمینه -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
   <header>
     <div class="header-actions">
-      <a href="login.html" class="btn-outline">ورود به حساب</a>
-      <a href="login.html" class="btn-primary">ساخت حساب</a>
+      <a href="login.html" class="btn-header-outline">ورود به حساب</a>
+      <a href="login.html" class="btn-header-primary">ساخت حساب</a>
     </div>
     <a href="home.html" class="logo-box">
       <span>🎵</span>
@@ -111,45 +228,78 @@
   </header>
 
   <main>
-    <!-- 🔥 متن اصلی تغییر کرد -->
+    <!-- نشان بالای عنوان -->
+    <div class="hero-badge">🚀 پلتفرم نسل جدید هنرمندان</div>
+
+    <!-- عنوان اصلی با افکت درخشش -->
     <h1>جایی که هنر به صدا در می‌آید</h1>
     
-    <!-- 🔥 توضیحات کامل و حرفه‌ای -->
+    <!-- توضیحات جذاب -->
     <p class="subtitle">
       به دنیای <strong>Navaa</strong> خوش آمدید! اینجا یک پلتفرم اختصاصی برای هنرمندان، عکاسان و تولیدکنندگان محتواست. 
-      در Navaa می‌توانید آثار هنری و فایل‌های صوتی خود را با بالاترین کیفیت آپلود کنید، در گالری عمومی به نمایش بگذارید و با فروش آثار ویژه، از طریق کیف پول هوشمند درآمد کسب کنید. 
+      در Navaa می‌توانید آثار هنری و فایل‌های صوتی خود را با بالاترین کیفیت آپلود کنید، در گالری عمومی به نمایش بگذارید و با فروش آثار ویژه، از طریق کیف پول هوشمند <strong>درآمد کسب کنید</strong>. 
       با خرید پلن‌های اشتراکی (برنزی، طلایی و الماسی) محدودیت‌های آپلود خود را بردارید و از امکاناتی نظیر دانلود نامحدود، پخش آنلاین موسیقی و نشان‌های ویژه روی پروفایل بهره‌مند شوید. 
       هنر خود را به گوش جهانیان برسانید!
     </p>
     
-    <!-- دکمه شروع -->
-    <a href="login.html" class="btn-start">🚀 شروع کن</a>
+    <!-- دکمه‌های اصلی -->
+    <div class="cta-group">
+      <a href="login.html" class="btn-start">
+        <span>✨</span>
+        <span>ساخت حساب رایگان</span>
+      </a>
+      <a href="gallery.html" class="btn-explore">
+        <span>🎨</span>
+        <span>مشاهده گالری</span>
+      </a>
+    </div>
+
+    <!-- عنوان بخش ویژگی‌ها -->
+    <h2 class="features-title">امکاناتی که منتظرت هست</h2>
     
-    <!-- ویژگی‌ها با توضیحات بیشتر -->
+    <!-- ویژگی‌ها -->
     <div class="features">
       <div class="feature-card">
-        <div class="feature-icon">✨</div>
+        <div class="feature-icon-wrap">✨</div>
         <div class="feature-title">الهام روزانه</div>
         <div class="feature-desc">هر روز آثار جدید و خلاقانه از هنرمندان سراسر جهان را کشف کنید.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📸</div>
+        <div class="feature-icon-wrap">📸</div>
         <div class="feature-title">عکاسی هنری</div>
         <div class="feature-desc">با کیفیت‌ترین عکس‌های طبیعت، معماری و پرتره را با دیگران به اشتراک بگذارید.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🎵</div>
+        <div class="feature-icon-wrap">🎵</div>
         <div class="feature-title">موسیقی و صدا</div>
         <div class="feature-desc">آهنگ‌های خود را آپلود کنید، به صورت آنلاین پخش کنید و از هنر شنیداری لذت ببرید.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🎨</div>
+        <div class="feature-icon-wrap">🎨</div>
         <div class="feature-title">نقاشی و طراحی</div>
         <div class="feature-desc">آثار گرافیکی و طراحی‌های خود را به نمایش بگذارید و به فروش برسانید.</div>
       </div>
     </div>
+
+    <!-- بخش چرا Navaa (آمار و ارقام) -->
+    <div class="why-section">
+      <div class="stat-item">
+        <div class="stat-number">۱۰K+</div>
+        <div class="stat-label">آثار ارزشمند</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">۵K+</div>
+        <div class="stat-label">هنرمند فعال</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">۱۰۰٪</div>
+        <div class="stat-label">امنیت و پشتیبانی</div>
+      </div>
+    </div>
+
   </main>
 
   <footer>🎵 Navaa — ساخته‌شده با ❤️ برای هنرمندان</footer>
+
 </body>
 </html>
