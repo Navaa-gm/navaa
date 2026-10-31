@@ -42,7 +42,6 @@ function formatLimitSize(bytes) {
   return bytes + ' بایت';
 }
 
-// 🔥 سینک کردن اطلاعات کاربر با آرایه کاربران و دیتابیس ابری (اتمیک)
 async function syncCurrentUserToArray() {
     let users = await window.getUsersFromCloud() || [];
     if (users.length === 0) users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -54,7 +53,6 @@ async function syncCurrentUserToArray() {
     }
 }
 
-// 🎁 هدیه آپلود (اتمیک و ابری)
 async function giveUploadReward(uploaderEmail) {
   let users = await window.getUsersFromCloud() || [];
   if (users.length === 0) users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -79,7 +77,6 @@ async function giveUploadReward(uploaderEmail) {
   return { success: true, isAdmin: isUploaderAdmin };
 }
 
-// 📊 سیستم ۵۰ فایل رایگان ماهانه
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
   
@@ -129,7 +126,6 @@ function makeSVG(color1, color2, emoji, label) {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-// ================== قیمت‌گذاری ==================
 function botPriceItem(itemData) {
   const details = []; let basePrice = 10000; details.push({ label: 'قیمت پایه', value: basePrice });
   if (itemData.hasAudio) { basePrice += 30000; details.push({ label: '🎵 فایل صوتی', value: 30000 }); }
@@ -229,25 +225,24 @@ function initPremiumSection() {
   });
 }
 
-// ================== 🔥 مخفی و نمایش کردن اثر ==================
 window.toggleItemVisibility = async function(id) {
-    window.isUploading = true; // جلوگیری از تداخل
+    window.isUploading = true;
     
-    let items = await window.getItemsFromCloud() || [];
-    if (items.length === 0) items = [...DB.items];
-
+    let items = [...DB.items];
     const idx = items.findIndex(i => i.id === id);
     if (idx !== -1) {
         items[idx].isHidden = !items[idx].isHidden;
-        await window.saveItemsToCloud(items);
         DB.items = items;
         save();
         renderGallery();
+        
+        if (window.updateItemInCloud) {
+            await window.updateItemInCloud(items[idx]);
+        }
     }
     window.isUploading = false;
 };
 
-// ================== مودال نمایش جزئیات ==================
 function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
   if (!item) return;
@@ -279,11 +274,13 @@ function openDetail(id) {
     deleteBtn.onclick = async () => {
       if (confirm('حذف بشه؟')) {
         window.isUploading = true;
-        let cloudItems = await window.getItemsFromCloud() || [...DB.items];
-        const updatedItems = cloudItems.filter(p => p.id !== id);
-        DB.items = updatedItems;
+        DB.items = DB.items.filter(p => p.id !== id);
         save();
-        await window.saveItemsToCloud(updatedItems);
+        
+        if (window.deleteItemFromCloud) {
+            await window.deleteItemFromCloud(id);
+        }
+        
         window.isUploading = false;
         document.getElementById('modal').classList.add('hidden');
         renderGallery();
@@ -310,7 +307,6 @@ function bindDetailModal() {
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
 
-// ✅ گالری (با فیلتر مخفی بودن)
 function renderGallery() {
   const gallery = document.getElementById('gallery'); if (!gallery) return;
   gallery.innerHTML = '';
@@ -319,10 +315,9 @@ function renderGallery() {
   
   let list = [...DB.items].sort((a, b) => b.time - a.time);
   
-  // 🔥 فیلتر کردن آیتم‌های مخفی
   list = list.filter(item => {
     const isMyItem = item.uploadedByEmail === currentUser.email;
-    if (item.isHidden && !isMyItem && !isAdminUser) return false; // اگه مخفی بود و مال من نبود، نشون نده
+    if (item.isHidden && !isMyItem && !isAdminUser) return false;
     return true;
   });
 
@@ -360,11 +355,13 @@ function renderGallery() {
         e.stopPropagation(); 
         if(confirm('حذف بشه؟')) {
             window.isUploading = true;
-            let cloudItems = await window.getItemsFromCloud() || [...DB.items];
-            const updatedItems = cloudItems.filter(i => i.id !== item.id); 
-            DB.items = updatedItems;
+            DB.items = DB.items.filter(i => i.id !== item.id); 
             save(); 
-            await window.saveItemsToCloud(updatedItems);
+            
+            if (window.deleteItemFromCloud) {
+                await window.deleteItemFromCloud(item.id);
+            }
+            
             window.isUploading = false;
             renderGallery(); 
         }
@@ -379,7 +376,6 @@ function renderGallery() {
   });
 }
 
-// ================== فرم آپلود ==================
 function bindUploadModal() {
   const modal = document.getElementById('uploadModal'); 
   const form = document.getElementById('uploadForm');
@@ -393,7 +389,6 @@ function bindUploadModal() {
   const audioFileName = document.getElementById('audioFileName');
   const audioFileRemove = document.getElementById('audioFileRemove');
   
-  // 🔥 دکمه‌های هدر و نوار پایین
   const uploadBtnHeader = document.getElementById('uploadBtn');
   const uploadBtnNav = document.getElementById('uploadNavBtn');
   const uploadClose = document.getElementById('uploadClose');
@@ -412,7 +407,6 @@ function bindUploadModal() {
   let compressedImageData = null;
   window.compressedImageData = null;
 
-  // 🔥 تابع بستن مودال
   const closeModal = () => {
     modal.classList.add('hidden');
     form.reset();
@@ -422,7 +416,6 @@ function bindUploadModal() {
     window.compressedImageData = null;
   };
 
-  // 🔥 اتصال دکمه‌ها
   uploadBtnHeader?.addEventListener('click', () => modal.classList.remove('hidden'));
   uploadBtnNav?.addEventListener('click', () => modal.classList.remove('hidden'));
   uploadClose?.addEventListener('click', closeModal);
@@ -487,17 +480,24 @@ function bindUploadModal() {
           time: Date.now(), 
           uploadedByEmail: currentUser.email, 
           likes: 0,
-          isHidden: false // 🔥 پیش‌فرض روی مخفی نیست
+          isHidden: false 
       };
       
       window.isUploading = true; 
       
-      // 🔥 گرفتن آخرین لیست از سرور و اضافه کردن به آن (اتمیک)
-      let cloudItems = await window.getItemsFromCloud() || [];
-      const mergedItems = [...cloudItems, newItem];
+      // 🔥 ارسال مستقیم به کالکشن (بدون تداخل)
+      let success = true;
+      if (window.addItemToCloud) {
+          success = await window.addItemToCloud(newItem);
+      } else {
+          DB.items.push(newItem);
+          save();
+      }
       
-      DB.items = mergedItems; 
-      save();
+      if (!success) {
+          window.isUploading = false;
+          return;
+      }
       
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
@@ -505,16 +505,14 @@ function bindUploadModal() {
         await syncCurrentUserToArray(); 
       }
 
-      await window.saveItemsToCloud(mergedItems);
-      
       window.isUploading = false; 
       
       const reward = await giveUploadReward(currentUser.email);
       
-      // بستن فرم و ریست کردن
       closeModal();
       
-      renderGallery();
+      // گالری به صورت زنده توسط onSnapshot آپدیت میشه
+      
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
 
@@ -554,7 +552,6 @@ function renderBottomNav() {
   `;
 }
 
-// 🎨 تزریق CSS برای حالت شیشه‌ای مودال
 function injectGlassCSS() {
   if (document.getElementById('glass-css-inject')) return;
   const style = document.createElement('style');
@@ -582,7 +579,6 @@ function injectGlassCSS() {
   document.head.appendChild(style);
 }
 
-// ================== INIT ==================
 injectGlassCSS();
 setupUserHeader(); 
 initPremiumSection();
