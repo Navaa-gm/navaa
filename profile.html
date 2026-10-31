@@ -4,379 +4,667 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>پروفایل | Navaa</title>
-  
-  <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
-  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
+    :root {
+      --red: #ff2e4d;
+      --red-glow: rgba(255, 46, 77, 0.35);
+      --glass-bg: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+      --glass-border: rgba(255,255,255,0.1);
+      --glass-blur: blur(24px) saturate(180%);
+    }
+
     html { font-size: 14px; }
-    
-    .profile-avatar-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 1rem; }
-    .profile-avatar {
-      width: 110px; height: 110px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      box-shadow: 0 0 30px rgba(0,240,212,.5), 0 0 0 4px rgba(10,10,10,.8);
-      overflow: hidden; background-size: cover; background-position: center;
-      cursor: pointer; transition: transform .2s;
-    }
-    .profile-avatar:hover { transform: scale(1.03); }
-    .avatar-edit-btn {
-      position: absolute; bottom: 0; left: 0;
-      width: 34px; height: 34px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c; border: 3px solid var(--black-2);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; transition: transform .2s;
-      box-shadow: 0 0 12px rgba(0,240,212,.6);
-    }
-    .avatar-edit-btn:hover { transform: scale(1.15); }
-    .admin-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--gold), #e6a800);
-      color: #1a1100; font-size: .75rem; font-weight: 700;
-      padding: .25rem .8rem; border-radius: 999px;
-      margin-top: .3rem;
-      box-shadow: 0 0 12px rgba(255,201,60,.5);
-    }
-    .sub-status-active { color: var(--turquoise); font-weight: 700; }
-    .sub-status-inactive { color: var(--red); font-weight: 700; }
+    * { box-sizing: border-box; }
+    .hidden { display: none !important; }
 
-    .profile-tabs {
-      display: flex; gap: .3rem;
-      background: var(--black-3);
-      padding: .3rem; border-radius: 999px;
-      margin: 1rem 0;
-    }
-    .profile-tab {
-      flex: 1; background: transparent; border: none;
-      color: var(--text-dim); padding: .6rem .5rem;
-      border-radius: 999px; cursor: pointer;
-      font-family: inherit; font-size: .85rem;
-      font-weight: 700; transition: .2s;
-    }
-    .profile-tab.active {
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c;
-      box-shadow: 0 0 16px rgba(0,240,212,.4);
-    }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .profile-info { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
-    .info-row {
-      display: flex; justify-content: space-between; align-items: center;
-      background: var(--black-3); padding: .75rem .9rem;
-      border-radius: 10px; border: 1px solid var(--border);
-      font-size: .85rem; gap: .5rem;
-    }
-    .info-row span:first-child { color: var(--text-dim); font-size: .8rem; white-space: nowrap; }
-    .info-row strong { color: #fff; font-weight: 700; text-align: left; flex: 1; word-break: break-all; }
-    .edit-btn {
-      background: rgba(0,240,212,.15); border: 1px solid rgba(0,240,212,.4);
-      color: var(--turquoise); padding: .25rem .6rem; border-radius: 8px;
-      cursor: pointer; font-family: inherit; font-size: .7rem; font-weight: 700;
-      transition: .2s; white-space: nowrap;
-    }
-    .edit-btn:hover { background: rgba(0,240,212,.25); }
-
-    .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
-    .stat-box {
-      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
-      border: 1.5px solid rgba(0,240,212,.35); border-radius: 14px; padding: 1rem;
-      text-align: center;
-    }
-    .stat-box strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--turquoise); }
-    .stat-box span { font-size: .75rem; color: var(--text-dim); }
-
-    .wallet-card {
-      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.05));
-      border: 1.5px solid rgba(0,240,212,.4); border-radius: 16px; padding: 1.5rem 1.2rem;
-      text-align: center; margin-bottom: 1rem;
-      box-shadow: 0 0 24px rgba(0,240,212,.15);
-    }
-    .wallet-title { font-size: .9rem; color: #fff; font-weight: 700; margin-bottom: .8rem; }
-    .wallet-balance { display: flex; align-items: baseline; justify-content: center; gap: .4rem; margin-bottom: .6rem; }
-    .wallet-balance strong {
-      font-size: 2.4rem; font-weight: 800;
-      background: linear-gradient(90deg, var(--turquoise), var(--sky), var(--gold));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .wallet-balance span { color: var(--text-dim); font-size: .9rem; }
-    .wallet-hint { font-size: .75rem; color: var(--text-dim); margin-bottom: 1rem; }
-    .wallet-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
-    @media (max-width: 420px) { .wallet-actions-grid { grid-template-columns: 1fr; } }
-
-    .btn-transfer {
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c; border: none; padding: .75rem 1.2rem; border-radius: 999px;
-      cursor: pointer; font-family: inherit; font-size: .88rem; font-weight: 800;
-      box-shadow: 0 4px 16px rgba(0,240,212,.4); transition: all .25s;
-    }
-    .btn-transfer:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,240,212,.6); filter: brightness(1.1); }
-    .btn-transfer:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
-
-    .btn-withdraw {
-      background: linear-gradient(135deg, var(--gold), #ff8c00);
-      color: #1a1100; border: none; padding: .75rem 1.2rem; border-radius: 999px;
-      cursor: pointer; font-family: inherit; font-size: .88rem; font-weight: 800;
-      box-shadow: 0 4px 16px rgba(255,201,60,.4); transition: all .25s;
-    }
-    .btn-withdraw:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,201,60,.6); }
-    .btn-withdraw:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
-
-    .my-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem; }
-    @media (max-width: 420px) { .my-items-grid { grid-template-columns: 1fr; } }
-    .my-item {
-      background: var(--black-3); border: 1px solid var(--border); border-radius: 12px;
-      overflow: hidden; transition: .2s; position: relative;
-    }
-    .my-item:hover { border-color: var(--turquoise); box-shadow: 0 0 16px rgba(0,240,212,.2); transform: translateY(-2px); }
-    .my-item-thumb { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: var(--black-2); position: relative; }
-    .my-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .my-item-thumb .music-tag {
-      position: absolute; top: 6px; right: 6px;
-      background: linear-gradient(135deg, var(--gold), #e6a800); color: #1a1100;
-      width: 22px; height: 22px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: .65rem;
-      box-shadow: 0 0 8px rgba(255,201,60,.6);
-    }
-    .my-item-thumb .premium-tag {
-      position: absolute; top: 6px; left: 6px;
-      background: linear-gradient(135deg, #ffc93c, #ff8c00); color: #1a1100;
-      padding: .15rem .45rem; border-radius: 999px; font-size: .6rem; font-weight: 800;
-      box-shadow: 0 0 8px rgba(255,201,60,.6);
-    }
-    .my-item-del {
-      position: absolute; top: 6px; left: 6px;
-      width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(255,46,77,.9); color: #fff; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; font-size: .7rem;
-      transition: .2s; box-shadow: 0 2px 8px rgba(0,0,0,.4);
-      opacity: 0; transform: scale(.85); z-index: 3;
-    }
-    /* 🔥 دکمه مخفی/نمایش در پروفایل */
-    .my-item-visibility {
-      position: absolute; top: 6px; right: 34px; /* کنار دکمه حذف */
-      width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(0, 0, 0, 0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; font-size: .7rem;
-      transition: .2s; box-shadow: 0 2px 8px rgba(0,0,0,.4);
-      opacity: 0; transform: scale(.85); z-index: 3;
-    }
-    .my-item:hover .my-item-del, .my-item:hover .my-item-visibility { opacity: 1; transform: scale(1); }
-    .my-item-del:hover { background: var(--red); transform: scale(1.15) !important; }
-    .my-item-visibility:hover { background: var(--gold); color: #000; transform: scale(1.15) !important; }
-    
-    .my-item-info { padding: .5rem .6rem; }
-    .my-item-title {
-      margin: 0 0 .2rem; font-size: .78rem; color: #fff; font-weight: 700;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .my-item-meta { margin: 0; font-size: .68rem; color: var(--text-dim); display: flex; justify-content: space-between; }
-    .my-item-revenue { font-size: .68rem; color: var(--gold); margin-top: .3rem; font-weight: 700; }
-
-    .no-items {
-      text-align: center; padding: 1.5rem 1rem; color: var(--text-dim); font-size: .85rem;
-      background: var(--black-3); border-radius: 12px; border: 1px dashed var(--border);
+    body {
+      margin: 0; padding: 0;
+      background: var(--black, #0a0a0a);
+      color: #fff;
+      font-family: 'Vazirmatn', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    .purchase-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: .7rem; background: var(--black-3); border-radius: 10px; margin-bottom: .5rem; font-size: .82rem;
+    /* 🌌 پس‌زمینهٔ زنده */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -20%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0,240,212,0.12), transparent 35%),
+        radial-gradient(circle at 85% 15%, rgba(56,189,248,0.08), transparent 35%),
+        radial-gradient(circle at 75% 85%, rgba(255,46,77,0.12), transparent 40%),
+        radial-gradient(circle at 20% 80%, rgba(255,201,60,0.05), transparent 35%);
+      filter: blur(60px);
+      animation: bgFloat 24s ease-in-out infinite alternate;
     }
-    .purchase-row strong { color: #fff; }
-    .purchase-row small { color: var(--text-dim); font-size: .7rem; display: block; margin-top: .2rem; }
-    .purchase-amount { color: var(--red); font-weight: 700; }
-    .earn-amount { color: var(--turquoise); font-weight: 700; }
+    @keyframes bgFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-20px,15px) scale(1.06); }
+    }
 
-    .plan-limits-card {
-      background: linear-gradient(135deg,rgba(0,240,212,.08),rgba(56,189,248,.05));
-      border: 1.5px solid rgba(0,240,212,.4); border-radius: 16px;
-      padding: 1.2rem; text-align: right; margin-bottom: 1rem;
-    }
-    .plan-limits-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
-    .plan-limits-title { color: #fff; font-weight: 700; font-size: .9rem; }
-    .plan-badge-pill {
-      background: rgba(0,240,212,.15); color: #00f0d4;
-      padding: .2rem .7rem; border-radius: 999px;
-      font-size: .75rem; font-weight: 700;
-      border: 1px solid rgba(0,240,212,.3);
-    }
-    .limits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; font-size: .78rem; }
-    .limit-box { background: #1c1c1c; border-radius: 10px; padding: .6rem; }
-    .limit-box-label { color: #a0a0a0; font-size: .7rem; margin-bottom: .2rem; }
-    .limit-box-value { color: #ffc93c; font-weight: 800; }
+    header, main, nav.bottom-nav { position: relative; z-index: 1; }
 
-    .transfer-modal-wrap {
-      position: fixed; inset: 0; background: rgba(0,0,0,.95); z-index: 3000;
-      display: flex; align-items: center; justify-content: center; padding: 1rem;
-      backdrop-filter: blur(8px); overflow-y: auto;
+    /* 🌟 هدر شیشه‌ای */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 10, 10, 0.55);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-    .transfer-modal-card {
-      background: var(--black-2); border: 1.5px solid rgba(0,240,212,.4);
-      border-radius: 20px; padding: 1.8rem 1.5rem; max-width: 520px; width: 100%;
-      box-shadow: 0 0 60px rgba(0,240,212,.25), 0 20px 60px rgba(0,0,0,.8);
-      animation: popIn .3s ease-out;
+    .header-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    @keyframes popIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
-    .transfer-modal-card h2 {
-      margin: 0 0 .3rem; font-size: 1.3rem; text-align: center;
-      background: linear-gradient(90deg, var(--turquoise), var(--sky));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; font-weight: 800;
+    .logo-small {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
     }
-    .transfer-modal-card .transfer-sub { text-align: center; color: var(--text-dim); font-size: .85rem; margin: 0 0 1.2rem; }
-    .transfer-field { margin-bottom: 1rem; }
-    .transfer-field label { display: block; font-size: .82rem; color: #fff; font-weight: 700; margin-bottom: .4rem; }
-    .transfer-field input {
-      width: 100%; padding: .85rem 1rem; background: #0a0a0a;
-      border: 1.5px solid #2a2a2a; border-radius: 12px; color: #f0f0f0;
-      font-family: inherit; font-size: .95rem; outline: none; transition: all .25s;
-      direction: ltr; text-align: center;
+    .logo-icon-sm {
+      font-size: 1.6rem;
+      filter: drop-shadow(0 0 12px rgba(0,240,212,0.6));
     }
-    .transfer-field input:focus { border-color: var(--turquoise); box-shadow: 0 0 0 3px rgba(0,240,212,.12); }
-    .transfer-field input::placeholder { color: #555; font-size: .85rem; }
-
-    .transfer-recipient-info {
-      background: linear-gradient(135deg, rgba(0,240,212,.08), rgba(56,189,248,.04));
-      border: 1.5px solid rgba(0,240,212,.4); border-radius: 12px;
-      padding: .9rem 1rem; margin-bottom: 1rem; display: none;
+    .logo-name-sm {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff 0%, #00f0d4 45%, #38bdf8 70%, #ff2e4d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .transfer-recipient-info.show { display: block; }
-    .transfer-recipient-info .info-row {
-      display: flex; justify-content: space-between; font-size: .82rem;
-      padding: .2rem 0; border: none; background: none;
-    }
-    .transfer-recipient-info .info-row span { color: var(--text-dim); font-size: .78rem; }
-    .transfer-recipient-info .info-row strong { color: #fff; }
-
-    .transfer-actions { display: flex; flex-direction: column; gap: .6rem; margin-top: 1rem; }
-    .transfer-actions .btn-primary { padding: .9rem; border-radius: 12px; font-size: .95rem; }
-    .transfer-actions .btn-cancel {
-      background: transparent; border: 1px solid var(--border); color: var(--text-dim);
-      padding: .7rem; border-radius: 12px; cursor: pointer; font-family: inherit;
-      font-size: .85rem; font-weight: 600; transition: .2s;
-    }
-    .transfer-actions .btn-cancel:hover { border-color: var(--red); color: var(--red); }
-
-    .transfer-alert {
-      background: rgba(255,46,77,.1); border: 1px solid rgba(255,46,77,.4);
-      color: var(--red); padding: .6rem .9rem; border-radius: 10px;
-      font-size: .8rem; margin-bottom: .8rem; display: none;
-    }
-    .transfer-alert.show { display: block; }
-
-    .user-row {
-      display: flex; align-items: center; gap: .7rem; padding: .6rem .7rem;
-      border-radius: 8px; cursor: pointer; transition: all .15s; margin-bottom: .2rem;
-    }
-    .user-row:hover { background: rgba(0,240,212,.1); }
-
-    .subscription-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: .8rem .9rem; background: var(--black-3);
-      border-radius: 10px; margin-bottom: .5rem; font-size: .82rem;
-      border-right: 3px solid var(--gold);
-    }
-    .subscription-row.wallet { border-right-color: var(--turquoise); }
-    .subscription-row.card { border-right-color: var(--gold); }
-    .subscription-row strong { color: #fff; }
-    .subscription-row small { color: var(--text-dim); font-size: .7rem; display: block; margin-top: .2rem; }
-    .subscription-badge {
-      display: inline-block; padding: .15rem .5rem; border-radius: 999px;
-      font-size: .65rem; font-weight: 700; margin-right: .3rem;
-    }
-    .badge-wallet { background: rgba(0,240,212,.15); color: var(--turquoise); border: 1px solid rgba(0,240,212,.3); }
-    .badge-card { background: rgba(255,201,60,.15); color: var(--gold); border: 1px solid rgba(255,201,60,.3); }
 
     .profile-back-btn {
-      display: inline-flex; align-items: center; gap: .5rem;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky));
-      color: #001a1c !important; text-decoration: none;
-      padding: .65rem 1.2rem; border-radius: 999px;
-      font-size: .85rem; font-weight: 800;
-      box-shadow: 0 4px 20px rgba(0,240,212,.5);
-      transition: all .25s; position: relative; overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      color: #001a1c !important;
+      text-decoration: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(0,240,212,0.5), 0 0 18px rgba(255,46,77,0.12);
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
     }
     .profile-back-btn::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-      transform: translateX(-100%); transition: transform .6s;
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
     }
     .profile-back-btn:hover::before { transform: translateX(100%); }
     .profile-back-btn:hover {
       transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 0 1px rgba(0,240,212,.8), 0 8px 32px rgba(0,240,212,.7), 0 0 60px rgba(56,189,248,.4);
+      box-shadow: 0 0 0 1px rgba(0,240,212,0.8), 0 8px 32px rgba(0,240,212,0.6), 0 0 40px rgba(255,46,77,0.25);
     }
-    .profile-back-btn-icon { font-size: 1.1rem; transition: transform .3s; }
+    .profile-back-btn-icon { font-size: 1.1rem; transition: transform 0.3s; }
     .profile-back-btn:hover .profile-back-btn-icon { transform: translateX(-4px) scale(1.15); }
 
-    .btn-delete-account {
-      background: rgba(255, 46, 77, 0.1);
-      border: 1px solid rgba(255, 46, 77, 0.4);
-      color: var(--red);
-      padding: .8rem;
-      border-radius: 12px;
+    /* 🌟 کارت پروفایل */
+    .profile-main {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 1.5rem 1.2rem 110px;
+    }
+    .profile-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 2rem 1.5rem 1.8rem;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.6),
+        0 0 60px rgba(0,240,212,0.06),
+        0 0 50px rgba(255,46,77,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+    }
+
+    /* 👤 آواتار */
+    .profile-avatar-wrap { position: relative; width: 118px; height: 118px; margin: 0 auto 1rem; }
+    .profile-avatar {
+      width: 118px; height: 118px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.2rem;
+      box-shadow:
+        0 0 0 4px rgba(10,10,10,0.9),
+        0 0 28px rgba(0,240,212,0.5),
+        0 0 20px rgba(255,46,77,0.2);
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      transition: transform 0.25s;
+    }
+    .profile-avatar:hover { transform: scale(1.04); }
+    .avatar-edit-btn {
+      position: absolute; bottom: 0; left: 0;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      color: #001a1c; border: 3px solid var(--black-2, #111);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; transition: transform 0.2s;
+      box-shadow: 0 0 14px rgba(0,240,212,0.6);
+    }
+    .avatar-edit-btn:hover { transform: scale(1.15); }
+
+    #profileName {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0 0 0.2rem;
+      color: #fff;
+    }
+    .profile-email {
+      text-align: center;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.82rem;
+      margin: 0 0 0.6rem;
+      direction: ltr;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffc93c, var(--red));
+      color: #1a1100;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin: 0.2rem auto 0;
+      box-shadow: 0 0 16px rgba(255,46,77,0.4);
+      text-align: center;
+    }
+    #adminBadgeBox { text-align: center; }
+
+    .sub-status-active { color: var(--turquoise, #00f0d4); font-weight: 700; }
+    .sub-status-inactive { color: var(--red); font-weight: 700; }
+
+    /* 🔀 تب‌ها */
+    .profile-tabs {
+      display: flex;
+      gap: 0.3rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.3rem;
+      border-radius: 999px;
+      margin: 1.2rem 0;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .profile-tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-dim, #a0a0a0);
+      padding: 0.65rem 0.5rem;
+      border-radius: 999px;
+      cursor: pointer;
       font-family: inherit;
-      font-size: .85rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .profile-tab:hover { color: #fff; }
+    .profile-tab.active {
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      color: #001a1c;
+      box-shadow: 0 4px 18px rgba(0,240,212,0.4), 0 0 24px rgba(255,46,77,0.08);
+    }
+    .tab-content { display: none; animation: fadeIn 0.35s ease-out; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 📋 اطلاعات */
+    .profile-info { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 0.8rem 0.95rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.85rem;
+      gap: 0.5rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: all 0.25s;
+    }
+    .info-row:hover { border-color: rgba(0,240,212,0.25); background: rgba(255,255,255,0.045); }
+    .info-row span:first-child { color: var(--text-dim, #a0a0a0); font-size: 0.8rem; white-space: nowrap; }
+    .info-row strong { color: #fff; font-weight: 700; text-align: left; flex: 1; word-break: break-all; }
+
+    .edit-btn {
+      background: rgba(0,240,212,0.12);
+      border: 1px solid rgba(0,240,212,0.4);
+      color: var(--turquoise, #00f0d4);
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .edit-btn:hover {
+      background: rgba(0,240,212,0.25);
+      box-shadow: 0 0 14px rgba(0,240,212,0.2);
+    }
+
+    /* 📊 آمار */
+    .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
+    .stat-box {
+      background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04));
+      border: 1.5px solid rgba(0,240,212,0.3);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(0,240,212,0.06);
+      transition: all 0.3s;
+    }
+    .stat-box:hover {
+      border-color: rgba(255,46,77,0.4);
+      box-shadow: 0 0 24px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .stat-box strong {
+      display: block;
+      font-size: 1.9rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8), var(--red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-box span { font-size: 0.75rem; color: var(--text-dim, #a0a0a0); }
+
+    /* 💰 کیف پول */
+    .wallet-card {
+      background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04), rgba(255,46,77,0.05));
+      border: 1.5px solid rgba(0,240,212,0.35);
+      border-radius: 20px;
+      padding: 1.6rem 1.2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 0 30px rgba(0,240,212,0.1), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .wallet-title { font-size: 0.9rem; color: #fff; font-weight: 700; margin-bottom: 0.8rem; }
+    .wallet-balance { display: flex; align-items: baseline; justify-content: center; gap: 0.4rem; margin-bottom: 0.6rem; }
+    .wallet-balance strong {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8), #ffc93c, var(--red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .wallet-balance span { color: var(--text-dim, #a0a0a0); font-size: 0.9rem; }
+    .wallet-hint { font-size: 0.75rem; color: var(--text-dim, #a0a0a0); margin-bottom: 1rem; }
+    .wallet-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
+    @media (max-width: 420px) { .wallet-actions-grid { grid-template-columns: 1fr; } }
+
+    .btn-transfer {
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      color: #001a1c;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      box-shadow: 0 6px 20px rgba(0,240,212,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .btn-transfer:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0,240,212,0.5), 0 0 24px rgba(255,46,77,0.15);
+    }
+    .btn-transfer:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    .btn-withdraw {
+      background: linear-gradient(135deg, #ffc93c, var(--red));
+      color: #1a1100;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      box-shadow: 0 6px 20px rgba(255,46,77,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .btn-withdraw:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255,46,77,0.45);
+    }
+    .btn-withdraw:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    /* 🎨 آثار من */
+    .my-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 1rem; }
+    @media (max-width: 420px) { .my-items-grid { grid-template-columns: 1fr; } }
+    .my-item {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .my-item:hover {
+      border-color: rgba(0,240,212,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 22px rgba(0,240,212,0.12), 0 0 16px rgba(255,46,77,0.06);
+      transform: translateY(-3px);
+    }
+    .my-item-thumb { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0,0,0,0.3); position: relative; }
+    .my-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .my-item-thumb .music-tag {
+      position: absolute; top: 6px; right: 6px;
+      background: linear-gradient(135deg, #ffc93c, var(--red));
+      color: #1a1100;
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
+      box-shadow: 0 0 10px rgba(255,46,77,0.5);
+    }
+    .my-item-thumb .premium-tag {
+      position: absolute; top: 6px; left: 6px;
+      background: linear-gradient(135deg, #ffc93c, var(--red));
+      color: #1a1100;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(255,46,77,0.5);
+    }
+    .my-item-del {
+      position: absolute; top: 6px; left: 6px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,46,77,0.92); color: #fff; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      opacity: 0; transform: scale(0.85); z-index: 3;
+    }
+    .my-item-visibility {
+      position: absolute; top: 6px; right: 36px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0,0,0,0.65); color: #fff;
+      border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      opacity: 0; transform: scale(0.85); z-index: 3;
+    }
+    .my-item:hover .my-item-del,
+    .my-item:hover .my-item-visibility { opacity: 1; transform: scale(1); }
+    .my-item-del:hover { background: var(--red); transform: scale(1.15) !important; box-shadow: 0 0 16px var(--red-glow); }
+    .my-item-visibility:hover { background: #ffc93c; color: #000; transform: scale(1.15) !important; }
+
+    .my-item-info { padding: 0.55rem 0.65rem; }
+    .my-item-title {
+      margin: 0 0 0.25rem; font-size: 0.8rem; color: #fff; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .my-item-meta {
+      margin: 0; font-size: 0.68rem; color: var(--text-dim, #a0a0a0);
+      display: flex; justify-content: space-between;
+    }
+    .my-item-revenue { font-size: 0.68rem; color: #ffc93c; margin-top: 0.3rem; font-weight: 700; }
+
+    .no-items {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.12);
+    }
+
+    /* 🧾 ردیف‌ها */
+    .purchase-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.85rem;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    .purchase-row:hover { border-color: rgba(255,46,77,0.25); background: rgba(255,255,255,0.05); }
+    .purchase-row strong { color: #fff; }
+    .purchase-row small { color: var(--text-dim, #a0a0a0); font-size: 0.7rem; display: block; margin-top: 0.2rem; }
+    .purchase-amount { color: var(--red); font-weight: 800; }
+    .earn-amount { color: var(--turquoise, #00f0d4); font-weight: 800; }
+
+    /* 📊 محدودیت پلن */
+    .plan-limits-card {
+      background: linear-gradient(135deg, rgba(0,240,212,0.07), rgba(56,189,248,0.03), rgba(255,46,77,0.04));
+      border: 1.5px solid rgba(0,240,212,0.35);
+      border-radius: 18px;
+      padding: 1.2rem;
+      text-align: right;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .plan-limits-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+    .plan-limits-title { color: #fff; font-weight: 700; font-size: 0.9rem; }
+    .plan-badge-pill {
+      background: rgba(0,240,212,0.15);
+      color: #00f0d4;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid rgba(0,240,212,0.3);
+    }
+    .limits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; font-size: 0.78rem; }
+    .limit-box {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 0.65rem;
+    }
+    .limit-box-label { color: #a0a0a0; font-size: 0.7rem; margin-bottom: 0.25rem; }
+    .limit-box-value { color: #ffc93c; font-weight: 800; }
+
+    /* 💎 اشتراک */
+    .subscription-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0.95rem;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+      border-right: 3px solid #ffc93c;
+    }
+    .subscription-row.wallet { border-right-color: var(--turquoise, #00f0d4); }
+    .subscription-row.card { border-right-color: #ffc93c; }
+    .subscription-row strong { color: #fff; }
+    .subscription-row small { color: var(--text-dim, #a0a0a0); font-size: 0.7rem; display: block; margin-top: 0.2rem; }
+    .subscription-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-right: 0.3rem;
+    }
+    .badge-wallet { background: rgba(0,240,212,0.15); color: var(--turquoise, #00f0d4); border: 1px solid rgba(0,240,212,0.3); }
+    .badge-card { background: rgba(255,201,60,0.15); color: #ffc93c; border: 1px solid rgba(255,201,60,0.3); }
+
+    /* 🚪 خروج و حذف */
+    #logoutBtn2.btn-ghost-sm {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #a0a0a0;
+      padding: 0.85rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
-      transition: .2s;
-      margin-top: .5rem;
+      width: 100%;
+      margin-top: 0.6rem;
+      transition: all 0.25s;
+    }
+    #logoutBtn2.btn-ghost-sm:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .btn-delete-account {
+      background: rgba(255,46,77,0.08);
+      border: 1px solid rgba(255,46,77,0.35);
+      color: var(--red);
+      padding: 0.85rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 0.6rem;
       width: 100%;
     }
     .btn-delete-account:hover {
-      background: rgba(255, 46, 77, 0.2);
+      background: rgba(255,46,77,0.18);
       border-color: var(--red);
+      box-shadow: 0 0 20px rgba(255,46,77,0.2);
     }
 
-    /* 🌟 نوار پایین و دایره عکس پروفایل */
-    .profile-main { padding-bottom: 100px !important; }
-
+    /* 🌟 نوار پایین */
     .bottom-nav {
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
-      height: 64px !important;
+      height: 66px !important;
       padding: 0.2rem 3% !important;
-      border-radius: 16px 16px 0 0 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+      border-radius: 20px 20px 0 0 !important;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
       z-index: 1000 !important;
-      background: var(--black-2) !important;
+      background: rgba(10,10,10,0.72) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 0 !important;
     }
-
     .nav-pill-btn {
-      padding: 0.3rem 0.8rem !important;
+      padding: 0.35rem 0.85rem !important;
       font-size: 0.75rem !important;
       gap: 0.3rem !important;
-      border-radius: 10px !important;
+      border-radius: 11px !important;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text-dim, #a0a0a0);
+      font-family: inherit;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
     }
-    .nav-pill-icon { font-size: 1rem !important; }
-
+    .nav-pill-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(0,240,212,0.35);
+      box-shadow: 0 0 16px rgba(0,240,212,0.12);
+      transform: translateY(-1px);
+    }
+    .nav-pill-icon { font-size: 1rem !important; position: relative; display: inline-flex; }
+    .pill-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      margin-right: 2px;
+      box-shadow: 0 0 8px var(--red);
+      animation: pulseDot 1.6s infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity: 1; }
+      50%     { opacity: 0.4; }
+    }
     .nav-center-profile {
-      position: relative !important; 
-      width: 56px !important;
-      height: 56px !important;
-      min-width: 56px !important;
-      min-height: 56px !important;
-      flex: 0 0 56px !important; 
+      position: relative !important;
+      width: 58px !important;
+      height: 58px !important;
+      min-width: 58px !important;
+      min-height: 58px !important;
+      flex: 0 0 58px !important;
       border-radius: 50% !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       padding: 0 !important;
-      margin-top: -18px !important;
+      margin-top: -20px !important;
       box-sizing: border-box !important;
+      text-decoration: none;
     }
-    
     .profile-btn-avatar {
       width: 100% !important;
       height: 100% !important;
@@ -384,10 +672,12 @@
       background-size: cover !important;
       background-position: center !important;
       box-sizing: border-box !important;
-      border: 3px solid var(--black-2) !important;
-      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important; 
+      border: 3px solid #0a0a0a !important;
+      box-shadow:
+        0 0 0 2px rgba(0,240,212,0.6),
+        0 0 22px rgba(0,240,212,0.45),
+        0 0 18px rgba(255,46,77,0.15) !important;
     }
-
     .nav-center-profile .nav-icon {
       width: 100% !important;
       height: 100% !important;
@@ -395,12 +685,13 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8)) !important;
       color: #001a1c !important;
-      font-size: 1.2rem !important;
+      font-size: 1.25rem !important;
       box-sizing: border-box !important;
+      border: 3px solid #0a0a0a !important;
+      box-shadow: 0 0 22px rgba(0,240,212,0.5) !important;
     }
-
     .nav-center-label {
       position: absolute !important;
       bottom: -18px !important;
@@ -411,59 +702,217 @@
       color: #fff !important;
     }
 
-    /* 🌟 افکت شیشه‌ای مودال اشتراک */
+    /* ==========================================
+       🔥 مودال‌ها با شیشهٔ پرمیوم + قرمز
+       ========================================== */
     .modal {
-      background: rgba(0, 0, 0, 0.6) !important;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(0,240,212,0.10), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(56,189,248,0.10), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255,46,77,0.08), transparent 50%),
+        rgba(5,8,10,0.78) !important;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      position: fixed; inset: 0;
       z-index: 2000 !important;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      box-sizing: border-box;
     }
-
     .modal-content {
-      background: rgba(20, 24, 28, 0.35) !important; 
-      backdrop-filter: blur(40px) saturate(180%) !important; 
-      -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.05) !important;
-      border-radius: 24px !important;
+      background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
+      backdrop-filter: blur(40px) saturate(220%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
+      border: 1px solid rgba(255,255,255,0.14) !important;
+      border-top: 1px solid rgba(255,255,255,0.28) !important;
+      box-shadow:
+        0 30px 70px rgba(0,0,0,0.8),
+        0 0 50px rgba(0,240,212,0.06),
+        0 0 40px rgba(255,46,77,0.06),
+        inset 0 0 30px rgba(255,255,255,0.02) !important;
+      border-radius: 28px !important;
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      margin: 0 auto;
+      position: relative;
     }
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar-track { background: transparent; }
+    .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+    .modal-content::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.5); }
 
     .modal-close {
       position: absolute;
       top: 15px;
-      left: 15px; 
-      width: 38px;
-      height: 38px;
+      left: 15px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      background: rgba(255,255,255,0.07) !important;
+      border: 1px solid rgba(255,255,255,0.16) !important;
       color: #fff !important;
-      font-size: 1.2rem !important;
+      font-size: 1.15rem !important;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 2100 !important;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      pointer-events: auto !important;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
     }
     .modal-close:hover {
-      background: rgba(255, 46, 77, 0.9) !important;
+      background: var(--red) !important;
       border-color: var(--red) !important;
-      transform: rotate(90deg) scale(1.1);
+      transform: rotate(90deg) scale(1.08);
+      box-shadow: 0 0 24px var(--red-glow);
     }
 
-    /* 🔥 دکمه انصراف جدید */
+    /* 💎 پلن‌ها */
+    .sub-content h2 {
+      text-align: center;
+      margin: 0.4rem 0 0.3rem;
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+    .sub-content .sub-desc {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.88rem;
+    }
+    .sub-content .sub-icon {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      filter: drop-shadow(0 0 16px rgba(0,240,212,0.6));
+    }
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      padding: 0 1.5rem 1.5rem;
+    }
+    .plans .plan {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      transition: 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .plans .plan:hover {
+      background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+      transform: translateY(-5px);
+      border-color: rgba(0,240,212,0.4);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 26px rgba(0,240,212,0.12);
+    }
+    .plan-silver {
+      background: linear-gradient(135deg, rgba(255,201,60,0.1), rgba(255,46,77,0.04)) !important;
+      border: 1px solid rgba(255,201,60,0.4) !important;
+      box-shadow: 0 0 24px rgba(255,201,60,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .plan-silver:hover {
+      background: linear-gradient(135deg, rgba(255,201,60,0.16), rgba(255,46,77,0.07)) !important;
+      border-color: rgba(255,201,60,0.7) !important;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 32px rgba(255,201,60,0.2);
+    }
+    .plan-badge {
+      position: absolute;
+      top: 0.7rem;
+      left: 0.7rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #1a1200;
+      background: linear-gradient(135deg, #ffc93c, var(--red));
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(255,46,77,0.3);
+    }
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .plan-name { color: #fff; font-weight: 800; font-size: 0.95rem; }
+    .plan-duration { color: #777; font-size: 0.72rem; }
+    .plan-price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-bottom: 0.9rem;
+    }
+    .price-num { font-size: 1.6rem; font-weight: 900; color: #fff; }
+    .price-unit { color: #777; font-size: 0.8rem; }
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.82rem;
+      color: #bbb;
+      line-height: 1.9;
+    }
+    .plan-btn {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.9rem;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      box-shadow: 0 6px 20px rgba(0,240,212,0.28), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .plan-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.42); }
+    .plan-btn:hover::before { transform: translateX(100%); }
+
+    .sub-hint {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #a0a0a0;
+      padding: 0 0 1.5rem 0;
+    }
     .btn-cancel-sub {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255,255,255,0.03);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.1);
       color: #a0a0a0;
       padding: 1rem;
       border-radius: 14px;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       width: 100%;
@@ -475,10 +924,199 @@
       gap: 0.5rem;
     }
     .btn-cancel-sub:hover {
-      background: rgba(255, 46, 77, 0.1);
-      border-color: rgba(255, 46, 77, 0.4);
+      background: rgba(255,46,77,0.1);
+      border-color: rgba(255,46,77,0.4);
       color: var(--red);
-      box-shadow: 0 0 20px rgba(255, 46, 77, 0.15);
+      box-shadow: 0 0 20px rgba(255,46,77,0.15);
+    }
+
+    /* 💸 مودال انتقال وجه */
+    .transfer-modal-wrap {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(0,240,212,0.10), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255,46,77,0.10), transparent 40%),
+        rgba(5,8,10,0.8);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      overflow-y: auto;
+    }
+    .transfer-modal-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      backdrop-filter: blur(40px) saturate(220%);
+      -webkit-backdrop-filter: blur(40px) saturate(220%);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-top: 1px solid rgba(255,255,255,0.28);
+      border-radius: 24px;
+      padding: 1.8rem 1.5rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow:
+        0 30px 70px rgba(0,0,0,0.8),
+        0 0 50px rgba(0,240,212,0.08),
+        0 0 40px rgba(255,46,77,0.08),
+        inset 0 0 30px rgba(255,255,255,0.02);
+      animation: popIn 0.3s ease-out;
+      position: relative;
+    }
+    .transfer-modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .transfer-modal-card h2 {
+      margin: 0 0 0.3rem;
+      font-size: 1.35rem;
+      text-align: center;
+      background: linear-gradient(90deg, #fff, var(--turquoise, #00f0d4), var(--red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+    }
+    .transfer-modal-card .transfer-sub {
+      text-align: center;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.85rem;
+      margin: 0 0 1.2rem;
+    }
+    .transfer-field { margin-bottom: 1rem; }
+    .transfer-field label {
+      display: block;
+      font-size: 0.82rem;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .transfer-field input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: rgba(0,0,0,0.35);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #f0f0f0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.25s;
+      direction: ltr;
+      text-align: center;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .transfer-field input:focus {
+      border-color: var(--turquoise, #00f0d4);
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .transfer-field input::placeholder { color: #555; font-size: 0.85rem; }
+
+    .transfer-recipient-info {
+      background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04));
+      border: 1.5px solid rgba(0,240,212,0.35);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .transfer-recipient-info.show { display: block; }
+    .transfer-recipient-info .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      padding: 0.2rem 0;
+      border: none;
+      background: none;
+      box-shadow: none;
+    }
+    .transfer-recipient-info .info-row span { color: var(--text-dim, #a0a0a0); font-size: 0.78rem; }
+    .transfer-recipient-info .info-row strong { color: #fff; }
+
+    .transfer-actions { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
+    .transfer-actions .btn-primary {
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
+      color: #001a1c;
+      border: none;
+      padding: 0.95rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(0,240,212,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .transfer-actions .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,240,212,0.45);
+    }
+    .transfer-actions .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .transfer-actions .btn-cancel {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #a0a0a0;
+      padding: 0.8rem;
+      border-radius: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.25s;
+    }
+    .transfer-actions .btn-cancel:hover {
+      border-color: rgba(255,46,77,0.4);
+      color: var(--red);
+      background: rgba(255,46,77,0.08);
+    }
+
+    .transfer-alert {
+      background: rgba(255,46,77,0.1);
+      border: 1px solid rgba(255,46,77,0.4);
+      color: var(--red);
+      padding: 0.65rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      margin-bottom: 0.8rem;
+      display: none;
+    }
+    .transfer-alert.show { display: block; }
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+    }
+    .user-row:hover {
+      background: rgba(0,240,212,0.08);
+      box-shadow: inset 0 0 0 1px rgba(0,240,212,0.2);
+    }
+
+    /* 📱 موبایل */
+    @media (max-width: 520px) {
+      .profile-main { padding: 1rem 0.8rem 110px; }
+      .profile-card { padding: 1.8rem 1.1rem 1.5rem; border-radius: 24px; }
+      .profile-tab { font-size: 0.75rem; padding: 0.55rem 0.3rem; }
+      .plans { padding: 0 1rem 1rem; }
     }
   </style>
 </head>
@@ -585,9 +1223,9 @@
         <div id="earningsList"></div>
       </div>
 
-      <button id="renewSubBtn" class="btn-primary full" style="margin-top:1.2rem;">✨ تمدید / ارتقای اشتراک</button>
+      <button id="renewSubBtn" class="btn-primary full" style="margin-top:1.2rem;width:100%;padding:0.95rem;border:none;border-radius:14px;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;color:#001a1c;background:linear-gradient(135deg,#00f0d4,#38bdf8);box-shadow:0 8px 24px rgba(0,240,212,0.3),inset 0 1px 0 rgba(255,255,255,0.3);">✨ تمدید / ارتقای اشتراک</button>
       <button id="logoutBtn2" class="btn-ghost-sm full">🚪 خروج از حساب</button>
-      
+
       <button id="deleteAccountBtn" class="btn-delete-account">🗑️ حذف کامل حساب کاربری</button>
     </div>
   </main>
@@ -597,12 +1235,12 @@
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
-      
-      <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
-      <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
-      <p class="sub-desc" style="text-align:center; margin-bottom: 2rem;">پلن مناسب خودت رو انتخاب کن</p>
 
-      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
+      <div class="sub-icon">✨</div>
+      <h2>پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
+
+      <div class="plans">
         <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
           <div class="plan-header">
             <span class="plan-name">🥉 برنزی</span>
@@ -616,8 +1254,8 @@
             <li>✅ آپلود ۲۰ عکس در ماه</li>
             <li>✅ نمایش نام هنرمند</li>
             <li>✅ دریافت لایک</li>
-            <li>❌ آپلود موسیقی</li>
-            <li>❌ دانلود نامحدود</li>
+            <li style="color:#666;">❌ آپلود موسیقی</li>
+            <li style="color:#666;">❌ دانلود نامحدود</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
@@ -637,7 +1275,7 @@
             <li>✅ آپلود ۵ آهنگ در ماه</li>
             <li>✅ نمایش نام هنرمند</li>
             <li>✅ دانلود نامحدود عکس</li>
-            <li>❌ پخش بدون تبلیغ</li>
+            <li style="color:#666;">❌ پخش بدون تبلیغ</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
@@ -662,9 +1300,8 @@
         </div>
       </div>
 
-      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding: 0 0 1.5rem 0;">💳 پرداخت امن از طریق درگاه بانکی</p>
-      
-      <!-- 🔥 دکمه انصراف جدید -->
+      <p class="sub-hint">💳 پرداخت امن از طریق درگاه بانکی</p>
+
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
         <button type="button" class="btn-cancel-sub" id="cancelSubBtn" style="margin-top: 0;">
           <span>✕</span>
@@ -776,14 +1413,14 @@
       let label = '✅ فعال';
       const plans = { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی', admin: '🛡️ ادمین' };
       if (user.subscriptionPlan) label += ` — ${plans[user.subscriptionPlan] || ''}`;
-      
+
       if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
       subHtml = `<span class="sub-status-active">${label}</span>`;
 
       if (user.subscriptionExpiry && user.subscriptionPlan !== 'admin') {
         const expDate = new Date(user.subscriptionExpiry);
         const daysLeft = Math.ceil((expDate - Date.now()) / (1000 * 60 * 60 * 24));
-        
+
         if (daysLeft > 0) {
           subTimeHtml = `
             <div class="info-row">
@@ -816,7 +1453,7 @@
 
     const box = document.getElementById('profileInfoBox');
     if (!box) return;
-    
+
     box.innerHTML = `
       <div class="info-row">
         <span>👤 نام:</span>
@@ -892,8 +1529,7 @@
     user = JSON.parse(localStorage.getItem(CURRENT_KEY));
 
     alert('✅ به‌روزرسانی شد!');
-    
-    // 🔥 ارسال تغییرات به سرور
+
     if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
 
     renderInfo();
@@ -957,7 +1593,6 @@
         user.avatar = imgData;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
 
-        // 🔥 ارسال تغییرات به سرور
         if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
 
         loadAvatar();
@@ -1026,7 +1661,7 @@
   async function toggleMyItemVisibility(id) {
     if (!user) return;
     window.isUploading = true;
-    
+
     let items = await window.getItemsFromCloud() || [];
     if (items.length === 0) items = [...JSON.parse(localStorage.getItem(ITEMS_KEY)) || []];
 
@@ -1034,9 +1669,9 @@
     if (idx !== -1) {
       items[idx].isHidden = !items[idx].isHidden;
       localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-      
+
       if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
-      
+
       alert(items[idx].isHidden ? '🙈 اثر شما مخفی شد و فقط برای خودتان قابل مشاهده است.' : '👁️ اثر شما برای همه نمایش داده می‌شود.');
       renderMyItems();
     }
@@ -1045,24 +1680,22 @@
 
   async function deleteMyItem(id) {
     if (!user) return;
-    // گرفتن آخرین لیست از سرور
     let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     if (window.getItemsFromCloud) {
         try { items = await window.getItemsFromCloud(); } catch(e) {}
     }
-    
+
     const item = items.find(i => i.id === id);
     if (!item) return;
     const isMine = item.uploadedBy === user.id || item.uploadedByEmail === user.email;
     if (!isMine && !isAdmin) return alert('❌ دسترسی نداری!');
     if (!confirm(`🗑️ حذف «${item.title}»؟`)) return;
-    
+
     items = items.filter(i => i.id !== id);
     localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-    
-    // 🔥 ارسال تغییرات به سرور
+
     if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
-    
+
     alert('🗑️ حذف شد!');
     renderMyItems();
     renderWallet();
@@ -1219,7 +1852,7 @@
           <input type="text" id="userSearch" placeholder="🔍 جستجو در اسم، ایمیل یا شماره..."
             style="
               width:100%;padding:.7rem 1rem;
-              background:#0a0a0a;border:1.5px solid #2a2a2a;
+              background:rgba(0,0,0,0.35);border:1.5px solid rgba(255,255,255,0.1);
               border-radius:10px;color:#f0f0f0;font-family:inherit;
               font-size:.85rem;outline:none;margin-bottom:.6rem;
               text-align:right;direction:rtl;
@@ -1227,7 +1860,7 @@
 
           <div id="usersList" style="
             max-height:220px;overflow-y:auto;
-            background:#0a0a0a;border:1.5px solid #2a2a2a;
+            background:rgba(0,0,0,0.35);border:1.5px solid rgba(255,255,255,0.1);
             border-radius:12px;padding:.4rem;
           ">
             ${transferableUsers.length === 0 
@@ -1283,7 +1916,7 @@
           <input type="number" id="transferAmount" placeholder="حداقل ۱,۰۰۰" min="${MIN_TRANSFER}" max="${balance}">
         </div>
 
-        <div style="background:#1c1c1c;border-radius:10px;padding:.7rem .9rem;font-size:.75rem;color:#a0a0a0;text-align:center;">
+        <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:.75rem .9rem;font-size:.78rem;color:#a0a0a0;text-align:center;">
           💰 موجودی تو: <strong style="color:#ffc93c;">${formatMoney(balance)}</strong> تومان
         </div>
 
@@ -1354,7 +1987,7 @@
       const email = row.dataset.email;
       recipientInput.value = email;
       recipientInput.dispatchEvent(new Event('input'));
-      
+
       setTimeout(() => {
         recipientInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
@@ -1400,7 +2033,6 @@
       if (val > balance) amountInput.value = balance;
     });
 
-    // 🔥 اصلاح انتقال: تبدیل به async و دریافت اطلاعات از سرور
     overlay.querySelector('#transferConfirm').addEventListener('click', async () => {
       hideAlert();
       if (!foundRecipient) { showAlert('❌ اول شناسه گیرنده رو وارد کن یا از لیست انتخاب کن!'); return; }
@@ -1416,7 +2048,6 @@
       confirmBtn.textContent = '⏳ در حال انتقال...';
 
       try {
-        // گرفتن آخرین اطلاعات از سرور برای جلوگیری از تداخل
         let latestUsers = users;
         if (window.getUsersFromCloud) {
             const cloudUsers = await window.getUsersFromCloud();
@@ -1435,7 +2066,7 @@
             confirmBtn.textContent = '✅ تایید و انتقال';
             return; 
         }
-        
+
         if ((latestUsers[senderIdx].balance || 0) < amount) { 
             showAlert('❌ موجودی کافی نداری! (اطلاعات از سرور آپدیت شد)'); 
             confirmBtn.disabled = false;
@@ -1444,14 +2075,12 @@
             return; 
         }
 
-        // کم کردن از مبدا و اضافه کردن به مقصد
         latestUsers[senderIdx].balance = (latestUsers[senderIdx].balance || 0) - amount;
         latestUsers[recipientIdx].balance = (latestUsers[recipientIdx].balance || 0) + amount;
-        
+
         localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
         users = latestUsers;
 
-        // 🔥 ذخیره در سرور (فایربیس)
         if (window.saveUsersToCloud) {
           await window.saveUsersToCloud(users);
         }
@@ -1583,7 +2212,6 @@
 
     if (!confirm(`💸 درخواست برداشت ${formatMoney(amt)} تومان ثبت شود؟\nمبلغ از موجودی شما قفل می‌شود.`)) return;
 
-    // 🔥 خواندن از سرور، کم کردن، و ذخیره مجدد
     try {
         let latestUsers = users;
         if (window.getUsersFromCloud) {
@@ -1598,7 +2226,7 @@
         latestUsers[myIdx].balance -= amt;
         localStorage.setItem(USERS_KEY, JSON.stringify(latestUsers));
         users = latestUsers;
-        
+
         user.balance = latestUsers[myIdx].balance;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
 
@@ -1614,9 +2242,9 @@
           time: Date.now()
         });
         localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-        
+
         if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
-        
+
         alert('✅ درخواست برداشت ثبت شد! مبلغ از موجودی شما کسر شد.');
         renderWallet();
     } catch (e) {
@@ -1676,20 +2304,19 @@
       alert('❌ ادمین نمی‌تونه حسابش رو از اینجا حذف کنه!');
       return;
     }
-    
+
     const confirmText = prompt(
       '⚠️ هشدار جدی!\n\n' +
       'با این کار تمام اطلاعات شما، آثار، کیف پول و اشتراک شما برای همیشه پاک می‌شود!\n' +
       'آیا مطمئن هستید؟\n\n' +
       'برای تایید کلمه DELETE را بنویسید:'
     );
-    
+
     if (confirmText !== 'DELETE') {
       if (confirmText !== null) alert('❌ لغو شد! (باید DELETE بنویسی)');
       return;
     }
 
-    // 🔥 خواندن از سرور، حذف، و ذخیره مجدد
     try {
         let latestUsers = users;
         if (window.getUsersFromCloud) {
@@ -1775,11 +2402,10 @@
     });
   }
 
-  // 🔥 این تابع توسط فایربیس صدا زده میشه تا اطلاعات مرورگر دیگه رو بگیره
   window.updateUserDataFromCloud = function(cloudUsers) {
       users = cloudUsers;
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      
+
       const freshMe = users.find(u => u.email === user.email);
       if (freshMe) {
         user = freshMe;
@@ -1805,7 +2431,6 @@
   }
   </script>
 
-  <!-- 🔥 اتصال به Firebase و سینک زنده کاربران (دریافت آنی پول) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1824,7 +2449,6 @@
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
     const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
 
-    // تابع ذخیره کاربران در دیتابیس ابری
     window.saveUsersToCloud = async function(usersArray) {
       const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
       try {
@@ -1856,7 +2480,6 @@
       }
     };
 
-    // لود اولیه
     async function loadInitialUsers() {
         try {
             const snap = await getDoc(docRefUsers);
@@ -1868,7 +2491,6 @@
     }
     loadInitialUsers();
 
-    // 🔥 گوش دادن زنده به تغییرات کاربران (اگه کسی به ما پول زد، آنی موجودی بالا بره)
     onSnapshot(docRefUsers, (docSnap) => {
       if (docSnap.exists()) {
         const cloudUsers = JSON.parse(docSnap.data().value);
