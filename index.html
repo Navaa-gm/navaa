@@ -2,13 +2,703 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=login.html">
-  
-  <!-- 🔥 لوگوی سایت -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود / ثبت‌نام | Navaa</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  
-  <title>Navaa | در حال انتقال...</title>
-  <script>window.location.href = "login.html";</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    html { font-size: 14px; }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      background: var(--black, #0a0a0a);
+    }
+
+    /* 🌌 پس‌زمینهٔ زنده */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -25%;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(0,240,212,0.18), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(56,189,248,0.14), transparent 35%),
+        radial-gradient(circle at 70% 80%, rgba(255,46,77,0.15), transparent 38%),
+        radial-gradient(circle at 25% 75%, rgba(255,201,60,0.08), transparent 35%);
+      filter: blur(55px);
+      animation: bgFloat 22s ease-in-out infinite alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes bgFloat {
+      0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+      50%  { transform: translate(-15px,10px) rotate(3deg) scale(1.05); }
+      100% { transform: translate(15px,-10px) rotate(-2deg) scale(1.03); }
+    }
+
+    /* 🎞️ بافت نویز */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    /* 🏠 دکمه بازگشت */
+    .back-home-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10;
+      color: var(--text-dim, #a0a0a0);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .back-home-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(0,240,212,0.5);
+      box-shadow: 0 0 20px rgba(0,240,212,0.2), 0 8px 24px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    /* 💎 کارت شیشه‌ای */
+    .auth-container {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 2.4rem 2rem 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(0,240,212,0.08),
+        0 0 40px rgba(255,46,77,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: cardIn 0.5s cubic-bezier(.175,.885,.32,1.275);
+    }
+
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* 🎵 برند */
+    .auth-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.6rem;
+    }
+    .auth-brand-icon {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+      filter: drop-shadow(0 0 14px rgba(0,240,212,0.7));
+      animation: brandPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes brandPulse {
+      0%,100% { transform: scale(1);    filter: drop-shadow(0 0 14px rgba(0,240,212,0.7)); }
+      50%     { transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(0,240,212,1)); }
+    }
+    .auth-brand-name {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff 0%, #00f0d4 40%, #38bdf8 70%, #ff2e4d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* 🔀 تب‌ها */
+    .auth-tabs {
+      position: relative;
+      display: flex;
+      background: rgba(0,0,0,0.38);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 0.28rem;
+      margin-bottom: 1.6rem;
+    }
+    .auth-tab-indicator {
+      position: absolute;
+      top: 0.28rem;
+      bottom: 0.28rem;
+      right: 0.28rem;
+      width: calc(50% - 0.28rem);
+      border-radius: 11px;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      box-shadow: 0 4px 16px rgba(0,240,212,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+      z-index: 1;
+    }
+    .auth-tabs[data-active="signup"] .auth-tab-indicator {
+      transform: translateX(-100%);
+    }
+    .auth-tab {
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      padding: 0.75rem;
+      background: transparent;
+      border: none;
+      color: var(--text-dim, #a0a0a0);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .auth-tab.active { color: #001a1c; }
+
+    /* 🧾 فرم‌ها */
+    .auth-form { display: none; animation: fadeIn 0.35s ease-out; }
+    .auth-form.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .auth-form h2 {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 0 0 0.3rem;
+      text-align: center;
+      letter-spacing: -0.3px;
+    }
+    .auth-sub {
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.82rem;
+      text-align: center;
+      margin: 0 0 1.5rem;
+    }
+
+    .auth-field { margin-bottom: 0.95rem; }
+    .auth-field label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .auth-field .label-hint {
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+    .auth-field .req {
+      color: #ff2e4d;
+      font-weight: 800;
+    }
+
+    /* ✏️ اینپوت‌ها */
+    .auth-form input[type="email"],
+    .auth-form input[type="password"],
+    .auth-form input[type="text"],
+    .auth-form input[type="tel"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      box-sizing: border-box;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .auth-form input::placeholder { color: #555; font-size: 0.85rem; }
+    .auth-form input:hover {
+      border-color: rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.45);
+    }
+    .auth-form input:focus {
+      border-color: rgba(0,240,212,0.7);
+      background: rgba(0,0,0,0.5);
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* 👁️ نمایش رمز */
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-left: 2.8rem; }
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      left: 0.55rem;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-dim, #a0a0a0);
+      cursor: pointer;
+      font-size: 0.95rem;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .password-toggle:hover {
+      color: var(--turquoise, #00f0d4);
+      background: rgba(0,240,212,0.08);
+    }
+
+    /* ☑️ چک‌باکس */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0.4rem 0 1rem;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-row input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border-radius: 5px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      margin: 0;
+    }
+    .checkbox-row input[type="checkbox"]:hover { border-color: rgba(0,240,212,0.5); }
+    .checkbox-row input[type="checkbox"]:checked {
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      border-color: transparent;
+      box-shadow: 0 0 12px rgba(0,240,212,0.4);
+    }
+    .checkbox-row input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #001a1c;
+      font-size: 0.75rem;
+      font-weight: 900;
+    }
+
+    /* 🚀 دکمه اصلی */
+    .btn-primary.full {
+      width: 100%;
+      padding: 0.95rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      box-shadow: 0 8px 24px rgba(0,240,212,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 0.3rem;
+    }
+    .btn-primary.full::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .btn-primary.full:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 32px rgba(0,240,212,0.45),
+        0 0 40px rgba(56,189,248,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .btn-primary.full:hover:not(:disabled)::before { transform: translateX(100%); }
+    .btn-primary.full:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+    .btn-primary.full:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+    }
+
+    /* 🔗 لینک جابه‌جایی */
+    .auth-switch {
+      text-align: center;
+      margin-top: 1.3rem;
+      font-size: 0.82rem;
+      color: var(--text-dim, #a0a0a0);
+    }
+    .auth-switch a {
+      color: var(--turquoise, #00f0d4);
+      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 0.25rem;
+      transition: all 0.2s;
+    }
+    .auth-switch a:hover {
+      color: #fff;
+      text-shadow: 0 0 12px rgba(0,240,212,0.6);
+    }
+
+    /* 🎞️ اسکرول‌بار */
+    .auth-container::-webkit-scrollbar { width: 6px; }
+    .auth-container::-webkit-scrollbar-track { background: transparent; }
+    .auth-container::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+    }
+    .auth-container::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.4); }
+
+    /* 📱 موبایل */
+    @media (max-width: 600px) {
+      body {
+        align-items: flex-start;
+        padding: 4.5rem 1rem 1.5rem;
+      }
+      .auth-container {
+        padding: 2rem 1.3rem 1.6rem;
+        border-radius: 22px;
+        max-height: none;
+      }
+      .auth-brand-icon { font-size: 1.7rem; }
+      .auth-brand-name { font-size: 1.25rem; }
+      .back-home-btn {
+        top: 0.9rem;
+        right: 0.9rem;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
 </head>
-<body></body>
+<body>
+
+  <script>
+    if (localStorage.getItem('navaa_current_user')) {
+      window.location.href = 'gallery.html';
+    }
+  </script>
+
+  <a href="home.html" class="back-home-btn">🏠 بازگشت</a>
+
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">🎵</div>
+      <div class="auth-brand-name">Navaa</div>
+    </div>
+
+    <div class="auth-tabs" data-active="login" id="authTabs">
+      <div class="auth-tab-indicator"></div>
+      <button type="button" class="auth-tab active" data-target="login">ورود</button>
+      <button type="button" class="auth-tab" data-target="signup">ساخت حساب</button>
+    </div>
+
+    <form id="loginForm" class="auth-form active">
+      <h2>خوش برگشتی 👋</h2>
+      <p class="auth-sub">وارد حساب Navaa خودت شو</p>
+
+      <div class="auth-field">
+        <label>ایمیل <span class="req">*</span></label>
+        <input type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="auth-field">
+        <label>رمز عبور <span class="req">*</span></label>
+        <div class="password-wrap">
+          <input type="password" name="password" required placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="password-toggle" onclick="togglePassword(this)" aria-label="نمایش رمز">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary full" id="loginBtn">🚀 ورود</button>
+      <p class="auth-switch">حساب نداری؟ <a onclick="switchTab('signup')">ثبت‌نام کن</a></p>
+    </form>
+
+    <form id="signupForm" class="auth-form">
+      <h2>به Navaa خوش اومدی ✨</h2>
+      <p class="auth-sub">برای ساخت حساب، اطلاعاتت رو وارد کن</p>
+
+      <div class="auth-field">
+        <label>نام و نام خانوادگی <span class="req">*</span></label>
+        <input type="text" name="fullname" required placeholder="مثلاً علی رضایی" autocomplete="name">
+      </div>
+
+      <div class="auth-field">
+        <label>ایمیل <span class="req">*</span></label>
+        <input type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="auth-field">
+        <label>شماره تماس <span class="label-hint">(اختیاری)</span></label>
+        <input type="tel" name="phone" placeholder="09123456789" pattern="[0-9]{11}" title="شماره موبایل ۱۱ رقمی وارد کنید" autocomplete="tel">
+      </div>
+
+      <div class="auth-field">
+        <label>رمز عبور <span class="req">*</span></label>
+        <div class="password-wrap">
+          <input type="password" name="password" required minlength="4" placeholder="حداقل ۴ کاراکتر" autocomplete="new-password">
+          <button type="button" class="password-toggle" onclick="togglePassword(this)" aria-label="نمایش رمز">👁️</button>
+        </div>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" name="terms" required>
+        <span>قوانین Navaa رو می‌پذیرم</span>
+      </label>
+
+      <button type="submit" class="btn-primary full" id="signupBtn">✨ ساخت حساب</button>
+      <p class="auth-switch">حساب داری؟ <a onclick="switchTab('login')">وارد شو</a></p>
+    </form>
+  </div>
+
+  <script>
+    const CURRENT_KEY = 'navaa_current_user';
+    const USERS_KEY = 'navaa_users';
+    const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
+    const WELCOME_GIFT = 10000;
+
+    window.togglePassword = function(btn) {
+      const input = btn.parentElement.querySelector('input');
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁️';
+      btn.setAttribute('aria-label', show ? 'پنهان کردن رمز' : 'نمایش رمز');
+    };
+
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      const tabBtn = document.querySelector(`.auth-tab[data-target="${tabName}"]`);
+      const form = document.getElementById(tabName === 'login' ? 'loginForm' : 'signupForm');
+      if (tabBtn) tabBtn.classList.add('active');
+      if (form) form.classList.add('active');
+      const tabsEl = document.getElementById('authTabs');
+      if (tabsEl) tabsEl.setAttribute('data-active', tabName);
+    };
+
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab(tab.dataset.target);
+      });
+    });
+
+    // ورود
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.disabled = true;
+      loginBtn.textContent = '⏳ در حال بررسی...';
+
+      const email = e.target.email.value.trim().toLowerCase();
+      const password = e.target.password.value;
+
+      try {
+        let users = [];
+        if (window.getUsersFromCloud) {
+          users = await window.getUsersFromCloud();
+        } else {
+          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+
+        const user = users.find(u => (u.email || '').toLowerCase() === email && u.password === password);
+
+        if (!user) {
+          alert('❌ ایمیل یا رمز عبور اشتباهه!');
+          loginBtn.disabled = false;
+          loginBtn.textContent = '🚀 ورود';
+          return;
+        }
+
+        if (user.banned === true) {
+          alert('🚫 حساب شما مسدود شده!\nبرای اطلاعات بیشتر با پشتیبانی تماس بگیرید.');
+          loginBtn.disabled = false;
+          loginBtn.textContent = '🚀 ورود';
+          return;
+        }
+
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+        window.location.href = 'gallery.html';
+
+      } catch (err) {
+        console.error(err);
+        alert('⚠️ خطا در ارتباط با سرور! لطفاً اینترنت خود را بررسی و دوباره تلاش کنید.');
+        loginBtn.disabled = false;
+        loginBtn.textContent = '🚀 ورود';
+      }
+    });
+
+    // ثبت‌نام
+    document.getElementById('signupForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const signupBtn = document.getElementById('signupBtn');
+      signupBtn.disabled = true;
+      signupBtn.textContent = '⏳ در حال ثبت‌نام...';
+
+      const email = e.target.email.value.trim().toLowerCase();
+      const phone = e.target.phone.value.trim();
+      const fullname = e.target.fullname.value.trim();
+      const password = e.target.password.value;
+
+      try {
+        let users = [];
+        if (window.getUsersFromCloud) {
+          users = await window.getUsersFromCloud();
+        } else {
+          users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        }
+
+        if (users.find(u => (u.email || '').toLowerCase() === email)) {
+          alert('❌ این ایمیل قبلاً ثبت‌نام کرده!');
+          signupBtn.disabled = false;
+          signupBtn.textContent = '✨ ساخت حساب';
+          return;
+        }
+        if (phone && users.find(u => u.phone === phone)) {
+          alert('❌ این شماره قبلا ثبت‌نام کرده!');
+          signupBtn.disabled = false;
+          signupBtn.textContent = '✨ ساخت حساب';
+          return;
+        }
+
+        const isAdminSignup = email === ADMIN_EMAIL;
+        let welcomeMsg = '';
+
+        if (!isAdminSignup) {
+          const adminIdx = users.findIndex(u => u.email === ADMIN_EMAIL);
+          if (adminIdx !== -1) {
+            if ((users[adminIdx].balance || 0) >= WELCOME_GIFT) {
+              users[adminIdx].balance -= WELCOME_GIFT;
+            }
+            welcomeMsg = `\n🎁 مبلغ ${WELCOME_GIFT.toLocaleString('fa-IR')} تومان به عنوان هدیه خوش‌آمدگویی به شما داده شد!`;
+          }
+        }
+
+        const newUser = {
+          id: Date.now(),
+          fullname,
+          phone: phone || null,
+          email,
+          password,
+          hasSubscription: isAdminSignup,
+          subscriptionPlan: isAdminSignup ? 'diamond' : null,
+          subscriptionExpiry: isAdminSignup ? Date.now() + (36500 * 24 * 60 * 60 * 1000) : null,
+          joinDate: Date.now(),
+          role: isAdminSignup ? 'admin' : 'user',
+          balance: isAdminSignup ? 5000000 : WELCOME_GIFT,
+          banned: false,
+          purchasedItems: [],
+          monthlyUploads: 0,
+          lastUploadMonth: new Date().getMonth()
+        };
+
+        users.push(newUser);
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+        if (window.saveToCloud) {
+          await window.saveToCloud(USERS_KEY, JSON.stringify(users));
+        } else {
+          throw new Error("اتصال به سرور برقرار نیست!");
+        }
+
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(newUser));
+        alert('✨ حساب با موفقیت ساخته شد!' + welcomeMsg);
+        window.location.href = 'gallery.html';
+
+      } catch (err) {
+        console.error(err);
+        alert('⚠️ خطا در اتصال به دیتابیس ابری:\n' + err.message + '\nلطفاً دوباره تلاش کنید.');
+        signupBtn.disabled = false;
+        signupBtn.textContent = '✨ ساخت حساب';
+      }
+    });
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveToCloud = async function(key, value) {
+      await setDoc(doc(db, 'navaa_storage', key), { value: value, updatedAt: Date.now() });
+    };
+
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
+
+    async function syncOnLoad() {
+      try {
+        const snap = await getDoc(doc(db, 'navaa_storage', 'navaa_users'));
+        if (snap.exists()) localStorage.setItem('navaa_users', snap.data().value);
+      } catch(e) { console.error("خطا در سینک اولیه:", e); }
+    }
+    syncOnLoad();
+  </script>
+</body>
 </html>
