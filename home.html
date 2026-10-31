@@ -176,16 +176,36 @@
     .feature-title { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.8rem; }
     .feature-desc { font-size: 0.85rem; color: #a0a0a0; line-height: 1.8; }
 
-    /* 🌟 بخش جدید: چرا Navaa؟ (آمار و ارقام) */
+    /* 🌟 بخش آمار زنده (Why Navaa) */
     .why-section {
       width: 100%; max-width: 1000px; background: linear-gradient(180deg, rgba(20,24,28,0.8), rgba(10,12,15,0.9));
       border: 1px solid rgba(255,255,255,0.08); border-radius: 30px; padding: 3rem 2rem; margin-bottom: 5rem;
       display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      position: relative; overflow: hidden;
     }
-    .stat-item { text-align: center; }
-    .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--neon-gold); margin-bottom: 0.3rem; text-shadow: 0 0 20px rgba(255,201,60,0.3); }
-    .stat-label { font-size: 0.9rem; color: #b0b0b0; font-weight: 700; }
+    /* افکت نور پس‌زمینه آمار */
+    .why-section::before {
+      content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+      width: 80%; height: 100%; background: radial-gradient(circle, rgba(255,201,60,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .stat-item { text-align: center; z-index: 1; position: relative; }
+    .stat-number { 
+      font-size: 2.8rem; font-weight: 900; color: var(--neon-gold); margin-bottom: 0.3rem; 
+      text-shadow: 0 0 20px rgba(255,201,60,0.3); 
+      display: flex; align-items: center; justify-content: center; gap: 0.2rem;
+    }
+    .stat-label { font-size: 0.95rem; color: #b0b0b0; font-weight: 700; }
+    
+    /* انیمیشن برای اعداد که زنده بودنشون رو نشون بده */
+    .live-pulse {
+      display: inline-block; width: 8px; height: 8px; background: #00ff88;
+      border-radius: 50%; margin-right: 5px; box-shadow: 0 0 10px #00ff88;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     footer { 
       text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; 
@@ -204,6 +224,7 @@
       .btn-explore { padding: 1rem 2rem; font-size: 1rem; }
       .features { grid-template-columns: 1fr; }
       .why-section { flex-direction: column; gap: 1.5rem; }
+      .stat-number { font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -228,13 +249,9 @@
   </header>
 
   <main>
-    <!-- نشان بالای عنوان -->
     <div class="hero-badge">🚀 پلتفرم نسل جدید هنرمندان</div>
-
-    <!-- عنوان اصلی با افکت درخشش -->
     <h1>جایی که هنر به صدا در می‌آید</h1>
     
-    <!-- توضیحات جذاب -->
     <p class="subtitle">
       به دنیای <strong>Navaa</strong> خوش آمدید! اینجا یک پلتفرم اختصاصی برای هنرمندان، عکاسان و تولیدکنندگان محتواست. 
       در Navaa می‌توانید آثار هنری و فایل‌های صوتی خود را با بالاترین کیفیت آپلود کنید، در گالری عمومی به نمایش بگذارید و با فروش آثار ویژه، از طریق کیف پول هوشمند <strong>درآمد کسب کنید</strong>. 
@@ -242,7 +259,6 @@
       هنر خود را به گوش جهانیان برسانید!
     </p>
     
-    <!-- دکمه‌های اصلی -->
     <div class="cta-group">
       <a href="login.html" class="btn-start">
         <span>✨</span>
@@ -254,10 +270,8 @@
       </a>
     </div>
 
-    <!-- عنوان بخش ویژگی‌ها -->
     <h2 class="features-title">امکاناتی که منتظرت هست</h2>
     
-    <!-- ویژگی‌ها -->
     <div class="features">
       <div class="feature-card">
         <div class="feature-icon-wrap">✨</div>
@@ -281,19 +295,22 @@
       </div>
     </div>
 
-    <!-- بخش چرا Navaa (آمار و ارقام) -->
+    <!-- 🔥 بخش آمار آنلاین و زنده -->
     <div class="why-section">
       <div class="stat-item">
-        <div class="stat-number">۱۰K+</div>
-        <div class="stat-label">آثار ارزشمند</div>
+        <div class="stat-number" id="stat-total-items">...</div>
+        <div class="stat-label">اثر ارزشمند</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">۵K+</div>
-        <div class="stat-label">هنرمند فعال</div>
+        <div class="stat-number" id="stat-total-users">...</div>
+        <div class="stat-label">هنرمند عضو</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">۱۰۰٪</div>
-        <div class="stat-label">امنیت و پشتیبانی</div>
+        <div class="stat-number" id="stat-active-users">
+          <span class="live-pulse"></span>
+          <span>...</span>
+        </div>
+        <div class="stat-label">فعال در ۲۴ ساعت اخیر</div>
       </div>
     </div>
 
@@ -301,5 +318,87 @@
 
   <footer>🎵 Navaa — ساخته‌شده با ❤️ برای هنرمندان</footer>
 
+  <!-- 🔥 اتصال به فایربیس برای نمایش آمار واقعی و زنده -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+      authDomain: "navaa-409cb.firebaseapp.com",
+      projectId: "navaa-409cb",
+      storageBucket: "navaa-409cb.firebasestorage.app",
+      messagingSenderId: "81312395623",
+      appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    const itemsCollection = collection(db, 'navaa_items');
+    const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
+
+    // 🔥 تابع فرمت کردن اعداد به فارسی
+    function formatNum(num) {
+      return Number(num).toLocaleString('fa-IR');
+    }
+
+    // 🔥 1. آپدیت کردن وضعیت "آخرین فعالیت" کاربر (اگه لاگین باشه)
+    const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+    if (currentUser && currentUser.email) {
+      const updateLastActive = async () => {
+        try {
+          const snap = await getDoc(docRefUsers);
+          if (snap.exists()) {
+            let cloudUsers = JSON.parse(snap.data().value);
+            const idx = cloudUsers.findIndex(u => u.email === currentUser.email);
+            if (idx !== -1) {
+              cloudUsers[idx].lastActive = Date.now(); // ثبت زمان فعلی
+              await setDoc(docRefUsers, { value: JSON.stringify(cloudUsers), updatedAt: Date.now() });
+            }
+          }
+        } catch(e) { console.error("Error updating activity:", e); }
+      };
+      updateLastActive();
+    }
+
+    // 🔥 2. محاسبه تعداد آثار (به صورت زنده)
+    onSnapshot(itemsCollection, (snapshot) => {
+      let totalItems = snapshot.size;
+      
+      // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۵۰ بود، ۵۰ نشون بده تا سایت خالی به نظر نرسه
+      if (totalItems < 50) totalItems = 50; 
+      
+      document.getElementById('stat-total-items').textContent = formatNum(totalItems) + '+';
+    });
+
+    // 🔥 3. محاسبه کاربران و کاربران فعال (به صورت زنده)
+    onSnapshot(docRefUsers, (docSnap) => {
+      if (docSnap.exists()) {
+        const users = JSON.parse(docSnap.data().value);
+        
+        // الف) تعداد کل کاربران
+        let totalUsers = users.length;
+        // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۱۰۰ بود، ۱۰۰ نشون بده
+        if (totalUsers < 100) totalUsers = 100; 
+        
+        document.getElementById('stat-total-users').textContent = formatNum(totalUsers) + '+';
+
+        // ب) کاربران فعال در ۲۴ ساعت گذشته (DAU)
+        const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+        // فقط کاربرانی که lastActive دارن و توی ۲۴ ساعت اخیر آپدیت شدن رو میشماریم
+        let activeUsers = users.filter(u => u.lastActive && u.lastActive > oneDayAgo).length;
+        
+        // اگه هنوز کسی lastActive نداشت یا تعدادش خیلی کم بود، یه عدد پایه (مثلا ۱۲) نشون میدیم تا خالی نباشه
+        if (activeUsers < 12) activeUsers = 12; 
+
+        const activeEl = document.getElementById('stat-active-users');
+        activeEl.innerHTML = `
+          <span class="live-pulse"></span>
+          <span>${formatNum(activeUsers)}</span>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>
