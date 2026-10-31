@@ -160,9 +160,9 @@ function initPremiumSection() {
     </div>
     <div id="premiumOptions" style="display:none;">
       <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.7rem;font-size:.85rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff8c00);color:#1a1100;">🤖 تحلیل ربات</button>
-      <div id="botResult" style="display:none;background:#1c1c1c;border-radius:10px;padding:.8rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;"></div>
+      <div id="botResult" style="display:none;background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:.8rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;"></div>
       <label style="display:block;font-size:.82rem;color:#fff;font-weight:700;margin-bottom:.4rem;">💰 قیمت نهایی (تومان):</label>
-      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.8rem;background:#0a0a0a;border:1.5px solid #2a2a2a;border-radius:10px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;">
+      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.8rem;background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;">
     </div>`;
 
   const isPremiumCheck = premiumSection.querySelector('#isPremiumCheck');
@@ -205,10 +205,10 @@ function initPremiumSection() {
       <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
         <strong style="color:#ffc93c;">🤖 امتیاز: ${result.quality}</strong>
       </div>
-      <div style="border-top:1px solid #2a2a2a;padding-top:.5rem;margin-bottom:.5rem;">
+      <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:.5rem;margin-bottom:.5rem;">
         ${result.details.map(d => `<div style="display:flex;justify-content:space-between;padding:.15rem 0;"><span>${d.label}</span><span style="color:#00f0d4;">+${formatMoney(d.value)}</span></div>`).join('')}
       </div>
-      <div style="display:flex;justify-content:space-between;padding-top:.5rem;border-top:1px solid #2a2a2a;">
+      <div style="display:flex;justify-content:space-between;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.1);">
         <strong style="color:#fff;">💰 پیشنهادی:</strong>
         <strong style="color:#00f0d4;font-size:1rem;">${formatMoney(result.suggestedPrice)} تومان</strong>
       </div>`;
@@ -333,7 +333,7 @@ function renderGallery() {
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
       ${item.isPremium ? '<span class="premium-badge">💎 ویژه</span>' : ''}
-      ${item.isHidden ? '<span class="hidden-badge" style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);color:#fff;padding:0.2rem 0.5rem;border-radius:6px;font-size:0.7rem;">🙈 مخفی</span>' : ''}
+      ${item.isHidden ? '<span class="hidden-badge">🙈 مخفی</span>' : ''}
       <div class="card-actions">
         <button class="action-btn like-btn">${item.likedByMe ? '❤️' : '🤍'}</button>
         ${isMyItem || isAdminUser ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
@@ -485,7 +485,6 @@ function bindUploadModal() {
       
       window.isUploading = true; 
       
-      // 🔥 ارسال مستقیم به کالکشن (بدون تداخل)
       let success = true;
       if (window.addItemToCloud) {
           success = await window.addItemToCloud(newItem);
@@ -510,8 +509,6 @@ function bindUploadModal() {
       const reward = await giveUploadReward(currentUser.email);
       
       closeModal();
-      
-      // گالری به صورت زنده توسط onSnapshot آپدیت میشه
       
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
@@ -552,37 +549,10 @@ function renderBottomNav() {
   `;
 }
 
-function injectGlassCSS() {
-  if (document.getElementById('glass-css-inject')) return;
-  const style = document.createElement('style');
-  style.id = 'glass-css-inject';
-  style.innerHTML = `
-    .modal-content {
-      background: rgba(20, 20, 20, 0.6) !important;
-      backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
-    }
-    #modalImg {
-      max-height: 70vh !important;
-      width: 100% !important;
-      object-fit: contain !important;
-      border-radius: 12px !important;
-    }
-    .modal-media {
-      background: rgba(0,0,0,0.3) !important;
-      border-radius: 12px !important;
-      padding: 10px !important;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-injectGlassCSS();
+// ✅ ترتیب صحیح اجرا (renderBottomNav قبل از bindUploadModal)
 setupUserHeader(); 
 initPremiumSection();
 renderGallery(); 
-bindUploadModal(); 
+renderBottomNav();     // ← اول nav ساخته می‌شه
+bindUploadModal();     // ← بعد دکمه‌های nav بایند می‌شن
 bindDetailModal();
-renderBottomNav();
