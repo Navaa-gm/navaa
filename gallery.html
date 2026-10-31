@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>گالری | Navaa</title>
-
-  <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 تنظیمات پایه */
+    :root {
+      --red: #ff2e4d;
+      --red-glow: rgba(255, 46, 77, 0.35);
+    }
+
     html { font-size: 14px; margin: 0; padding: 0; }
     body {
       display: flex;
@@ -21,15 +22,38 @@
       padding: 0;
       padding-bottom: 100px;
       overflow-x: hidden;
-      background: var(--black);
+      background: var(--black, #0a0a0a);
+      position: relative;
     }
 
-    header, .topbar-wrap, main#gallery {
+    /* 🌌 پس‌زمینهٔ زنده */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -20%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(0,240,212,0.10), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(56,189,248,0.08), transparent 35%),
+        radial-gradient(circle at 80% 85%, rgba(255,46,77,0.10), transparent 40%),
+        radial-gradient(circle at 20% 80%, rgba(255,201,60,0.05), transparent 35%);
+      filter: blur(60px);
+      animation: bgFloat 24s ease-in-out infinite alternate;
+    }
+    @keyframes bgFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-20px,15px) scale(1.06); }
+    }
+
+    header, .topbar-wrap, main#gallery, footer {
       width: 100%;
       max-width: 100%;
       padding-left: 4%;
       padding-right: 4%;
       box-sizing: border-box;
+      position: relative;
+      z-index: 1;
     }
 
     main#gallery {
@@ -43,11 +67,26 @@
       margin-top: auto;
       padding: 1.5rem 1rem;
       text-align: center;
-      border-top: 1px solid var(--border);
-      background: var(--black-2);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(10, 10, 10, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 1;
     }
+    footer p { color: var(--text-dim, #a0a0a0); margin: 0; }
+    footer .brand-name { color: var(--turquoise, #00f0d4); font-weight: 800; }
+    footer .heart { color: var(--red); }
 
-    /* 🌟 استایل هدر */
+    /* 🌟 هدر شیشه‌ای */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 10, 10, 0.55);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
     .header-inner {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -56,42 +95,72 @@
       width: 100%;
     }
 
-    .logo-name-sm { font-size: 1.8rem !important; font-weight: 900 !important; letter-spacing: -0.5px; }
-    .logo-icon-sm { font-size: 1.8rem !important; }
+    .logo-name-sm {
+      font-size: 1.8rem !important;
+      font-weight: 900 !important;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff 0%, #00f0d4 45%, #38bdf8 70%, #ff2e4d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-icon-sm {
+      font-size: 1.8rem !important;
+      filter: drop-shadow(0 0 12px rgba(0,240,212,0.6));
+    }
 
-    /* 🌟 استایل کادر سرچ */
+    #shamsiDate {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--turquoise, #00f0d4);
+      background: rgba(0,240,212,0.08);
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      border: 1px solid rgba(0,240,212,0.25);
+      white-space: nowrap;
+    }
+
+    /* 🌟 کادر سرچ */
     .topbar-wrap {
-      padding-top: 0.5rem;
+      padding-top: 1rem;
       padding-bottom: 1rem;
       display: flex;
       justify-content: center;
     }
-    .topbar { width: 100%; max-width: 500px; }
+    .topbar { width: 100%; max-width: 560px; }
     .search-box {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.035);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
-      padding: 0.4rem 1rem;
-      height: 40px;
+      padding: 0.45rem 1rem;
+      height: 44px;
       transition: all 0.3s ease;
     }
+    .search-box:hover { border-color: rgba(255,255,255,0.18); }
     .search-box:focus-within {
       background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(0, 240, 212, 0.5);
-      box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
+      border-color: rgba(0, 240, 212, 0.55);
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.1), 0 0 24px rgba(0, 240, 212, 0.18);
     }
     .search-box input {
-      background: transparent !important; border: none !important; color: #fff;
-      width: 100%; outline: none; font-family: inherit; font-size: 0.85rem; padding-right: 0.5rem;
+      background: transparent !important;
+      border: none !important;
+      color: #fff;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding-right: 0.5rem;
     }
+    .search-box input::placeholder { color: #666; }
 
     /* ==========================================
-       🔥 اصلاح گالری (راست‌چین کردن کارت‌ها)
+       🔥 گالری (راست‌چین)
        ========================================== */
     #gallery.gallery {
       display: flex !important;
@@ -103,23 +172,40 @@
       min-height: 60vh;
     }
 
-    /* سایز کارت‌ها */
     .card {
       flex: 0 0 auto !important;
       width: 240px !important;
       max-width: 100% !important;
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
       margin: 0 !important;
+      background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s, border-color 0.3s;
     }
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(0,240,212,0.35);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.55),
+        0 0 30px rgba(0,240,212,0.12),
+        0 0 24px rgba(255,46,77,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
-    /* 🔥 پیام "هنوز اثری نیست" */
+    /* 🔥 پیام خالی */
     .gallery > .empty {
       width: 100% !important;
       display: flex !important;
@@ -128,54 +214,74 @@
       justify-content: center !important;
       text-align: center !important;
       margin: auto !important;
-      padding: 2rem !important;
-      color: var(--text-dim);
+      padding: 3rem 2rem !important;
+      color: var(--text-dim, #a0a0a0);
     }
     .gallery > .empty h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
     .gallery > .empty p { font-size: 0.95rem; }
 
     /* ==========================================
-       🌟 نوار پایین و دایره عکس پروفایل
+       🌟 نوار پایین
        ========================================== */
     .bottom-nav {
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
-      height: 64px !important;
+      height: 66px !important;
       padding: 0.2rem 3% !important;
-      border-radius: 16px 16px 0 0 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+      border-radius: 20px 20px 0 0 !important;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
       z-index: 1000 !important;
-      background: var(--black-2) !important;
+      background: rgba(10, 10, 10, 0.72) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border-top: 1px solid rgba(255,255,255,0.08);
       margin: 0 !important;
     }
 
     .nav-pill-btn {
-      padding: 0.3rem 0.8rem !important;
+      padding: 0.35rem 0.85rem !important;
       font-size: 0.75rem !important;
       gap: 0.3rem !important;
-      border-radius: 10px !important;
+      border-radius: 11px !important;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text-dim, #a0a0a0);
+      font-family: inherit;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .nav-pill-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(0,240,212,0.35);
+      box-shadow: 0 0 16px rgba(0,240,212,0.12);
+      transform: translateY(-1px);
     }
     .nav-pill-icon { font-size: 1rem !important; }
 
     .nav-center-profile {
       position: relative !important;
-      width: 56px !important;
-      height: 56px !important;
-      min-width: 56px !important;
-      min-height: 56px !important;
-      flex: 0 0 56px !important;
+      width: 58px !important;
+      height: 58px !important;
+      min-width: 58px !important;
+      min-height: 58px !important;
+      flex: 0 0 58px !important;
       border-radius: 50% !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       padding: 0 !important;
-      margin-top: -18px !important;
+      margin-top: -20px !important;
       box-sizing: border-box !important;
+      text-decoration: none;
     }
 
     .profile-btn-avatar {
@@ -185,8 +291,8 @@
       background-size: cover !important;
       background-position: center !important;
       box-sizing: border-box !important;
-      border: 3px solid var(--black-2) !important;
-      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important;
+      border: 3px solid #0a0a0a !important;
+      box-shadow: 0 0 0 2px rgba(0,240,212,0.6), 0 0 22px rgba(0,240,212,0.45), 0 0 18px rgba(255,46,77,0.15) !important;
     }
 
     .nav-center-profile .nav-icon {
@@ -196,10 +302,12 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8)) !important;
       color: #001a1c !important;
-      font-size: 1.2rem !important;
+      font-size: 1.25rem !important;
       box-sizing: border-box !important;
+      border: 3px solid #0a0a0a !important;
+      box-shadow: 0 0 22px rgba(0,240,212,0.5) !important;
     }
 
     .nav-center-label {
@@ -213,111 +321,157 @@
     }
 
     /* ==========================================
-       🔥 افکت شیشه‌ای واقعی و خفن (Glassmorphism)
+       🔥 مودال‌ها با شیشهٔ پرمیوم + قرمز
        ========================================== */
-
     .modal {
-      background: radial-gradient(circle at 10% 20%, rgba(0, 240, 212, 0.15), transparent 40%),
-                  radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15), transparent 40%),
-                  radial-gradient(circle at 50% 50%, rgba(255, 201, 60, 0.05), transparent 50%),
-                  rgba(5, 8, 10, 0.75) !important;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(0, 240, 212, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.12), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255, 46, 77, 0.08), transparent 50%),
+        rgba(5, 8, 10, 0.78) !important;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
       position: fixed; inset: 0;
       z-index: 2000 !important;
       display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      box-sizing: border-box;
     }
 
     .modal-content {
-      background: rgba(30, 35, 40, 0.2) !important;
-      backdrop-filter: blur(40px) saturate(250%) !important;
-      -webkit-backdrop-filter: blur(40px) saturate(250%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
-      border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.03) !important;
+      background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
+      backdrop-filter: blur(40px) saturate(220%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
+      box-shadow:
+        0 30px 70px rgba(0,0,0,0.8),
+        0 0 50px rgba(0,240,212,0.06),
+        0 0 40px rgba(255,46,77,0.06),
+        inset 0 0 30px rgba(255,255,255,0.02) !important;
       border-radius: 28px !important;
-      max-width: 600px;
-      width: 90%;
-      max-height: 85vh;
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
       overflow-y: auto;
       margin: 0 auto;
       position: relative;
       user-select: none;
     }
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+      pointer-events: none;
+    }
 
     .modal-content::-webkit-scrollbar { width: 6px; }
     .modal-content::-webkit-scrollbar-track { background: transparent; }
-    .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 10px; }
+    .modal-content::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.5); }
 
     .modal-close {
       position: absolute;
       top: 15px;
       left: 15px;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      background: rgba(255, 255, 255, 0.07) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
       color: #fff !important;
-      font-size: 1.2rem !important;
+      font-size: 1.15rem !important;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 2100 !important;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      backdrop-filter: blur(5px);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
     }
     .modal-close:hover {
-      background: rgba(255, 46, 77, 0.8) !important;
-      border-color: rgba(255, 46, 77, 1) !important;
-      transform: rotate(90deg) scale(1.1);
-      box-shadow: 0 0 15px rgba(255, 46, 77, 0.5);
+      background: var(--red) !important;
+      border-color: var(--red) !important;
+      transform: rotate(90deg) scale(1.08);
+      box-shadow: 0 0 24px var(--red-glow);
     }
 
+    /* 🔥 سکشن‌های فرم آپلود */
     .upload-section {
-      background: rgba(255, 255, 255, 0.02) !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.06) !important;
+      background: rgba(255, 255, 255, 0.025) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.07) !important;
       border-radius: 18px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important;
       transition: all 0.3s ease;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
     }
     .upload-section:hover {
-      background: rgba(255, 255, 255, 0.04) !important;
-      border-color: rgba(255, 255, 255, 0.1) !important;
+      background: rgba(255, 255, 255, 0.045) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
     }
 
     .upload-file-box {
-      background: rgba(0, 0, 0, 0.1) !important;
+      background: rgba(0, 0, 0, 0.15) !important;
       backdrop-filter: blur(8px) !important;
-      border: 1.5px dashed rgba(255, 255, 255, 0.2) !important;
+      border: 1.5px dashed rgba(255, 255, 255, 0.18) !important;
       border-radius: 16px;
       transition: all 0.3s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 1rem;
     }
     .upload-file-box:hover {
-      border-color: var(--turquoise) !important;
+      border-color: var(--turquoise, #00f0d4) !important;
       background: rgba(0, 240, 212, 0.05) !important;
-      box-shadow: 0 0 20px rgba(0, 240, 212, 0.1);
+      box-shadow: 0 0 24px rgba(0, 240, 212, 0.12);
     }
 
-    .upload-field input, .upload-field textarea, .upload-field select {
-      background: rgba(0, 0, 0, 0.15) !important;
+    .upload-field { margin-bottom: 0.9rem; }
+    .upload-field:last-child { margin-bottom: 0; }
+    .upload-field label {
+      display: block;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .upload-field .req { color: var(--red); }
+
+    .upload-field input,
+    .upload-field textarea,
+    .upload-field select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25) !important;
       backdrop-filter: blur(5px) !important;
       border: 1px solid rgba(255, 255, 255, 0.1) !important;
       color: #fff !important;
       border-radius: 12px;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
-      padding: 0.85rem 1rem;
+      padding: 0.8rem 1rem;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      box-sizing: border-box;
       transition: all 0.3s ease;
     }
-    .upload-field input:focus, .upload-field textarea:focus, .upload-field select:focus {
-      background: rgba(0, 0, 0, 0.3) !important;
-      border-color: var(--turquoise) !important;
-      box-shadow: 0 0 15px rgba(0,240,212,0.2), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+    .upload-field input::placeholder,
+    .upload-field textarea::placeholder { color: #555; }
+
+    .upload-field input:focus,
+    .upload-field textarea:focus,
+    .upload-field select:focus {
+      background: rgba(0, 0, 0, 0.4) !important;
+      border-color: var(--turquoise, #00f0d4) !important;
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.1), inset 0 2px 4px rgba(0,0,0,0.2) !important;
     }
 
     #premiumSection {
@@ -328,39 +482,88 @@
       padding: 1rem;
     }
 
-    .sub-content { background: rgba(30, 35, 40, 0.25) !important; }
-    .plan {
-      background: rgba(255, 255, 255, 0.02) !important;
-      backdrop-filter: blur(10px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 16px;
-      transition: 0.3s;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    /* 💎 اشتراک */
+    .sub-content { background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important; }
+
+    .plans .plan {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.09) !important;
+      border-radius: 18px;
+      transition: 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
     }
     .plan:hover {
-      background: rgba(255, 255, 255, 0.06) !important;
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, 0.2) !important;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)) !important;
+      transform: translateY(-5px);
+      border-color: rgba(0,240,212,0.4) !important;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 26px rgba(0,240,212,0.12);
     }
     .plan-silver {
-      background: linear-gradient(135deg, rgba(255, 201, 60, 0.08), rgba(255, 140, 0, 0.03)) !important;
-      border: 1px solid rgba(255, 201, 60, 0.3) !important;
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.1), rgba(255, 46, 77, 0.04)) !important;
+      border: 1px solid rgba(255, 201, 60, 0.4) !important;
+      box-shadow: 0 0 24px rgba(255,201,60,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .plan-silver:hover {
-      background: linear-gradient(135deg, rgba(255, 201, 60, 0.15), rgba(255, 140, 0, 0.05)) !important;
-      border-color: rgba(255, 201, 60, 0.6) !important;
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.16), rgba(255, 46, 77, 0.07)) !important;
+      border-color: rgba(255, 201, 60, 0.7) !important;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 32px rgba(255,201,60,0.2);
+    }
+    .plan-badge {
+      position: absolute;
+      top: 0.7rem;
+      left: 0.7rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #1a1200;
+      background: linear-gradient(135deg, #ffc93c, #ff2e4d);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(255,46,77,0.3);
     }
 
+    .plan-btn {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.9rem;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      box-shadow: 0 6px 20px rgba(0,240,212,0.28), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .plan-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.42); }
+    .plan-btn:hover::before { transform: translateX(100%); }
+
+    /* 🔘 دکمهٔ انصراف با اکسنت قرمز */
     .btn-cancel {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #a0a0a0;
-      padding: 1rem;
+      padding: 0.95rem;
       border-radius: 14px;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       width: 100%;
@@ -373,9 +576,91 @@
     }
     .btn-cancel:hover {
       background: rgba(255, 46, 77, 0.1);
-      border-color: rgba(255, 46, 77, 0.4);
+      border-color: rgba(255, 46, 77, 0.45);
       color: var(--red);
-      box-shadow: 0 0 20px rgba(255, 46, 77, 0.15);
+      box-shadow: 0 0 24px rgba(255, 46, 77, 0.18);
+      transform: translateY(-1px);
+    }
+
+    /* 🚀 دکمهٔ انتشار */
+    .btn-publish {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 0.6rem;
+      border: none;
+      border-radius: 14px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8, #ff2e4d);
+      background-size: 200% 100%;
+      box-shadow: 0 8px 26px rgba(0,240,212,0.3), 0 0 24px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-publish:hover {
+      transform: translateY(-2px);
+      background-position: 100% 0;
+      box-shadow: 0 12px 34px rgba(0,240,212,0.4), 0 0 32px rgba(255,46,77,0.22);
+    }
+    .btn-publish-icon { font-size: 1.05rem; }
+
+    /* 🧩 دکمهٔ آپلود هدر */
+    #uploadBtn {
+      padding: 0.55rem 1.05rem !important;
+      border-radius: 11px !important;
+      font-size: 0.8rem !important;
+      font-weight: 800 !important;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      box-shadow: 0 6px 20px rgba(0,240,212,0.28), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      font-family: inherit;
+    }
+    #uploadBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0,240,212,0.42), 0 0 26px rgba(255,46,77,0.15);
+    }
+
+    /* 🔥 دکمهٔ لایک در مودال */
+    .btn-like {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-like:hover {
+      background: rgba(255,46,77,0.12);
+      border-color: rgba(255,46,77,0.5);
+      color: var(--red);
+      box-shadow: 0 0 22px rgba(255,46,77,0.2);
+    }
+
+    /* 🔥 موبایل */
+    @media (max-width: 720px) {
+      .header-inner {
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+      }
+      .header-inner > div:nth-child(3) { display: none; }
+      .card { width: calc(50% - 0.75rem) !important; }
+      .modal-content { border-radius: 22px !important; }
     }
   </style>
 </head>
@@ -383,9 +668,9 @@
 
   <header>
     <div class="header-inner">
-      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.3rem;">
-        <div id="shamsiDate" style="font-size: 0.75rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap;"></div>
-        <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
+      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.35rem;">
+        <div id="shamsiDate"></div>
+        <a href="home.html" style="color: var(--text-dim, #a0a0a0); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
           🏠 رفتن به صفحه اصلی
         </a>
       </div>
@@ -398,7 +683,7 @@
       </div>
 
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
-        <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
+        <button id="uploadBtn">➕ آپلود اثر</button>
         <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; font-size: 0.85rem; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.color='var(--turquoise)'" onmouseout="this.style.color='#fff'">
           <span id="userGreeting" class="user-greeting"></span>
         </a>
@@ -472,24 +757,24 @@
       <button class="modal-close" id="uploadClose">✕</button>
 
       <div class="upload-header" style="padding-top: 2rem; text-align: center;">
-        <div class="upload-header-icon">✨</div>
-        <h2>آپلود اثر جدید</h2>
-        <p class="upload-sub">اثرت رو با بقیه به اشتراک بذار</p>
+        <div class="upload-header-icon" style="font-size: 1.8rem;">✨</div>
+        <h2 style="margin: 0.4rem 0 0.3rem;">آپلود اثر جدید</h2>
+        <p class="upload-sub" style="color: var(--text-dim, #a0a0a0); margin: 0 0 0.5rem;">اثرت رو با بقیه به اشتراک بذار</p>
       </div>
 
       <form id="uploadForm" class="form upload-form" novalidate style="padding: 1.5rem;">
         <div class="upload-section">
-          <div class="section-title">
-            <span class="section-num">۱</span>
-            <span>تصویر اثر</span>
-            <span class="optional-badge">اختیاری</span>
+          <div class="section-title" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem;">
+            <span class="section-num" style="background: rgba(0,240,212,0.15); color: var(--turquoise); width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:1px solid rgba(0,240,212,0.35);">۱</span>
+            <span style="color:#fff; font-weight:700; font-size:0.88rem;">تصویر اثر</span>
+            <span class="optional-badge" style="margin-right:auto; font-size:0.7rem; color:#666; background:rgba(255,255,255,0.04); padding:0.15rem 0.5rem; border-radius:99px; border:1px solid rgba(255,255,255,0.06);">اختیاری</span>
           </div>
           <label class="upload-file-box" for="fileInput">
             <input type="file" id="fileInput" accept="image/*" hidden>
-            <div class="upload-file-icon">🖼️</div>
+            <div class="upload-file-icon" style="font-size:1.6rem;">🖼️</div>
             <div class="upload-file-text">
-              <strong>انتخاب یا کشیدن تصویر</strong>
-              <small>JPG · PNG · WEBP — اختیاری</small>
+              <strong style="display:block; color:#fff; font-size:0.88rem;">انتخاب یا کشیدن تصویر</strong>
+              <small style="color:#777; font-size:0.75rem;">JPG · PNG · WEBP — اختیاری</small>
             </div>
           </label>
           <div id="previewWrap" class="preview-wrap hidden">
@@ -500,17 +785,17 @@
         </div>
 
         <div class="upload-section">
-          <div class="section-title">
-            <span class="section-num">۲</span>
-            <span>فایل صوتی</span>
-            <span class="optional-badge">اختیاری</span>
+          <div class="section-title" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem;">
+            <span class="section-num" style="background: rgba(0,240,212,0.15); color: var(--turquoise); width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:1px solid rgba(0,240,212,0.35);">۲</span>
+            <span style="color:#fff; font-weight:700; font-size:0.88rem;">فایل صوتی</span>
+            <span class="optional-badge" style="margin-right:auto; font-size:0.7rem; color:#666; background:rgba(255,255,255,0.04); padding:0.15rem 0.5rem; border-radius:99px; border:1px solid rgba(255,255,255,0.06);">اختیاری</span>
           </div>
           <label class="upload-file-box upload-file-audio" for="audioInput">
             <input type="file" id="audioInput" accept="audio/*" hidden>
-            <div class="upload-file-icon">🎧</div>
+            <div class="upload-file-icon" style="font-size:1.6rem;">🎧</div>
             <div class="upload-file-text">
-              <strong>انتخاب فایل صوتی</strong>
-              <small>MP3 · WAV · OGG — برای موسیقی</small>
+              <strong style="display:block; color:#fff; font-size:0.88rem;">انتخاب فایل صوتی</strong>
+              <small style="color:#777; font-size:0.75rem;">MP3 · WAV · OGG — برای موسیقی</small>
             </div>
           </label>
           <div id="audioFileBox" class="audio-file-box hidden">
@@ -521,9 +806,9 @@
         </div>
 
         <div class="upload-section">
-          <div class="section-title">
-            <span class="section-num">۳</span>
-            <span>اطلاعات اثر</span>
+          <div class="section-title" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem;">
+            <span class="section-num" style="background: rgba(0,240,212,0.15); color: var(--turquoise); width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:1px solid rgba(0,240,212,0.35);">۳</span>
+            <span style="color:#fff; font-weight:700; font-size:0.88rem;">اطلاعات اثر</span>
           </div>
           <div class="upload-field">
             <label>عنوان اثر <span class="req">*</span></label>
@@ -548,10 +833,10 @@
         </div>
 
         <div class="upload-section">
-          <div class="section-title">
-            <span class="section-num">۴</span>
-            <span>محتوای ویژه</span>
-            <span class="optional-badge">اختیاری</span>
+          <div class="section-title" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem;">
+            <span class="section-num" style="background: rgba(255,201,60,0.15); color: #ffc93c; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:1px solid rgba(255,201,60,0.35);">۴</span>
+            <span style="color:#fff; font-weight:700; font-size:0.88rem;">محتوای ویژه</span>
+            <span class="optional-badge" style="margin-right:auto; font-size:0.7rem; color:#666; background:rgba(255,255,255,0.04); padding:0.15rem 0.5rem; border-radius:99px; border:1px solid rgba(255,255,255,0.06);">اختیاری</span>
           </div>
           <div id="premiumSection"></div>
         </div>
@@ -575,59 +860,59 @@
       <button class="modal-close" id="subClose">✕</button>
 
       <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
-      <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
-      <p class="sub-desc" style="text-align:center; margin-bottom: 2rem;">پلن مناسب خودت رو انتخاب کن</p>
+      <h2 style="text-align:center; margin: 0.4rem 0 0.3rem;">پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc" style="text-align:center; margin-bottom: 1.5rem; color: var(--text-dim, #a0a0a0);">پلن مناسب خودت رو انتخاب کن</p>
 
-      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
+      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
         <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
-          <div class="plan-header">
-            <span class="plan-name">🥉 برنزی</span>
-            <div class="plan-duration">۱ ماهه</div>
+          <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
+            <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">🥉 برنزی</span>
+            <div class="plan-duration" style="color:#777; font-size:0.72rem;">۱ ماهه</div>
           </div>
-          <div class="plan-price">
-            <span class="price-num">۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
+          <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
+            <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۵۰,۰۰۰</span>
+            <span class="price-unit" style="color:#777; font-size:0.8rem;">تومان</span>
           </div>
-          <ul class="plan-features">
+          <ul class="plan-features" style="list-style:none; padding:0; margin:0; font-size:0.82rem; color:#bbb; line-height:1.9;">
             <li>✅ آپلود ۲۰ عکس در ماه</li>
             <li>✅ نمایش نام هنرمند</li>
             <li>✅ دریافت لایک</li>
-            <li>❌ آپلود موسیقی</li>
-            <li>❌ دانلود نامحدود</li>
+            <li style="color:#666;">❌ آپلود موسیقی</li>
+            <li style="color:#666;">❌ دانلود نامحدود</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
         <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="365">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
-          <div class="plan-header">
-            <span class="plan-name">🥈 طلایی</span>
-            <div class="plan-duration">۱۲ ماهه (۱ ساله)</div>
+          <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
+            <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">🥈 طلایی</span>
+            <div class="plan-duration" style="color:#999; font-size:0.72rem;">۱۲ ماهه</div>
           </div>
-          <div class="plan-price">
-            <span class="price-num">۱۰۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
+          <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
+            <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۱۰۰,۰۰۰</span>
+            <span class="price-unit" style="color:#999; font-size:0.8rem;">تومان</span>
           </div>
-          <ul class="plan-features">
+          <ul class="plan-features" style="list-style:none; padding:0; margin:0; font-size:0.82rem; color:#bbb; line-height:1.9;">
             <li>✅ آپلود ۱۰۰ عکس در ماه</li>
             <li>✅ آپلود ۵ آهنگ در ماه</li>
             <li>✅ نمایش نام هنرمند</li>
             <li>✅ دانلود نامحدود عکس</li>
-            <li>❌ پخش بدون تبلیغ</li>
+            <li style="color:#666;">❌ پخش بدون تبلیغ</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
         <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
-          <div class="plan-header">
-            <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۳ سال و ۶ ماهه</div>
+          <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
+            <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">💎 الماسی</span>
+            <div class="plan-duration" style="color:#777; font-size:0.72rem;">۳.۵ ساله</div>
           </div>
-          <div class="plan-price">
-            <span class="price-num">۲۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
+          <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
+            <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۲۵۰,۰۰۰</span>
+            <span class="price-unit" style="color:#777; font-size:0.8rem;">تومان</span>
           </div>
-          <ul class="plan-features">
+          <ul class="plan-features" style="list-style:none; padding:0; margin:0; font-size:0.82rem; color:#bbb; line-height:1.9;">
             <li>✅ آپلود نامحدود عکس</li>
             <li>✅ آپلود نامحدود موسیقی</li>
             <li>✅ دانلود نامحدود</li>
@@ -649,15 +934,9 @@
     </div>
   </div>
 
-  <!-- ==========================================
-       🔥 اسکریپت سراسری: توابع مودال + DB اولیه
-       (قبل از اسکریپت Firebase، تا همیشه در دسترس باشن)
-       ========================================== -->
   <script>
-    // ✅ مقداردهی زودهنگام DB تا app.js به مشکل نخوره
     window.DB = window.DB || { items: [] };
 
-    // ✅ توابع باز/بسته کردن مودال‌ها (Global)
     window.navaaOpenUpload = function () {
       const m = document.getElementById('uploadModal');
       if (m) m.classList.remove('hidden');
@@ -700,19 +979,14 @@
     };
   </script>
 
-  <!-- ==========================================
-       🔥 اسکریپت UI: تاریخ، آواتار، بایند دکمه‌ها
-       ========================================== -->
   <script>
     window.addEventListener('load', function () {
-      // تاریخ شمسی
       const dateEl = document.getElementById('shamsiDate');
       if (dateEl) {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
       }
 
-      // نام کاربر در هدر (از localStorage به عنوان fallback)
       try {
         const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
         if (currentUser && currentUser.fullname) {
@@ -721,7 +995,6 @@
         }
       } catch (e) { /* ignore */ }
 
-      // آواتار پروفایل در نوار پایین
       setInterval(function () {
         const navCenter = document.querySelector('.nav-center-profile');
         let currentUser = null;
@@ -736,19 +1009,15 @@
         }
       }, 500);
 
-      // ✅ بایند دکمه‌های بستن
       document.getElementById('uploadClose')?.addEventListener('click', window.navaaCloseUpload);
       document.getElementById('cancelUploadBtn')?.addEventListener('click', window.navaaCloseUpload);
       document.getElementById('subClose')?.addEventListener('click', window.navaaCloseSub);
       document.getElementById('cancelSubBtn')?.addEventListener('click', window.navaaCloseSub);
 
-      // ✅ بایند دکمه آپلود هدر (قبلاً هیچ listener نداشت)
       document.getElementById('uploadBtn')?.addEventListener('click', window.navaaOpenUpload);
 
-      // ✅ بایند دکمه ✕ مودال نمایش اثر (defensive - حتی اگر app.js هم بایند کنه)
       document.getElementById('modalClose')?.addEventListener('click', window.navaaCloseItemModal);
 
-      // ✅ بستن مودال‌ها با کلیک روی بک‌گراند
       const modal = document.getElementById('modal');
       if (modal) modal.addEventListener('click', function (e) { if (e.target === this) window.navaaCloseItemModal(); });
 
@@ -758,7 +1027,6 @@
       const subModal = document.getElementById('subModal');
       if (subModal) subModal.addEventListener('click', function (e) { if (e.target === this) window.navaaCloseSub(); });
 
-      // ✅ پارامتر subscribe=1 در URL (برگشت از درگاه پرداخت)
       setTimeout(function () {
         const params = new URLSearchParams(window.location.search);
         if (params.get('subscribe') === '1') {
@@ -778,9 +1046,6 @@
     });
   </script>
 
-  <!-- ==========================================
-       🔥 اتصال به Firebase
-       ========================================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -800,12 +1065,8 @@
     const itemsCollection = collection(db, 'navaa_items');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // ✅ اطمینان از وجود DB قبل از شروع
     window.DB = window.DB || { items: [] };
 
-    // ============================
-    // توابع کاربران
-    // ============================
     window.saveUsersToCloud = async function (usersArray) {
       const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
       try {
@@ -821,9 +1082,6 @@
       return [];
     };
 
-    // ============================
-    // توابع آیتم‌ها
-    // ============================
     window.addItemToCloud = async function (item) {
       try {
         await setDoc(doc(db, 'navaa_items', item.id.toString()), item);
@@ -831,7 +1089,6 @@
         return true;
       } catch (error) {
         console.error('❌ خطا در ذخیره فایل:', error);
-        // ✅ پیام شفاف‌تر برای محدودیت 1MB فایربیس
         if (error && (error.code === 'resource-exhausted' || /too large|exceeds/i.test(error.message || ''))) {
           alert('حجم این فایل از سقف مجاز فایربیس (1MB) بیشتره. لطفاً فایل کوچکتری انتخاب کن یا از Firebase Storage استفاده کن.');
         } else {
@@ -855,7 +1112,6 @@
       } catch (error) { console.error('Error updating item:', error); }
     };
 
-    // ✅ این تابع قبلاً همیشه [] برمی‌گردوند — حالا واقعی برمی‌گردونه
     window.getItemsFromCloud = async function () {
       if (window.DB && Array.isArray(window.DB.items) && window.DB.items.length) {
         return window.DB.items;
@@ -865,9 +1121,6 @@
       } catch (e) { return []; }
     };
 
-    // ============================
-    // یک‌بار رندر مطمئن (Retry تا app.js لود بشه)
-    // ============================
     function tryRenderGallery(retries = 0) {
       if (typeof window.renderGallery === 'function') {
         try { window.renderGallery(); } catch (e) { console.error('renderGallery error:', e); }
@@ -878,9 +1131,6 @@
       }
     }
 
-    // ============================
-    // onSnapshot آیتم‌ها
-    // ============================
     onSnapshot(itemsCollection, function (snapshot) {
       const cloudItems = [];
       snapshot.forEach(function (d) { cloudItems.push(d.data()); });
@@ -896,9 +1146,6 @@
       console.error('❌ onSnapshot (items) error:', error);
     });
 
-    // ============================
-    // onSnapshot کاربران
-    // ============================
     onSnapshot(docRefUsers, function (docSnap) {
       if (!docSnap.exists()) return;
       let cloudUsers = [];
@@ -920,13 +1167,9 @@
       console.error('❌ onSnapshot (users) error:', error);
     });
 
-    // ============================
-    // ✅ لود app.js و رندر بعد از لود
-    // ============================
     const script = document.createElement('script');
     script.src = 'js/app.js';
     script.onload = function () {
-      // بعد از لود شدن app.js، اگر داده داریم و گالری هنوز خالیِ، یک بار دیگه رندر کن
       if (window.DB && Array.isArray(window.DB.items) && window.DB.items.length) {
         tryRenderGallery();
       }
