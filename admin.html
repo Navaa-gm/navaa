@@ -4,100 +4,902 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>پنل مدیریت | Navaa</title>
-  
+
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 استایل‌های اختصاصی پنل مدیریت */
+    :root {
+      --red: #ff2e4d;
+      --red-glow: rgba(255, 46, 77, 0.35);
+      --glass-bg: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+      --glass-border: rgba(255,255,255,0.1);
+      --glass-blur: blur(24px) saturate(180%);
+    }
+
     html { font-size: 14px; }
-    
-    .admin-header { 
-      position: relative; 
-      background: radial-gradient(ellipse at 30% 0%, rgba(0,240,212,.15), transparent 55%), radial-gradient(ellipse at 70% 100%, rgba(56,189,248,.15), transparent 55%), linear-gradient(180deg, #0a0a0a 0%, #141414 100%); 
-      padding: 1.2rem 1.5rem; 
-      border-bottom: 1px solid rgba(0,240,212,.15); 
-      z-index: 10; 
-    }
-    .admin-header::after { 
-      content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 2px; 
-      background: linear-gradient(90deg, transparent, var(--turquoise), var(--sky), var(--gold), var(--red), transparent); 
-      box-shadow: 0 0 12px var(--turquoise); 
-    }
-    .admin-header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .admin-logo-box { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
-    .admin-badge-large { display: inline-flex; align-items: center; gap: .4rem; background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,140,0,.1)); border: 1px solid rgba(255,201,60,.5); color: var(--gold); padding: .5rem 1.1rem; border-radius: 999px; font-size: .82rem; font-weight: 800; box-shadow: 0 0 16px rgba(255,201,60,.3); }
-    .admin-back-btn { display: inline-flex; align-items: center; gap: .5rem; background: linear-gradient(135deg, var(--turquoise), var(--sky)); color: #001a1c !important; text-decoration: none; padding: .8rem 1.5rem; border-radius: 999px; font-size: .92rem; font-weight: 800; box-shadow: 0 4px 20px rgba(0,240,212,.5); transition: all .25s; }
-    .admin-back-btn:hover { transform: translateY(-2px) scale(1.02); }
-    
-    .admin-main { padding-bottom: 120px !important; max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
-    .admin-section { background: rgba(20,24,28,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; max-width: 600px; margin: 0 auto; }
-    .admin-section h3 { margin: 0 0 1.2rem; font-size: 1rem; color: #fff; font-weight: 800; }
-    
-    /* 🔥 فیکس شدن چیدمان تب‌ها و جستجو */
-    .admin-title { text-align: center; margin-top: 1rem; font-size: 1.8rem; color: #fff; font-weight: 900; }
-    .admin-sub { text-align: center; color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
-    
-    .admin-tabs { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .admin-search { display: flex; justify-content: center; margin-bottom: 1.5rem; }
-    .admin-search input { width: 100%; max-width: 400px; padding: 0.8rem 1rem; background: rgba(20,24,28,0.8); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-family: inherit; outline: none; transition: 0.3s; }
-    .admin-search input:focus { border-color: var(--turquoise); box-shadow: 0 0 10px rgba(0,240,212,0.2); }
+    * { box-sizing: border-box; }
+    .hidden { display: none !important; }
 
-    .user-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-    .btn-action { background: var(--black-3); border: 1px solid var(--border); color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.2s; flex: 1; min-width: 100px; text-align: center; }
-    .btn-action:hover { background: var(--turquoise); color: #001a1c; border-color: var(--turquoise); }
-    .btn-action.danger { color: var(--red); border-color: rgba(255,46,77,0.3); }
-    .btn-action.danger:hover { background: var(--red); color: #fff; border-color: var(--red); }
-    .btn-action.success { color: var(--gold); border-color: rgba(255,201,60,0.3); }
-    .btn-action.success:hover { background: var(--gold); color: #1a1100; border-color: var(--gold); }
+    body {
+      margin: 0; padding: 0;
+      background: var(--black, #0a0a0a);
+      color: #fff;
+      font-family: 'Vazirmatn', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-    /* 🌟 نوار پایین و اصلاح دایره عکس پروفایل */
+    /* 🌌 پس‌زمینهٔ زنده */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -20%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(0,240,212,0.10), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(56,189,248,0.08), transparent 35%),
+        radial-gradient(circle at 80% 85%, rgba(255,46,77,0.12), transparent 40%),
+        radial-gradient(circle at 20% 80%, rgba(255,201,60,0.05), transparent 35%);
+      filter: blur(60px);
+      animation: bgFloat 24s ease-in-out infinite alternate;
+    }
+    @keyframes bgFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-20px,15px) scale(1.06); }
+    }
+
+    header, main, nav.bottom-nav { position: relative; z-index: 1; }
+
+    /* ==========================================
+       🌟 هدر شیشه‌ای پرمیوم + نوار رنگی قرمز
+       ========================================== */
+    .admin-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.55);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .admin-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 5%; right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00f0d4, #38bdf8, #ffc93c, var(--red), transparent);
+      box-shadow: 0 0 14px rgba(0,240,212,0.6), 0 0 24px rgba(255,46,77,0.3);
+      pointer-events: none;
+    }
+    .admin-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .admin-logo-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .admin-logo-box .logo-icon-sm {
+      font-size: 1.6rem;
+      filter: drop-shadow(0 0 12px rgba(0,240,212,0.6));
+    }
+    .admin-logo-box .logo-name-sm {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff 0%, #00f0d4 45%, #38bdf8 70%, #ff2e4d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .admin-badge-large {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, rgba(255,201,60,0.15), rgba(255,46,77,0.1));
+      border: 1px solid rgba(255,201,60,0.45);
+      color: #ffc93c;
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      box-shadow: 0 0 18px rgba(255,201,60,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .admin-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      color: #001a1c !important;
+      text-decoration: none;
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(0,240,212,0.5), 0 0 18px rgba(255,46,77,0.12);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-back-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    .admin-back-btn:hover::before { transform: translateX(100%); }
+    .admin-back-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 28px rgba(0,240,212,0.6), 0 0 30px rgba(255,46,77,0.2);
+    }
+
+    /* ==========================================
+       🌟 بدنهٔ اصلی
+       ========================================== */
+    .admin-main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 130px;
+    }
+
+    .admin-title {
+      text-align: center;
+      margin: 1rem 0 0.3rem;
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #fff, #00f0d4 40%, #38bdf8 60%, #ff2e4d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .admin-sub {
+      text-align: center;
+      color: var(--text-dim, #a0a0a0);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    /* ==========================================
+       📊 آمار
+       ========================================== */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.3);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.6), rgba(255,46,77,0.5), transparent);
+      pointer-events: none;
+    }
+    .stat-box:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,46,77,0.35);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,0.5),
+        0 0 26px rgba(255,46,77,0.15),
+        0 0 20px rgba(0,240,212,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .stat-box strong {
+      display: block;
+      font-size: 1.9rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #00f0d4, #38bdf8, #ffc93c, #ff2e4d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+    .stat-box span {
+      font-size: 0.78rem;
+      color: var(--text-dim, #a0a0a0);
+    }
+
+    /* ==========================================
+       🔀 تب‌ها
+       ========================================== */
+    .admin-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .admin-tab {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-dim, #a0a0a0);
+      padding: 0.7rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .admin-tab:hover {
+      color: #fff;
+      border-color: rgba(0,240,212,0.4);
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-1px);
+    }
+    .admin-tab.active {
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      color: #001a1c;
+      border-color: transparent;
+      box-shadow: 0 6px 22px rgba(0,240,212,0.4), 0 0 18px rgba(255,46,77,0.1);
+      transform: translateY(-1px);
+    }
+
+    /* 🔍 جستجو */
+    .admin-search {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .admin-search input {
+      width: 100%;
+      max-width: 420px;
+      padding: 0.85rem 1.1rem;
+      background: rgba(255,255,255,0.035);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.3s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .admin-search input::placeholder { color: #666; }
+    .admin-search input:focus {
+      border-color: rgba(0,240,212,0.6);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* ==========================================
+       👥 کارت کاربران
+       ========================================== */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .user-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 1.1rem;
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 20px rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .user-card:hover {
+      border-color: rgba(255,46,77,0.35);
+      transform: translateY(-3px);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,0.55),
+        0 0 24px rgba(255,46,77,0.12),
+        0 0 18px rgba(0,240,212,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .user-card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.8rem;
+    }
+    .user-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8);
+      box-shadow: 0 0 0 2px rgba(10,10,10,0.6), 0 0 16px rgba(0,240,212,0.4);
+      flex-shrink: 0;
+    }
+    .user-main { flex: 1; min-width: 0; }
+    .user-main h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.92rem;
+      color: #fff;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-main h4 small { font-size: 0.7rem; font-weight: 500; }
+    .user-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .role-super {
+      background: rgba(255,201,60,0.12);
+      color: #ffc93c;
+      border-color: rgba(255,201,60,0.4);
+      box-shadow: 0 0 12px rgba(255,201,60,0.2);
+    }
+    .role-admin {
+      background: rgba(255,46,77,0.12);
+      color: var(--red);
+      border-color: rgba(255,46,77,0.4);
+    }
+    .role-user {
+      background: rgba(255,255,255,0.05);
+      color: #a0a0a0;
+      border-color: rgba(255,255,255,0.1);
+    }
+    .badge-yes {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(0,240,212,0.12);
+      color: #00f0d4;
+      border: 1px solid rgba(0,240,212,0.35);
+    }
+    .badge-no {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255,46,77,0.1);
+      color: var(--red);
+      border: 1px solid rgba(255,46,77,0.35);
+    }
+    .badge-pending {
+      background: rgba(255,201,60,0.12);
+      color: #ffc93c;
+      border-color: rgba(255,201,60,0.4);
+    }
+    .badge-approved {
+      background: rgba(0,240,212,0.12);
+      color: #00f0d4;
+      border-color: rgba(0,240,212,0.35);
+    }
+    .badge-rejected {
+      background: rgba(255,46,77,0.12);
+      color: var(--red);
+      border-color: rgba(255,46,77,0.35);
+    }
+
+    .user-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .info-cell {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 0.5rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+    .info-cell span {
+      font-size: 0.68rem;
+      color: var(--text-dim, #a0a0a0);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .info-cell strong {
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .btn-action {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 0.45rem 0.8rem;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+    }
+    .btn-action:hover {
+      background: #00f0d4;
+      color: #001a1c;
+      border-color: #00f0d4;
+      box-shadow: 0 0 18px rgba(0,240,212,0.3);
+      transform: translateY(-1px);
+    }
+    .btn-action.danger {
+      color: var(--red);
+      border-color: rgba(255,46,77,0.3);
+    }
+    .btn-action.danger:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+      box-shadow: 0 0 18px var(--red-glow);
+    }
+    .btn-action.success {
+      color: #ffc93c;
+      border-color: rgba(255,201,60,0.35);
+    }
+    .btn-action.success:hover {
+      background: #ffc93c;
+      color: #1a1100;
+      border-color: #ffc93c;
+      box-shadow: 0 0 18px rgba(255,201,60,0.3);
+    }
+
+    /* ==========================================
+       🖼️ کارت آثار
+       ========================================== */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .item-card {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .item-card:hover {
+      border-color: rgba(255,46,77,0.35);
+      transform: translateY(-4px);
+      box-shadow:
+        0 16px 34px rgba(0,0,0,0.55),
+        0 0 24px rgba(255,46,77,0.12),
+        0 0 20px rgba(0,240,212,0.06);
+    }
+    .item-thumb {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .item-info { padding: 0.7rem 0.8rem; }
+    .item-title {
+      margin: 0 0 0.25rem;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-artist {
+      margin: 0;
+      font-size: 0.72rem;
+      color: var(--text-dim, #a0a0a0);
+    }
+
+    /* ==========================================
+       💳💸 پرداخت‌ها و برداشت‌ها
+       ========================================== */
+    .admin-section {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 1.2rem 1.3rem;
+      transition: all 0.3s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .admin-section h3 {
+      margin: 0 0 1.2rem;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 800;
+    }
+    .admin-section:hover {
+      border-color: rgba(255,46,77,0.25);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 20px rgba(255,46,77,0.06);
+    }
+
+    /* ==========================================
+       ⚙️ تنظیمات
+       ========================================== */
+    #tab-settings .admin-section {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #tab-settings input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0,0,0,0.35) !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 12px !important;
+      color: #fff !important;
+      font-family: inherit !important;
+      font-size: 0.92rem !important;
+      outline: none !important;
+      transition: all 0.3s !important;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+    }
+    #tab-settings input:focus {
+      border-color: rgba(0,240,212,0.6) !important;
+      box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.25) !important;
+    }
+    #saveSettingsBtn {
+      background: linear-gradient(135deg, #00f0d4, #38bdf8) !important;
+      color: #001a1c !important;
+      border: none !important;
+      padding: 0.85rem 1.5rem !important;
+      border-radius: 12px !important;
+      font-family: inherit !important;
+      font-size: 0.92rem !important;
+      font-weight: 800 !important;
+      cursor: pointer !important;
+      box-shadow: 0 6px 22px rgba(0,240,212,0.3), 0 0 20px rgba(255,46,77,0.08), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1) !important;
+    }
+    #saveSettingsBtn:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 10px 30px rgba(0,240,212,0.45), 0 0 26px rgba(255,46,77,0.15) !important;
+    }
+
+    /* ==========================================
+       🌟 نوار پایین
+       ========================================== */
     .bottom-nav {
-      position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
-      height: 64px !important; padding: 0.2rem 3% !important; border-radius: 16px 16px 0 0 !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important; display: flex !important;
-      align-items: center !important; justify-content: space-between !important;
-      z-index: 1000 !important; background: var(--black-2) !important;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 66px !important;
+      padding: 0.2rem 3% !important;
+      border-radius: 20px 20px 0 0 !important;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      z-index: 1000 !important;
+      background: rgba(10,10,10,0.72) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 0 !important;
     }
-    .nav-pill-btn { padding: 0.3rem 0.8rem !important; font-size: 0.75rem !important; gap: 0.3rem !important; border-radius: 10px !important; }
+    .nav-pill-btn {
+      padding: 0.35rem 0.85rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+      border-radius: 11px !important;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text-dim, #a0a0a0);
+      font-family: inherit;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .nav-pill-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(0,240,212,0.35);
+      box-shadow: 0 0 16px rgba(0,240,212,0.12);
+      transform: translateY(-1px);
+    }
     .nav-pill-icon { font-size: 1rem !important; }
-
     .nav-center-profile {
-      position: relative !important; width: 56px !important; height: 56px !important;
-      min-width: 56px !important; min-height: 56px !important; flex: 0 0 56px !important;
-      border-radius: 50% !important; display: flex !important; align-items: center !important;
-      justify-content: center !important; padding: 0 !important; margin-top: -18px !important;
+      position: relative !important;
+      width: 58px !important;
+      height: 58px !important;
+      min-width: 58px !important;
+      min-height: 58px !important;
+      flex: 0 0 58px !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin-top: -20px !important;
       box-sizing: border-box !important;
+      text-decoration: none;
     }
     .profile-btn-avatar {
-      width: 100% !important; height: 100% !important; border-radius: 50% !important;
-      background-size: cover !important; background-position: center !important;
-      box-sizing: border-box !important; border: 3px solid var(--black-2) !important;
-      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      background-size: cover !important;
+      background-position: center !important;
+      box-sizing: border-box !important;
+      border: 3px solid #0a0a0a !important;
+      box-shadow:
+        0 0 0 2px rgba(0,240,212,0.6),
+        0 0 22px rgba(0,240,212,0.45),
+        0 0 18px rgba(255,46,77,0.15) !important;
     }
     .nav-center-profile .nav-icon {
-      width: 100% !important; height: 100% !important; border-radius: 50% !important;
-      display: flex !important; align-items: center !important; justify-content: center !important;
-      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
-      color: #001a1c !important; font-size: 1.2rem !important; box-sizing: border-box !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8) !important;
+      color: #001a1c !important;
+      font-size: 1.25rem !important;
+      box-sizing: border-box !important;
+      border: 3px solid #0a0a0a !important;
+      box-shadow: 0 0 22px rgba(0,240,212,0.5) !important;
     }
     .nav-center-label {
-      position: absolute !important; bottom: -18px !important; left: 50% !important;
-      transform: translateX(-50%) !important; font-size: 0.65rem !important;
-      white-space: nowrap !important; color: #fff !important;
+      position: absolute !important;
+      bottom: -18px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      font-size: 0.65rem !important;
+      white-space: nowrap !important;
+      color: #fff !important;
     }
 
-    /* 🌟 افکت شیشه‌ای مودال هدیه */
-    .modal { background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(8px); z-index: 2000 !important; }
-    .modal-content { background: rgba(20, 24, 28, 0.7) !important; backdrop-filter: blur(24px) !important; border: 1px solid rgba(255,255,255,0.15) !important; border-radius: 20px !important; }
-    .modal-close {
-      position: absolute; top: 15px; left: 15px; width: 38px; height: 38px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      color: #fff !important; font-size: 1.2rem !important; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 2100 !important; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      pointer-events: auto !important;
+    /* ==========================================
+       🎁 مودال هدیه اشتراک (پرمیوم + قرمز)
+       ========================================== */
+    .modal {
+      background:
+        radial-gradient(circle at 10% 20%, rgba(0,240,212,0.10), transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(56,189,248,0.10), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255,46,77,0.10), transparent 50%),
+        rgba(5,8,10,0.8) !important;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      position: fixed; inset: 0;
+      z-index: 2000 !important;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
     }
-    .modal-close:hover { background: rgba(255, 46, 77, 0.9) !important; border-color: var(--red) !important; transform: rotate(90deg) scale(1.1); }
+    .modal-content {
+      background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
+      backdrop-filter: blur(40px) saturate(220%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
+      border: 1px solid rgba(255,255,255,0.14) !important;
+      border-top: 1px solid rgba(255,255,255,0.28) !important;
+      box-shadow:
+        0 30px 70px rgba(0,0,0,0.8),
+        0 0 50px rgba(0,240,212,0.06),
+        0 0 40px rgba(255,46,77,0.06),
+        inset 0 0 30px rgba(255,255,255,0.02) !important;
+      border-radius: 28px !important;
+      max-width: 720px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      margin: 0 auto;
+      position: relative;
+    }
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar-track { background: transparent; }
+    .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 10px; }
+    .modal-content::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.5); }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07) !important;
+      border: 1px solid rgba(255,255,255,0.16) !important;
+      color: #fff !important;
+      font-size: 1.15rem !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2100 !important;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+    .modal-close:hover {
+      background: var(--red) !important;
+      border-color: var(--red) !important;
+      transform: rotate(90deg) scale(1.08);
+      box-shadow: 0 0 24px var(--red-glow);
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      margin: 0.4rem 0 0.3rem;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+    .modal-content .sub-desc {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-dim, #a0a0a0);
+      font-size: 0.88rem;
+    }
+    .modal-content .sub-icon {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      filter: drop-shadow(0 0 16px rgba(0,240,212,0.6));
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      padding: 0 1.5rem 1.5rem;
+    }
+    .plans .plan {
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      transition: 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .plans .plan:hover {
+      background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+      transform: translateY(-5px);
+      border-color: rgba(0,240,212,0.4);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 26px rgba(0,240,212,0.12), 0 0 22px rgba(255,46,77,0.08);
+    }
+    .plan-silver {
+      background: linear-gradient(135deg, rgba(255,201,60,0.1), rgba(255,46,77,0.04)) !important;
+      border: 1px solid rgba(255,201,60,0.4) !important;
+      box-shadow: 0 0 24px rgba(255,201,60,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .plan-silver:hover {
+      background: linear-gradient(135deg, rgba(255,201,60,0.16), rgba(255,46,77,0.07)) !important;
+      border-color: rgba(255,201,60,0.7) !important;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 32px rgba(255,201,60,0.2);
+    }
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .plan-name { color: #fff; font-weight: 800; font-size: 0.95rem; }
+    .plan-duration { color: #777; font-size: 0.72rem; }
+    .plan-price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-bottom: 0.9rem;
+    }
+    .price-num { font-size: 1.6rem; font-weight: 900; color: #fff; }
+    .price-unit { color: #777; font-size: 0.8rem; }
+    .plan-btn {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.9rem;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #001a1c;
+      background: linear-gradient(135deg, #00f0d4, #38bdf8, #ff2e4d);
+      background-size: 200% 100%;
+      box-shadow: 0 6px 20px rgba(0,240,212,0.28), 0 0 18px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .plan-btn:hover {
+      transform: translateY(-2px);
+      background-position: 100% 0;
+      box-shadow: 0 10px 28px rgba(0,240,212,0.42), 0 0 26px rgba(255,46,77,0.22);
+    }
+
+    /* 📱 موبایل */
+    @media (max-width: 640px) {
+      .admin-main { padding: 1rem 0.8rem 120px; }
+      .admin-title { font-size: 1.5rem; }
+      .admin-header-inner { padding: 0.9rem 0.8rem; }
+      .admin-badge-large { font-size: 0.75rem; padding: 0.4rem 0.85rem; }
+      .admin-back-btn { padding: 0.6rem 1rem; font-size: 0.82rem; }
+      .users-grid { grid-template-columns: 1fr; }
+      .items-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .plans { padding: 0 1rem 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -144,30 +946,36 @@
       <div class="admin-search"><input type="text" id="itemSearch" placeholder="🔍 جستجو در آثار..."></div>
       <div class="items-grid" id="adminItems"></div>
     </section>
-    
+
     <section id="tab-payments" class="admin-panel hidden"><div id="paymentsList"></div></section>
     <section id="tab-withdraws" class="admin-panel hidden"><div id="withdrawsList"></div></section>
 
     <section id="tab-settings" class="admin-panel hidden">
       <div class="admin-section">
         <h3>⚙️ تنظیمات پلتفرم</h3>
-        <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label><input type="number" id="commissionInput" min="0" max="50" value="15" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
-        <div style="margin-bottom:1rem;"><label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label><input type="number" id="maxPriceInput" min="10000" step="10000" value="500000" style="width:100%;padding:.7rem;background:var(--black-3);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:inherit;font-size:.95rem;outline:none;"></div>
-        <button id="saveSettingsBtn" class="btn-primary" style="padding:.8rem 1.5rem;">💾 ذخیره تنظیمات</button>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">درصد کمیسیون مدیر (٪):</label>
+          <input type="number" id="commissionInput" min="0" max="50" value="15">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:.85rem;color:#fff;margin-bottom:.4rem;font-weight:700;">حداکثر قیمت اثر (تومان):</label>
+          <input type="number" id="maxPriceInput" min="10000" step="10000" value="500000">
+        </div>
+        <button id="saveSettingsBtn" class="btn-primary">💾 ذخیره تنظیمات</button>
       </div>
     </section>
   </main>
 
-  <!-- 🔥 مودال هدیه اشتراک -->
+  <!-- 🎁 مودال هدیه اشتراک -->
   <div id="giftSubModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" onclick="document.getElementById('giftSubModal').classList.add('hidden')">✕</button>
-      
-      <div class="sub-icon" style="text-align:center; font-size:2.5rem; margin-top:1rem;">🎁</div>
-      <h2 style="text-align:center;">هدیه اشتراک به <span id="giftTargetName" style="color:#00f0d4;"></span></h2>
-      <p class="sub-desc" style="text-align:center; margin-bottom:2rem;">یک پلن انتخاب کنید (مبلغ از کیف پول شما کسر می‌شود)</p>
 
-      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
+      <div class="sub-icon">🎁</div>
+      <h2>هدیه اشتراک به <span id="giftTargetName" style="color:#00f0d4;"></span></h2>
+      <p class="sub-desc">یک پلن انتخاب کنید (مبلغ از کیف پول شما کسر می‌شود)</p>
+
+      <div class="plans">
         <div class="plan plan-bronze" onclick="window.applyGift('bronze', 50000, 30)">
           <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
           <div class="plan-price"><span class="price-num">۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
@@ -201,13 +1009,13 @@
     import { getFirestore, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // ================== اتصال به فایربیس ==================
-    const firebaseConfig = { 
-        apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294", 
-        authDomain: "navaa-409cb.firebaseapp.com", 
-        projectId: "navaa-409cb", 
-        storageBucket: "navaa-409cb.firebasestorage.app", 
-        messagingSenderId: "81312395623", 
-        appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2" 
+    const firebaseConfig = {
+        apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
+        authDomain: "navaa-409cb.firebaseapp.com",
+        projectId: "navaa-409cb",
+        storageBucket: "navaa-409cb.firebasestorage.app",
+        messagingSenderId: "81312395623",
+        appId: "1:81312395623:web:6dd187fdf063ce44fc3fc2"
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -254,7 +1062,7 @@
 
     let users = [];
     let items = [];
-    
+
     function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
     function getInitials(name) { if (!name) return '؟'; const parts = name.trim().split(' '); return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + ' ' + parts[parts.length-1].charAt(0); }
@@ -276,7 +1084,7 @@
       document.getElementById('statUsers').textContent = users.length;
       document.getElementById('statAdmins').textContent = users.filter(u => u.role === 'admin' || u.email === ADMIN_EMAIL).length;
       document.getElementById('statItems').textContent = items.length;
-      
+
       const withdraws = JSON.parse(localStorage.getItem(WITHDRAW_KEY)) || [];
       const pending = withdraws.filter(w => w.status === 'pending').length;
       document.getElementById('statPending').textContent = pending;
@@ -291,13 +1099,13 @@
         await window.saveToCloud('navaa_users', JSON.stringify(users));
       }
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      
+
       const me = users.find(u => u.email === currentUser.email);
       if (me) {
           currentUser = me;
           localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
       }
-      
+
       renderUsers(); updateStats();
     }
 
@@ -305,20 +1113,20 @@
       const grid = document.getElementById('usersGrid');
       if (!grid) return;
       grid.innerHTML = '';
-      
+
       let sorted = [...users].sort((a, b) => b.joinDate - a.joinDate);
       if (search) {
           const q = search.toLowerCase();
           sorted = sorted.filter(u => (u.fullname || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
       }
-      
+
       if (sorted.length === 0) { grid.innerHTML = '<div class="empty-grid" style="grid-column:1/-1; text-align:center; padding:2rem; color:#a0a0a0;">کاربری پیدا نشد</div>'; return; }
 
       sorted.forEach(u => {
         const isSuper = u.email === ADMIN_EMAIL;
         const isUserAdmin = u.role === 'admin' || u.email === ADMIN_EMAIL;
         const isMe = u.id === currentUser.id;
-        
+
         let roleBadge = isSuper ? '<span class="role-badge role-super">👑 مدیر کل</span>' : (isUserAdmin ? '<span class="role-badge role-admin">🛡️ ادمین</span>' : '<span class="role-badge role-user">👤 کاربر</span>');
         let subBadge = u.hasSubscription ? `<span class="badge-yes">${ { bronze: '🥉 برنزی', silver: '🥈 طلایی', diamond: '💎 الماسی' }[u.subscriptionPlan] || '✅' }</span>` : '<span class="badge-no">❌ بدون اشتراک</span>';
         let banBadge = u.banned ? '<span class="badge-no">🚫 بن شده</span>' : '';
@@ -329,7 +1137,7 @@
             <div class="user-actions">
               <button class="btn-action" onclick="window.toggleAdmin(${u.id})">${isUserAdmin ? '❌ برکناری ادمین' : '🛡️ ادمین کن'}</button>
               <button class="btn-action danger" onclick="window.toggleBan(${u.id})">${u.banned ? '✅ آنبن' : '🚫 بن'}</button>
-              ${u.hasSubscription 
+              ${u.hasSubscription
                 ? `<button class="btn-action danger" onclick="window.cancelSub(${u.id})">🚫 لغو اشتراک</button>`
                 : `<button class="btn-action success" onclick="window.openGiftModal(${u.id})">🎁 هدیه اشتراک</button>`
               }
@@ -365,10 +1173,10 @@
       if (!user) return;
       giftTargetId = id;
       document.getElementById('giftTargetName').textContent = user.fullname;
-      
+
       const me = users.find(u => u.email === currentUser.email);
       document.getElementById('adminGiftBalance').textContent = formatMoney(me ? (me.balance || 0) : 0);
-      
+
       document.getElementById('giftSubModal').classList.remove('hidden');
     };
 
@@ -376,7 +1184,6 @@
       const targetUser = users.find(u => u.id === giftTargetId);
       if (!targetUser) return;
 
-      // 🔥 خواندن اطلاعات جدید از سرور
       try {
           const freshUsers = await window.getUsersFromCloud();
           if (freshUsers && freshUsers.length > 0) {
@@ -402,7 +1209,7 @@
         users[targetIdx].hasSubscription = true;
         users[targetIdx].subscriptionPlan = planName;
         users[targetIdx].subscriptionExpiry = Date.now() + (days * 24 * 60 * 60 * 1000);
-        
+
         if (!users[targetIdx].subscriptionHistory) users[targetIdx].subscriptionHistory = [];
         users[targetIdx].subscriptionHistory.push({
           plan: planName,
@@ -424,7 +1231,7 @@
       const user = users.find(u => u.id === id);
       if (!user) return;
       if (!confirm(`اشتراک ${user.fullname} لغو شود؟`)) return;
-      
+
       try {
           const freshUsers = await window.getUsersFromCloud();
           if (freshUsers && freshUsers.length > 0) users = freshUsers;
@@ -444,7 +1251,7 @@
           const freshUsers = await window.getUsersFromCloud();
           if (freshUsers && freshUsers.length > 0) users = freshUsers;
       } catch(e) {}
-      
+
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.role = user.role === 'admin' ? 'user' : 'admin';
@@ -457,7 +1264,7 @@
           const freshUsers = await window.getUsersFromCloud();
           if (freshUsers && freshUsers.length > 0) users = freshUsers;
       } catch(e) {}
-      
+
       const user = users.find(u => u.id === id);
       if (!user) return;
       user.banned = !user.banned;
@@ -468,13 +1275,13 @@
       const grid = document.getElementById('adminItems');
       if (!grid) return;
       grid.innerHTML = '';
-      
+
       let list = [...items].sort((a, b) => b.time - a.time);
       if (search) {
           const q = search.toLowerCase();
           list = list.filter(i => (i.title || '').toLowerCase().includes(q) || (i.artist || '').toLowerCase().includes(q));
       }
-      
+
       if (list.length === 0) { grid.innerHTML = '<div class="empty-grid" style="grid-column:1/-1; text-align:center; padding:2rem; color:#a0a0a0;">اثری پیدا نشد</div>'; return; }
 
       list.forEach(item => {
@@ -582,7 +1389,7 @@
       req.approvedAt = Date.now();
       req.approvedBy = currentUser.email;
       localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
-      
+
       alert('✅ برداشت تایید شد.');
       renderWithdraws();
       updateStats();
@@ -607,10 +1414,10 @@
       req.status = 'rejected';
       req.rejectedAt = Date.now();
       req.rejectedBy = currentUser.email;
-      
+
       localStorage.setItem(WITHDRAW_KEY, JSON.stringify(requests));
       await saveUsersToCloud();
-      
+
       alert('❌ درخواست رد شد و مبلغ به کاربر بازگشت داده شد.');
       renderWithdraws();
       updateStats();
@@ -626,7 +1433,7 @@
             }
         } catch(e) { console.error("خطا در لود تنظیمات:", e); }
     }
-    
+
     document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
         const commission = parseInt(document.getElementById('commissionInput').value) || 15;
         const maxPrice = parseInt(document.getElementById('maxPriceInput').value) || 500000;
@@ -648,7 +1455,7 @@
         <button class="nav-pill-btn admin-pill is-admin" id="adminNavBtn"><span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">مدیر کل</span></button>
         <button class="nav-pill-btn upload-pill" id="uploadNavBtn"><span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span></button>
       `;
-      
+
       nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html');
       nav.querySelector('#subNavBtn')?.addEventListener('click', () => window.location.href = 'gallery.html?subscribe=1');
       nav.querySelector('#adminNavBtn')?.addEventListener('click', () => window.location.href = 'admin.html');
@@ -694,11 +1501,11 @@
             console.warn("فایربیس پاسخ نداد، استفاده از حافظه محلی برای آثار");
             items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
         }
-        
+
         // 2. رندر اولیه
-        renderUsers(); 
-        renderItems(); 
-        updateStats(); 
+        renderUsers();
+        renderItems();
+        updateStats();
         renderBottomNav();
         loadSettings();
 
