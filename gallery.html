@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navaa | جایی که هنر به صدا در می‌آید</title>
+  <title>گالری | Navaa</title>
   
   <!-- 🔥 لوگوی سایت -->
   <link rel="icon" type="image/png" href="favicon.png">
@@ -11,317 +11,734 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* 🌟 تنظیمات پایه و انیمیشن‌ها */
-    :root {
-      --neon-blue: #00f0d4;
-      --neon-purple: #38bdf8;
-      --neon-gold: #ffc93c;
-      --bg-dark: #080a0c;
+    /* 🌟 تنظیمات پایه */
+    html { font-size: 14px; margin: 0; padding: 0; }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 100px; 
+      overflow-x: hidden;
+      background: var(--black);
     }
 
-    * { box-sizing: border-box; }
-
-    body { 
-      margin: 0; padding: 0; 
-      background: var(--bg-dark); 
-      color: #fff; 
-      font-family: 'Vazirmatn', sans-serif; 
-      display: flex; flex-direction: column; min-height: 100vh; 
-      overflow-x: hidden; position: relative;
+    header, .topbar-wrap, main#gallery {
+      width: 100%;
+      max-width: 100%;
+      padding-left: 4%;
+      padding-right: 4%;
+      box-sizing: border-box;
     }
 
-    /* 🌟 نورهای پس‌زمینه (Neon Orbs) */
-    .bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-    .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: float 10s infinite alternate; }
-    .orb-1 { width: 400px; height: 400px; background: var(--neon-blue); top: -100px; right: -100px; }
-    .orb-2 { width: 500px; height: 500px; background: var(--neon-purple); bottom: -150px; left: -150px; animation-delay: -5s; }
-    .orb-3 { width: 300px; height: 300px; background: var(--neon-gold); top: 40%; left: 30%; animation-delay: -2s; opacity: 0.2; }
-
-    @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 50px) scale(1.1); }
+    main#gallery {
+      flex: 1 0 auto;
+      padding-top: 1.5rem;
+      padding-bottom: 4rem; 
     }
 
-    /* 🌟 هدر شیشه‌ای */
-    header { 
-      padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; 
-      background: rgba(8, 10, 12, 0.6); backdrop-filter: blur(20px); 
-      border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100;
-      width: 100%; max-width: 100%;
+    footer {
+      flex-shrink: 0;
+      margin-top: auto;
+      padding: 1.5rem 1rem; 
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--black-2);
+    }
+
+    /* 🌟 استایل هدر */
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 1rem 0;
+      width: 100%;
     }
     
-    .logo-box { 
-      display: flex; align-items: center; gap: .5rem; text-decoration: none; font-size: 1.8rem; font-weight: 900; 
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-gold)); 
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      background-clip: text; filter: drop-shadow(0 0 10px rgba(0, 240, 212, 0.4));
-      transition: 0.3s;
-    }
-    .logo-box:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(0, 240, 212, 0.7)); }
-    
-    .header-actions { display: flex; gap: 1rem; align-items: center; }
-    .btn-header-outline { 
-      background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: #fff; 
-      padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: .9rem; transition: .3s; 
-    }
-    .btn-header-outline:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
-    
-    .btn-header-primary { 
-      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #001a1c; 
-      padding: .6rem 1.5rem; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: .9rem; 
-      box-shadow: 0 0 20px rgba(0,240,212,0.3); transition: .3s; 
-    }
-    .btn-header-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,240,212,0.6); }
+    .logo-name-sm { font-size: 1.8rem !important; font-weight: 900 !important; letter-spacing: -0.5px; }
+    .logo-icon-sm { font-size: 1.8rem !important; }
 
-    /* 🌟 بخش اصلی (Hero) */
-    main { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 4rem 2rem 2rem 2rem; z-index: 1; }
-    
-    .hero-badge {
-      background: rgba(0, 240, 212, 0.1); border: 1px solid rgba(0, 240, 212, 0.3);
-      color: var(--neon-blue); padding: 0.5rem 1.2rem; border-radius: 99px;
-      font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem;
+    /* 🌟 استایل کادر سرچ */
+    .topbar-wrap {
+      padding-top: 0.5rem;
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .topbar { width: 100%; max-width: 500px; }
+    .search-box {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 1rem;
+      height: 40px; 
+      transition: all 0.3s ease;
+    }
+    .search-box:focus-within {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(0, 240, 212, 0.5);
       box-shadow: 0 0 20px rgba(0, 240, 212, 0.15);
-      animation: fadeInDown 0.8s ease-out;
+    }
+    .search-box input {
+      background: transparent !important; border: none !important; color: #fff;
+      width: 100%; outline: none; font-family: inherit; font-size: 0.85rem; padding-right: 0.5rem;
     }
 
-    h1 { 
-      font-size: 4.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.2; 
-      background: linear-gradient(120deg, var(--neon-blue), var(--neon-purple), var(--neon-gold), var(--neon-blue)); 
-      background-size: 300% 300%;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      animation: shine 6s linear infinite, fadeInDown 0.8s ease-out;
-      text-shadow: 0 0 40px rgba(0, 240, 212, 0.2);
+    /* ==========================================
+       🔥 اصلاح گالری (راست‌چین کردن کارت‌ها)
+       ========================================== */
+    #gallery.gallery {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: flex-start !important; 
+      align-items: flex-start !important;
+      gap: 1.5rem !important;
+      width: 100% !important;
+      min-height: 60vh;
     }
 
-    @keyframes shine {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+    /* سایز کارت‌ها */
+    .card {
+      flex: 0 0 auto !important;
+      width: 240px !important; 
+      max-width: 100% !important;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      margin: 0 !important;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 240, 212, 0.15);
+    }
+
+    /* 🔥 پیام "هنوز اثری نیست" */
+    .gallery > .empty {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      margin: auto !important;
+      padding: 2rem !important;
+      color: var(--text-dim);
+    }
+    .gallery > .empty h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+    .gallery > .empty p { font-size: 0.95rem; }
+
+    /* ==========================================
+       🌟 نوار پایین و دایره عکس پروفایل
+       ========================================== */
+    .bottom-nav {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 64px !important;
+      padding: 0.2rem 3% !important;
+      border-radius: 16px 16px 0 0 !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      z-index: 1000 !important;
+      background: var(--black-2) !important;
+      margin: 0 !important;
+    }
+
+    .nav-pill-btn {
+      padding: 0.3rem 0.8rem !important;
+      font-size: 0.75rem !important;
+      gap: 0.3rem !important;
+      border-radius: 10px !important;
+    }
+    .nav-pill-icon { font-size: 1rem !important; }
+
+    .nav-center-profile {
+      position: relative !important; 
+      width: 56px !important;
+      height: 56px !important;
+      min-width: 56px !important;
+      min-height: 56px !important;
+      flex: 0 0 56px !important; 
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin-top: -18px !important;
+      box-sizing: border-box !important;
     }
     
-    p.subtitle { 
-      font-size: 1.15rem; color: #b0b0b0; max-width: 800px; line-height: 2.2; margin-bottom: 3rem; 
-      text-align: center; animation: fadeInUp 0.8s ease-out;
+    .profile-btn-avatar {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      background-size: cover !important;
+      background-position: center !important;
+      box-sizing: border-box !important;
+      border: 3px solid var(--black-2) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.5) !important; 
     }
 
-    p.subtitle strong { color: var(--neon-blue); font-weight: 800; }
-    
-    /* 🌟 دکمه‌های CTA */
-    .cta-group { display: flex; gap: 1.5rem; margin-bottom: 5rem; animation: fadeInUp 1s ease-out; flex-wrap: wrap; justify-content: center; }
-    
-    .btn-start { 
-      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); 
-      color: #001a1c; padding: 1.2rem 4rem; border-radius: 999px; text-decoration: none; 
-      font-weight: 900; font-size: 1.3rem; 
-      box-shadow: 0 0 40px rgba(0,240,212,0.5); transition: .3s; 
-      position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 0.8rem;
-      animation: pulse-glow 2s infinite;
-    }
-    .btn-start::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: .5s;
-    }
-    .btn-start:hover::before { left: 100%; }
-    .btn-start:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 60px rgba(0,240,212,0.8); }
-    
-    .btn-explore {
-      background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255,255,255,0.15);
-      color: #fff; padding: 1.2rem 3rem; border-radius: 999px; text-decoration: none;
-      font-weight: 800; font-size: 1.1rem; backdrop-filter: blur(10px);
-      transition: .3s; display: inline-flex; align-items: center; gap: 0.5rem;
-    }
-    .btn-explore:hover { background: rgba(255,255,255,0.08); border-color: #fff; transform: translateY(-3px); }
-
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(0,240,212,0.4); }
-      70% { box-shadow: 0 0 0 20px rgba(0,240,212,0); }
-      100% { box-shadow: 0 0 0 0 rgba(0,240,212,0); }
+    .nav-center-profile .nav-icon {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: linear-gradient(135deg, var(--turquoise), var(--sky)) !important;
+      color: #001a1c !important;
+      font-size: 1.2rem !important;
+      box-sizing: border-box !important;
     }
 
-    /* 🌟 بخش ویژگی‌ها (Glassmorphism) */
-    .features-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 2.5rem; position: relative; }
-    .features-title::after {
-      content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-      width: 60px; height: 3px; background: var(--neon-blue); border-radius: 3px;
+    .nav-center-label {
+      position: absolute !important;
+      bottom: -18px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      font-size: 0.65rem !important;
+      white-space: nowrap !important;
+      color: #fff !important;
     }
 
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; max-width: 1100px; margin-bottom: 5rem; }
+    /* ==========================================
+       🔥 افکت شیشه‌ای واقعی و خفن (Glassmorphism)
+       ========================================== */
     
-    .feature-card { 
-      background: rgba(255, 255, 255, 0.02); 
-      border: 1px solid rgba(255,255,255,0.06); 
-      padding: 2.5rem 1.5rem; border-radius: 24px; transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-      backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; text-align: center;
-      position: relative; overflow: hidden;
-    }
-    .feature-card::before {
-      content: ''; position: absolute; inset: 0; border-radius: 24px;
-      background: linear-gradient(135deg, rgba(0,240,212,0.1), transparent 50%);
-      opacity: 0; transition: .4s;
-    }
-    .feature-card:hover { 
-      border-color: var(--neon-blue); background: rgba(0, 240, 212, 0.03);
-      transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,212,0.1); 
-    }
-    .feature-card:hover::before { opacity: 1; }
-    
-    .feature-icon-wrap {
-      width: 70px; height: 70px; border-radius: 20px; margin-bottom: 1.5rem;
-      background: rgba(0, 240, 212, 0.08); border: 1px solid rgba(0, 240, 212, 0.2);
-      display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
-      box-shadow: inset 0 0 20px rgba(0,240,212,0.1); transition: .3s;
-    }
-    .feature-card:hover .feature-icon-wrap { transform: scale(1.1) rotate(5deg); background: rgba(0, 240, 212, 0.15); }
-    
-    .feature-title { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 0.8rem; }
-    .feature-desc { font-size: 0.85rem; color: #a0a0a0; line-height: 1.8; }
-
-    /* 🌟 بخش آمار زنده (Why Navaa) */
-    .why-section {
-      width: 100%; max-width: 1000px; background: linear-gradient(180deg, rgba(20,24,28,0.8), rgba(10,12,15,0.9));
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 30px; padding: 3rem 2rem; margin-bottom: 5rem;
-      display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-      position: relative; overflow: hidden;
-    }
-    /* افکت نور پس‌زمینه آمار */
-    .why-section::before {
-      content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
-      width: 80%; height: 100%; background: radial-gradient(circle, rgba(255,201,60,0.05) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    
-    .stat-item { text-align: center; z-index: 1; position: relative; }
-    .stat-number { 
-      font-size: 2.8rem; font-weight: 900; color: var(--neon-gold); margin-bottom: 0.3rem; 
-      text-shadow: 0 0 20px rgba(255,201,60,0.3); 
-      display: flex; align-items: center; justify-content: center; gap: 0.2rem;
-    }
-    .stat-label { font-size: 0.95rem; color: #b0b0b0; font-weight: 700; }
-    
-    /* انیمیشن برای اعداد که زنده بودنشون رو نشون بده */
-    .live-pulse {
-      display: inline-block; width: 8px; height: 8px; background: #00ff88;
-      border-radius: 50%; margin-right: 5px; box-shadow: 0 0 10px #00ff88;
-      animation: blink 1.5s infinite;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    footer { 
-      text-align: center; padding: 2rem; color: var(--text-dim); font-size: .85rem; 
-      border-top: 1px solid rgba(255,255,255,0.05); background: #050608;
+    /* پس‌زمینه مودال با نورهای رنگی تا شیشه رو نشون بده */
+    .modal {
+      background: radial-gradient(circle at 10% 20%, rgba(0, 240, 212, 0.15), transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15), transparent 40%),
+                  radial-gradient(circle at 50% 50%, rgba(255, 201, 60, 0.05), transparent 50%),
+                  rgba(5, 8, 10, 0.75) !important; 
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      position: fixed; inset: 0; 
+      z-index: 2000 !important;
+      display: flex; align-items: center; justify-content: center;
     }
 
-    /* 🌟 انیمیشن‌ها و ریسپانسیو */
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    /* بدنه اصلی مودال (شیشه بسیار شفاف) */
+    .modal-content {
+      background: rgba(30, 35, 40, 0.2) !important; 
+      backdrop-filter: blur(40px) saturate(250%) !important; 
+      -webkit-backdrop-filter: blur(40px) saturate(250%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+      border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.03) !important;
+      border-radius: 28px !important;
+      max-width: 600px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      margin: 0 auto;
+      position: relative;
+      user-select: none;
+    }
 
-    @media (max-width: 768px) {
-      header { padding: 1rem 1.5rem; }
-      h1 { font-size: 2.8rem; }
-      p.subtitle { font-size: 1rem; text-align: justify; text-align-last: center; }
-      .btn-start { padding: 1rem 2.5rem; font-size: 1.1rem; }
-      .btn-explore { padding: 1rem 2rem; font-size: 1rem; }
-      .features { grid-template-columns: 1fr; }
-      .why-section { flex-direction: column; gap: 1.5rem; }
-      .stat-number { font-size: 2.2rem; }
+    /* اسکرول‌بار داخلی مودال */
+    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar-track { background: transparent; }
+    .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+    /* دکمه ضربدر (شیشه‌ای و کارا) */
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      left: 15px; 
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #fff !important;
+      font-size: 1.2rem !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2100 !important;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      backdrop-filter: blur(5px);
+    }
+    .modal-close:hover {
+      background: rgba(255, 46, 77, 0.8) !important;
+      border-color: rgba(255, 46, 77, 1) !important;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 46, 77, 0.5);
+    }
+
+    /* 🔥 بخش‌های آپلود (کادرهای شیشه‌ای شفاف) */
+    .upload-section {
+      background: rgba(255, 255, 255, 0.02) !important; 
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.06) !important;
+      border-radius: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05) !important;
+      transition: all 0.3s ease;
+    }
+    .upload-section:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    /* کادر انتخاب فایل */
+    .upload-file-box {
+      background: rgba(0, 0, 0, 0.1) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1.5px dashed rgba(255, 255, 255, 0.2) !important;
+      border-radius: 16px;
+      transition: all 0.3s;
+    }
+    .upload-file-box:hover {
+      border-color: var(--turquoise) !important;
+      background: rgba(0, 240, 212, 0.05) !important;
+      box-shadow: 0 0 20px rgba(0, 240, 212, 0.1);
+    }
+
+    /* 🔥 اینپوت‌های متنی (شیشه‌ای شفاف) */
+    .upload-field input, .upload-field textarea, .upload-field select {
+      background: rgba(0, 0, 0, 0.15) !important;
+      backdrop-filter: blur(5px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: #fff !important;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+      padding: 0.85rem 1rem;
+      transition: all 0.3s ease;
+    }
+    .upload-field input:focus, .upload-field textarea:focus, .upload-field select:focus {
+      background: rgba(0, 0, 0, 0.3) !important;
+      border-color: var(--turquoise) !important;
+      box-shadow: 0 0 15px rgba(0,240,212,0.2), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* بخش ویژه */
+    #premiumSection {
+      background: rgba(255, 201, 60, 0.03) !important;
+      backdrop-filter: blur(5px) !important;
+      border: 1.5px dashed rgba(255, 201, 60, 0.3) !important;
+      border-radius: 14px;
+      padding: 1rem;
+    }
+
+    /* 🔥 پلن‌های اشتراک (شیشه‌ای) */
+    .sub-content { background: rgba(30, 35, 40, 0.25) !important; }
+    .plan {
+      background: rgba(255, 255, 255, 0.02) !important;
+      backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 16px;
+      transition: 0.3s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .plan:hover { 
+      background: rgba(255, 255, 255, 0.06) !important; 
+      transform: translateY(-4px); 
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .plan-silver {
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.08), rgba(255, 140, 0, 0.03)) !important;
+      border: 1px solid rgba(255, 201, 60, 0.3) !important;
+    }
+    .plan-silver:hover {
+      background: linear-gradient(135deg, rgba(255, 201, 60, 0.15), rgba(255, 140, 0, 0.05)) !important;
+      border-color: rgba(255, 201, 60, 0.6) !important;
+    }
+
+    /* 🔥 استایل دکمه انصراف جدید (شیک و شیشه‌ای) */
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #a0a0a0;
+      padding: 1rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-cancel:hover {
+      background: rgba(255, 46, 77, 0.1);
+      border-color: rgba(255, 46, 77, 0.4);
+      color: var(--red);
+      box-shadow: 0 0 20px rgba(255, 46, 77, 0.15);
     }
   </style>
 </head>
 <body>
 
-  <!-- 🌟 نورهای پس‌زمینه -->
-  <div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+  <header>
+    <div class="header-inner">
+      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.3rem;">
+        <div id="shamsiDate" style="font-size: 0.75rem; font-weight: 700; color: var(--turquoise); background: rgba(0,240,212,0.08); padding: 0.3rem 0.8rem; border-radius: 99px; border: 1px solid rgba(0,240,212,0.25); white-space: nowrap;"></div>
+        <a href="home.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-dim)'">
+          🏠 رفتن به صفحه اصلی
+        </a>
+      </div>
+
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <a href="home.html" class="logo-small" style="display: flex; align-items: center; gap: 0.4rem; text-decoration: none;">
+          <span class="logo-icon-sm">🎵</span>
+          <span class="logo-name-sm">Navaa</span>
+        </a>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+        <button id="uploadBtn" class="btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; font-weight: 800; white-space: nowrap;">➕ آپلود اثر</button>
+        <a href="profile.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; font-size: 0.85rem; white-space: nowrap; transition: 0.2s;" onmouseover="this.style.color='var(--turquoise)'" onmouseout="this.style.color='#fff'">
+          <span id="userGreeting" class="user-greeting"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+  
+  <div class="topbar-wrap">
+    <div class="topbar">
+      <div class="search-box">
+        <span class="search-icon" style="opacity: 0.7; font-size: 0.9rem; margin-left: 0.5rem;">🔍</span>
+        <input type="text" id="searchInput" placeholder="جستجو در عنوان، هنرمند و تگ‌ها...">
+      </div>
+    </div>
   </div>
 
-  <header>
-    <div class="header-actions">
-      <a href="login.html" class="btn-header-outline">ورود به حساب</a>
-      <a href="login.html" class="btn-header-primary">ساخت حساب</a>
-    </div>
-    <a href="home.html" class="logo-box">
-      <span>🎵</span>
-      <span>Navaa</span>
+  <nav class="sub-nav hidden" id="subNav"></nav>
+
+  <main id="gallery" class="gallery"></main>
+
+  <footer>
+    <p style="font-size: 0.85rem;">🎵 <span class="brand-name">Navaa</span> — ساخته‌شده با <span class="heart">❤</span> برای هنرمندان</p>
+  </footer>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
+      <span class="nav-pill-icon">🚪</span><span class="nav-pill-label">خانه</span>
+    </button>
+    <button class="nav-pill-btn sub-pill" onclick="document.getElementById('subModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
+    </button>
+    <a href="profile.html" class="nav-center-profile">
+      <span class="nav-icon">👤</span><span class="nav-center-label">پروفایل</span>
     </a>
-  </header>
+    <button class="nav-pill-btn admin-pill" style="visibility:hidden;">
+      <span class="nav-pill-icon">🛡️</span><span class="nav-pill-label">ادمین</span>
+    </button>
+    <button class="nav-pill-btn upload-pill" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+      <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
+    </button>
+  </nav>
 
-  <main>
-    <div class="hero-badge">🚀 پلتفرم نسل جدید هنرمندان</div>
-    <h1>جایی که هنر به صدا در می‌آید</h1>
-    
-    <p class="subtitle">
-      به دنیای <strong>Navaa</strong> خوش آمدید! اینجا یک پلتفرم اختصاصی برای هنرمندان، عکاسان و تولیدکنندگان محتواست. 
-      در Navaa می‌توانید آثار هنری و فایل‌های صوتی خود را با بالاترین کیفیت آپلود کنید، در گالری عمومی به نمایش بگذارید و با فروش آثار ویژه، از طریق کیف پول هوشمند <strong>درآمد کسب کنید</strong>. 
-      با خرید پلن‌های اشتراکی (برنزی، طلایی و الماسی) محدودیت‌های آپلود خود را بردارید و از امکاناتی نظیر دانلود نامحدود، پخش آنلاین موسیقی و نشان‌های ویژه روی پروفایل بهره‌مند شوید. 
-      هنر خود را به گوش جهانیان برسانید!
-    </p>
-    
-    <div class="cta-group">
-      <a href="login.html" class="btn-start">
-        <span>✨</span>
-        <span>ساخت حساب رایگان</span>
-      </a>
-      <a href="gallery.html" class="btn-explore">
-        <span>🎨</span>
-        <span>مشاهده گالری</span>
-      </a>
-    </div>
-
-    <h2 class="features-title">امکاناتی که منتظرت هست</h2>
-    
-    <div class="features">
-      <div class="feature-card">
-        <div class="feature-icon-wrap">✨</div>
-        <div class="feature-title">الهام روزانه</div>
-        <div class="feature-desc">هر روز آثار جدید و خلاقانه از هنرمندان سراسر جهان را کشف کنید.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">📸</div>
-        <div class="feature-title">عکاسی هنری</div>
-        <div class="feature-desc">با کیفیت‌ترین عکس‌های طبیعت، معماری و پرتره را با دیگران به اشتراک بگذارید.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🎵</div>
-        <div class="feature-title">موسیقی و صدا</div>
-        <div class="feature-desc">آهنگ‌های خود را آپلود کنید، به صورت آنلاین پخش کنید و از هنر شنیداری لذت ببرید.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon-wrap">🎨</div>
-        <div class="feature-title">نقاشی و طراحی</div>
-        <div class="feature-desc">آثار گرافیکی و طراحی‌های خود را به نمایش بگذارید و به فروش برسانید.</div>
-      </div>
-    </div>
-
-    <!-- 🔥 بخش آمار آنلاین و زنده -->
-    <div class="why-section">
-      <div class="stat-item">
-        <div class="stat-number" id="stat-total-items">...</div>
-        <div class="stat-label">اثر ارزشمند</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" id="stat-total-users">...</div>
-        <div class="stat-label">هنرمند عضو</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" id="stat-active-users">
-          <span class="live-pulse"></span>
-          <span>...</span>
+  <!-- مودال نمایش اثر -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-media">
+        <img id="modalImg" src="" alt="">
+        <div id="modalAudioWrap" class="audio-wrap hidden">
+          <div class="audio-label">🎧 پخش آنلاین آهنگ</div>
+          <audio id="modalAudio" controls preload="none"></audio>
         </div>
-        <div class="stat-label">فعال در ۲۴ ساعت اخیر</div>
+      </div>
+      <div class="modal-info" style="padding: 1.5rem;">
+        <h2 id="modalTitle"></h2>
+        <p class="modal-artist" id="modalArtist"></p>
+        <p id="modalDesc"></p>
+        <div class="modal-tags" id="modalTags"></div>
+        <div class="modal-actions" style="margin-top:1.5rem;">
+          <button id="modalDownload" class="btn-primary">⬇️ دانلود</button>
+          <button id="modalLike" class="btn-like">❤️ <span id="modalLikes">0</span></button>
+          <button id="modalDelete" class="btn-danger hidden" style="display:none;">🗑️ حذف اثر</button>
+        </div>
       </div>
     </div>
+  </div>
 
-  </main>
+  <!-- مودال آپلود اثر -->
+  <div id="uploadModal" class="modal hidden">
+    <div class="modal-content upload-content">
+      <button class="modal-close" id="uploadClose">✕</button>
 
-  <footer>🎵 Navaa — ساخته‌شده با ❤️ برای هنرمندان</footer>
+      <div class="upload-header" style="padding-top: 2rem; text-align: center;">
+        <div class="upload-header-icon">✨</div>
+        <h2>آپلود اثر جدید</h2>
+        <p class="upload-sub">اثرت رو با بقیه به اشتراک بذار</p>
+      </div>
 
-  <!-- 🔥 اتصال به فایربیس برای نمایش آمار واقعی و زنده -->
+      <form id="uploadForm" class="form upload-form" novalidate style="padding: 1.5rem;">
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۱</span>
+            <span>تصویر اثر</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+          <label class="upload-file-box" for="fileInput">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <div class="upload-file-icon">🖼️</div>
+            <div class="upload-file-text">
+              <strong>انتخاب یا کشیدن تصویر</strong>
+              <small>JPG · PNG · WEBP — اختیاری</small>
+            </div>
+          </label>
+          <div id="previewWrap" class="preview-wrap hidden">
+            <img id="preview" class="preview-img" alt="پیش‌نمایش">
+            <button type="button" class="preview-remove" id="previewRemove" title="حذف تصویر">✕</button>
+            <div class="preview-badge">✅ انتخاب شد</div>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۲</span>
+            <span>فایل صوتی</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+          <label class="upload-file-box upload-file-audio" for="audioInput">
+            <input type="file" id="audioInput" accept="audio/*" hidden>
+            <div class="upload-file-icon">🎧</div>
+            <div class="upload-file-text">
+              <strong>انتخاب فایل صوتی</strong>
+              <small>MP3 · WAV · OGG — برای موسیقی</small>
+            </div>
+          </label>
+          <div id="audioFileBox" class="audio-file-box hidden">
+            <span class="audio-file-icon">🎵</span>
+            <span id="audioFileName" class="audio-file-name"></span>
+            <button type="button" class="audio-file-remove" id="audioFileRemove" title="حذف فایل صوتی">✕</button>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۳</span>
+            <span>اطلاعات اثر</span>
+          </div>
+          <div class="upload-field">
+            <label>عنوان اثر <span class="req">*</span></label>
+            <input type="text" name="title" required maxlength="80" placeholder="مثلاً: آهنگ پاپ روز">
+          </div>
+          <div class="upload-field">
+            <label>نام هنرمند</label>
+            <input type="text" name="artist" maxlength="60" placeholder="اسم خودت یا نام هنری‌ات">
+          </div>
+          <div class="upload-field">
+            <label>توضیح</label>
+            <textarea name="desc" rows="3" maxlength="300" placeholder="یه توضیح کوتاه درباره اثری که آپلود می‌کنی..."></textarea>
+          </div>
+          <div class="upload-field">
+            <label>دسته‌بندی <span class="req">*</span></label>
+            <select name="category" id="catSelect" required></select>
+          </div>
+          <div class="upload-field">
+            <label>تگ‌ها</label>
+            <input type="text" name="tags" placeholder="پاپ, جدید, عاشقانه (با کاما جدا کن)">
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <div class="section-title">
+            <span class="section-num">۴</span>
+            <span>محتوای ویژه</span>
+            <span class="optional-badge">اختیاری</span>
+          </div>
+          <div id="premiumSection"></div>
+        </div>
+
+        <button type="submit" class="btn-publish">
+          <span class="btn-publish-icon">🚀</span>
+          <span>انتشار اثر</span>
+        </button>
+        
+        <!-- 🔥 دکمه انصراف جدید -->
+        <button type="button" class="btn-cancel" id="cancelUploadBtn">
+          <span>✕</span>
+          <span>انصراف و بستن</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- مودال اشتراک -->
+  <div id="subModal" class="modal hidden">
+    <div class="modal-content sub-content">
+      <button class="modal-close" id="subClose">✕</button>
+      
+      <div class="sub-icon" style="text-align:center; font-size: 2.5rem; margin-top: 1rem;">✨</div>
+      <h2 style="text-align:center;">پلن‌های اشتراک Navaa</h2>
+      <p class="sub-desc" style="text-align:center; margin-bottom: 2rem;">پلن مناسب خودت رو انتخاب کن</p>
+
+      <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
+        <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
+          <div class="plan-header">
+            <span class="plan-name">🥉 برنزی</span>
+            <div class="plan-duration">۱ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۲۰ عکس در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دریافت لایک</li>
+            <li>❌ آپلود موسیقی</li>
+            <li>❌ دانلود نامحدود</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="365">
+          <div class="plan-badge">🔥 پیشنهاد ویژه</div>
+          <div class="plan-header">
+            <span class="plan-name">🥈 طلایی</span>
+            <div class="plan-duration">۱۲ ماهه (۱ ساله)</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۱۰۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود ۱۰۰ عکس در ماه</li>
+            <li>✅ آپلود ۵ آهنگ در ماه</li>
+            <li>✅ نمایش نام هنرمند</li>
+            <li>✅ دانلود نامحدود عکس</li>
+            <li>❌ پخش بدون تبلیغ</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+
+        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
+          <div class="plan-header">
+            <span class="plan-name">💎 الماسی</span>
+            <div class="plan-duration">۳ سال و ۶ ماهه</div>
+          </div>
+          <div class="plan-price">
+            <span class="price-num">۲۵۰,۰۰۰</span>
+            <span class="price-unit">تومان</span>
+          </div>
+          <ul class="plan-features">
+            <li>✅ آپلود نامحدود عکس</li>
+            <li>✅ آپلود نامحدود موسیقی</li>
+            <li>✅ دانلود نامحدود</li>
+            <li>✅ نشان الماسی روی پروفایل</li>
+            <li>✅ پشتیبانی اولویت‌دار</li>
+          </ul>
+          <button class="plan-btn">انتخاب پلن</button>
+        </div>
+      </div>
+
+      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding: 0 0 1.5rem 0;">💳 پرداخت امن از طریق درگاه بانکی</p>
+      
+      <!-- 🔥 دکمه انصراف جدید -->
+      <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+        <button type="button" class="btn-cancel" id="cancelSubBtn" style="margin-top: 0;">
+          <span>✕</span>
+          <span>انصراف و بستن</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', function() {
+      const dateEl = document.getElementById('shamsiDate');
+      if (dateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateEl.textContent = new Date().toLocaleDateString('fa-IR', options);
+      }
+
+      setInterval(() => {
+        const navCenter = document.querySelector('.nav-center-profile');
+        const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+        if (navCenter && currentUser && currentUser.email) {
+          const avatarData = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
+          if (avatarData) {
+            if (!navCenter.querySelector('.profile-btn-avatar')) {
+              navCenter.innerHTML = `
+                <div class="profile-btn-avatar" style="background-image: url('${avatarData}');"></div>
+                <span class="nav-center-label">پروفایل</span>
+              `;
+            }
+          }
+        }
+      }, 500);
+
+      function closeUploadModal() {
+        const modal = document.getElementById('uploadModal');
+        modal.classList.add('hidden');
+        const form = document.getElementById('uploadForm');
+        if (form) form.reset();
+        const previewWrap = document.getElementById('previewWrap');
+        if (previewWrap) previewWrap.classList.add('hidden');
+        const audioFileBox = document.getElementById('audioFileBox');
+        if (audioFileBox) audioFileBox.classList.add('hidden');
+        if (window.compressedImageData) window.compressedImageData = null;
+      }
+
+      document.getElementById('uploadClose')?.addEventListener('click', closeUploadModal);
+      document.getElementById('cancelUploadBtn')?.addEventListener('click', closeUploadModal);
+
+      document.getElementById('subClose')?.addEventListener('click', () => {
+        document.getElementById('subModal').classList.add('hidden');
+      });
+      document.getElementById('cancelSubBtn')?.addEventListener('click', () => {
+        document.getElementById('subModal').classList.add('hidden');
+      });
+
+      const modal = document.getElementById('modal');
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
+      
+      const uploadModal = document.getElementById('uploadModal');
+      if (uploadModal) uploadModal.addEventListener('click', function(e) { if (e.target === this) closeUploadModal(); });
+      
+      const subModal = document.getElementById('subModal');
+      if (subModal) subModal.addEventListener('click', function(e) { if (e.target === this) this.classList.add('hidden'); });
+
+      setTimeout(function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('subscribe') === '1') {
+          const subModal = document.getElementById('subModal');
+          if (subModal) subModal.classList.remove('hidden');
+          const planName = params.get('plan');
+          const price = params.get('price');
+          const days = params.get('days');
+          if (planName && price && days && typeof startPayment === 'function') {
+            setTimeout(() => {
+              subModal.classList.add('hidden');
+              startPayment(planName, parseInt(price), parseInt(days));
+            }, 500);
+          }
+        }
+      }, 300);
+    });
+  </script>
+  
+  <!-- 🔥 اتصال به Firebase با ساختار Collection -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -338,67 +755,78 @@
     const itemsCollection = collection(db, 'navaa_items');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
-    // 🔥 تابع فرمت کردن اعداد به فارسی
-    function formatNum(num) {
-      return Number(num).toLocaleString('fa-IR');
-    }
+    window.saveUsersToCloud = async function(usersArray) {
+      const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
+      try {
+        await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() });
+      } catch (error) { console.error('Error saving users:', error); }
+    };
 
-    // 🔥 1. آپدیت کردن وضعیت "آخرین فعالیت" کاربر (اگه لاگین باشه)
-    const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
-    if (currentUser && currentUser.email) {
-      const updateLastActive = async () => {
-        try {
-          const snap = await getDoc(docRefUsers);
-          if (snap.exists()) {
-            let cloudUsers = JSON.parse(snap.data().value);
-            const idx = cloudUsers.findIndex(u => u.email === currentUser.email);
-            if (idx !== -1) {
-              cloudUsers[idx].lastActive = Date.now(); // ثبت زمان فعلی
-              await setDoc(docRefUsers, { value: JSON.stringify(cloudUsers), updatedAt: Date.now() });
-            }
-          }
-        } catch(e) { console.error("Error updating activity:", e); }
-      };
-      updateLastActive();
-    }
+    window.getUsersFromCloud = async function() {
+      const snap = await getDoc(docRefUsers);
+      if (snap.exists()) return JSON.parse(snap.data().value);
+      return [];
+    };
 
-    // 🔥 2. محاسبه تعداد آثار (به صورت زنده)
+    window.addItemToCloud = async function(item) {
+      try {
+        await setDoc(doc(db, 'navaa_items', item.id.toString()), item);
+        console.log('✅ فایل با موفقیت در دیتابیس ذخیره شد.');
+        return true;
+      } catch (error) {
+        console.error('❌ خطا در ذخیره فایل:', error);
+        alert('خطا در اتصال به سرور! حجم فایل شما ممکن است بیش از حد مجاز باشد.');
+        return false;
+      }
+    };
+
+    window.deleteItemFromCloud = async function(id) {
+      try { await deleteDoc(doc(db, 'navaa_items', id.toString())); console.log('🗑️ فایل حذف شد.'); } 
+      catch (error) { console.error('Error deleting item:', error); }
+    };
+
+    window.updateItemInCloud = async function(item) {
+      try { await setDoc(doc(db, 'navaa_items', item.id.toString()), item); console.log('🔄 فایل آپدیت شد.'); } 
+      catch (error) { console.error('Error updating item:', error); }
+    };
+
+    window.getItemsFromCloud = async function() { return []; };
+
     onSnapshot(itemsCollection, (snapshot) => {
-      let totalItems = snapshot.size;
+      const cloudItems = [];
+      snapshot.forEach((doc) => { cloudItems.push(doc.data()); });
+      cloudItems.sort((a, b) => b.time - a.time);
       
-      // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۵۰ بود، ۵۰ نشون بده تا سایت خالی به نظر نرسه
-      if (totalItems < 50) totalItems = 50; 
+      window.DB = window.DB || {};
+      window.DB.items = cloudItems;
+      localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
       
-      document.getElementById('stat-total-items').textContent = formatNum(totalItems) + '+';
+      if (typeof window.renderGallery === 'function') window.renderGallery();
+      console.log('🔔 لیست فایل‌ها از سرور آپدیت شد.');
     });
 
-    // 🔥 3. محاسبه کاربران و کاربران فعال (به صورت زنده)
     onSnapshot(docRefUsers, (docSnap) => {
       if (docSnap.exists()) {
-        const users = JSON.parse(docSnap.data().value);
+        const cloudUsers = JSON.parse(docSnap.data().value);
+        localStorage.setItem('navaa_users', JSON.stringify(cloudUsers));
         
-        // الف) تعداد کل کاربران
-        let totalUsers = users.length;
-        // سیستم پایه (Seed): اگه تعداد واقعی کمتر از ۱۰۰ بود، ۱۰۰ نشون بده
-        if (totalUsers < 100) totalUsers = 100; 
-        
-        document.getElementById('stat-total-users').textContent = formatNum(totalUsers) + '+';
-
-        // ب) کاربران فعال در ۲۴ ساعت گذشته (DAU)
-        const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-        // فقط کاربرانی که lastActive دارن و توی ۲۴ ساعت اخیر آپدیت شدن رو میشماریم
-        let activeUsers = users.filter(u => u.lastActive && u.lastActive > oneDayAgo).length;
-        
-        // اگه هنوز کسی lastActive نداشت یا تعدادش خیلی کم بود، یه عدد پایه (مثلا ۱۲) نشون میدیم تا خالی نباشه
-        if (activeUsers < 12) activeUsers = 12; 
-
-        const activeEl = document.getElementById('stat-active-users');
-        activeEl.innerHTML = `
-          <span class="live-pulse"></span>
-          <span>${formatNum(activeUsers)}</span>
-        `;
+        const currentUser = JSON.parse(localStorage.getItem('navaa_current_user'));
+        if (currentUser) {
+          const freshMe = cloudUsers.find(u => u.email === currentUser.email);
+          if (freshMe) {
+            localStorage.setItem('navaa_current_user', JSON.stringify(freshMe));
+            const greeting = document.getElementById('userGreeting');
+            if (greeting) greeting.textContent = freshMe.fullname;
+          }
+        }
       }
     });
+
+    // 🔥 این خط خیلی مهمه: بعد از اینکه فایربیس لود شد، app.js رو صدا می‌زنیم
+    const script = document.createElement('script');
+    script.src = 'js/app.js';
+    document.body.appendChild(script);
   </script>
+
 </body>
 </html>
