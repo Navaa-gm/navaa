@@ -6,7 +6,7 @@ const CURRENT_KEY = 'navaa_current_user';
 const USERS_KEY = 'navaa_users';
 const ITEMS_KEY = 'navaa_items_v3';
 const ADMIN_EMAIL = 'm.soroush.salari@gmail.com';
-const UPLOAD_REWARD = 5000;
+const UPLOAD_REWARD = 2500;
 const SETTINGS = { commissionRate: 15, maxItemPrice: 500000, minItemPrice: 5000 };
 
 const THEME = {
