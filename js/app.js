@@ -46,13 +46,6 @@ function getUserPlanLimit() {
 function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 function formatMoney(n) { return Number(n || 0).toLocaleString('fa-IR'); }
 function save() { try { localStorage.setItem(ITEMS_KEY, JSON.stringify(DB.items)); return true; } catch (e) { return false; } }
-function formatLimitSize(bytes) {
-  if (bytes === Infinity) return '∞ نامحدود';
-  if (bytes >= 1024 * 1024 * 1024) return (bytes / 1024 / 1024 / 1024).toFixed(0) + ' گیگابایت';
-  if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(0) + ' مگابایت';
-  if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' کیلوبایت';
-  return bytes + ' بایت';
-}
 
 async function syncCurrentUserToArray() {
     let users = await window.getUsersFromCloud() || [];
@@ -133,7 +126,6 @@ function compressImage(file, maxWidth = 800, quality = 0.7) {
   });
 }
 
-// 🌈 ساخت fallback SVG با گرادیان تم (فیروزه‌ای → قرمز)
 function makeSVG(color1, color2, emoji, label) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${color1}"/><stop offset="100%" stop-color="${color2}"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="45%" font-size="180" text-anchor="middle" dominant-baseline="middle">${emoji}</text><text x="50%" y="75%" font-size="34" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-weight="700">${label}</text></svg>`;
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -148,16 +140,12 @@ function botPriceItem(itemData) {
   const descLen = (itemData.desc || '').trim().length;
   if (descLen > 100) { basePrice += 20000; details.push({ label: '📝 توضیحات کامل', value: 20000 }); }
   else if (descLen > 40) { basePrice += 10000; details.push({ label: '📝 توضیحات مناسب', value: 10000 }); }
-  const tagsCount = (itemData.tags || []).length;
-  if (tagsCount >= 4) { basePrice += 8000; details.push({ label: '🏷️ تگ‌های متنوع', value: 8000 }); }
-  else if (tagsCount >= 2) { basePrice += 4000; details.push({ label: '🏷️ تگ‌های مناسب', value: 4000 }); }
+  
   const categoryWeights = { music: 1.4, photo: 1.2, car: 1.0 };
   const mainCat = (itemData.category || '').split('-')[0];
   const weight = categoryWeights[mainCat] || 1.0;
   if (weight > 1) { const bonus = Math.round(basePrice * (weight - 1)); details.push({ label: `⭐ کیفیت ${mainCat === 'music' ? 'موسیقی' : 'عکس'}`, value: bonus }); basePrice = Math.round(basePrice * weight); }
-  if (itemData.imageSize > 2 * 1024 * 1024) { basePrice += 25000; details.push({ label: '🖼️ تصویر باکیفیت', value: 25000 }); }
-  else if (itemData.imageSize > 500 * 1024) { basePrice += 10000; details.push({ label: '🖼️ تصویر خوب', value: 10000 }); }
-  if (itemData.audioDuration && itemData.audioDuration > 60) { basePrice += 20000; details.push({ label: '⏱️ موسیقی طولانی', value: 20000 }); }
+  
   const finalPrice = Math.min(basePrice, SETTINGS.maxItemPrice);
   return { suggestedPrice: finalPrice, details: details, quality: finalPrice >= 100000 ? 'A+' : finalPrice >= 50000 ? 'A' : finalPrice >= 25000 ? 'B' : 'C' };
 }
@@ -166,29 +154,16 @@ function initPremiumSection() {
   const modal = document.getElementById('uploadModal'); if (!modal) return;
   const premiumSection = document.getElementById('premiumSection'); if (!premiumSection) return;
 
-  if (!document.getElementById('navaaPremiumStyle')) {
-    const s = document.createElement('style');
-    s.id = 'navaaPremiumStyle';
-    s.textContent = `
-      #analyzeBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,46,77,0.4), 0 0 26px rgba(255,201,60,0.25) !important; }
-      #analyzeBtn:active { transform: translateY(0); }
-      #premiumPriceInput:focus { border-color: rgba(0,240,212,0.6) !important; box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.3) !important; }
-      #isPremiumCheck:checked { accent-color: #ff2e4d; }
-      #botResult .bot-price-final { background: linear-gradient(90deg,#00f0d4,#38bdf8,#ff2e4d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; font-size: 1.05rem; }
-    `;
-    document.head.appendChild(s);
-  }
-
   premiumSection.innerHTML = `
     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;">
       <input type="checkbox" id="isPremiumCheck" style="width:18px;height:18px;accent-color:#ff2e4d;cursor:pointer;">
       <label for="isPremiumCheck" style="color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;">💎 این اثر رو ویژه بذار</label>
     </div>
     <div id="premiumOptions" style="display:none;">
-      <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.85rem;font-size:.9rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff2e4d);color:#1a1100;border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(255,46,77,0.3), inset 0 1px 0 rgba(255,255,255,0.3);transition:all .25s cubic-bezier(.4,0,.2,1);">🤖 تحلیل ربات</button>
-      <div id="botResult" style="display:none;background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:.9rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);"></div>
+      <button type="button" id="analyzeBtn" class="btn-primary" style="width:100%;padding:.85rem;font-size:.9rem;margin-bottom:.8rem;background:linear-gradient(135deg,#ffc93c,#ff2e4d);color:#1a1100;border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(255,46,77,0.3);transition:all .25s;">🤖 تحلیل ربات</button>
+      <div id="botResult" style="display:none;background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:.9rem;margin-bottom:.8rem;font-size:.8rem;color:#a0a0a0;"></div>
       <label style="display:block;font-size:.82rem;color:#fff;font-weight:700;margin-bottom:.4rem;">💰 قیمت نهایی (تومان):</label>
-      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.85rem 1rem;background:rgba(0,0,0,0.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;box-sizing:border-box;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);transition:all .3s;">
+      <input type="number" id="premiumPriceInput" min="5000" max="500000" placeholder="حداکثر ۵۰۰,۰۰۰" style="width:100%;padding:.85rem 1rem;background:rgba(0,0,0,0.35);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#ffc93c;font-family:inherit;font-size:1rem;text-align:center;font-weight:800;outline:none;">
     </div>`;
 
   const isPremiumCheck = premiumSection.querySelector('#isPremiumCheck');
@@ -207,20 +182,13 @@ function initPremiumSection() {
   analyzeBtn.addEventListener('click', () => {
     const titleInput = modal.querySelector('input[name="title"]');
     const descInput = modal.querySelector('textarea[name="desc"]');
-    const tagsInput = modal.querySelector('input[name="tags"]');
     const catSelect = document.getElementById('catSelect');
-
-    const tagsValue = tagsInput?.value || '';
-    const tagsArr = tagsValue.split(/[,،]/).map(t => t.trim()).filter(Boolean);
 
     const itemData = {
       title: titleInput?.value || '',
       desc: descInput?.value || '',
-      tags: tagsArr,
       category: catSelect?.value || '',
-      hasAudio: false,
-      imageSize: 0,
-      audioDuration: 0
+      hasAudio: false
     };
 
     if (!itemData.title) return alert('❌ اول عنوان!');
@@ -231,29 +199,18 @@ function initPremiumSection() {
       <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;">
         <strong style="color:#ffc93c;font-weight:800;">🤖 امتیاز: ${result.quality}</strong>
       </div>
-      <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:.5rem;margin-bottom:.5rem;">
-        ${result.details.map(d => `<div style="display:flex;justify-content:space-between;padding:.15rem 0;"><span>${d.label}</span><span style="color:#00f0d4;font-weight:700;">+${formatMoney(d.value)}</span></div>`).join('')}
-      </div>
       <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.1);">
         <strong style="color:#fff;">💰 پیشنهادی:</strong>
-        <strong class="bot-price-final">${formatMoney(result.suggestedPrice)} تومان</strong>
+        <strong style="color:#00f0d4;font-weight:900;">${formatMoney(result.suggestedPrice)} تومان</strong>
       </div>`;
 
     premiumPriceInput.value = result.suggestedPrice;
     window.__navaaPremium.price = result.suggestedPrice;
   });
-
-  premiumPriceInput.addEventListener('input', () => {
-    let val = parseInt(premiumPriceInput.value) || 0;
-    if (val > SETTINGS.maxItemPrice) { premiumPriceInput.value = SETTINGS.maxItemPrice; val = SETTINGS.maxItemPrice; }
-    if (val < SETTINGS.minItemPrice && val > 0) { premiumPriceInput.value = SETTINGS.minItemPrice; val = SETTINGS.minItemPrice; }
-    window.__navaaPremium.price = val;
-  });
 }
 
 window.toggleItemVisibility = async function(id) {
     window.isUploading = true;
-
     let items = [...DB.items];
     const idx = items.findIndex(i => i.id === id);
     if (idx !== -1) {
@@ -261,24 +218,15 @@ window.toggleItemVisibility = async function(id) {
         DB.items = items;
         save();
         renderGallery();
-
-        if (window.updateItemInCloud) {
-            await window.updateItemInCloud(items[idx]);
-        }
+        if (window.updateItemInCloud) await window.updateItemInCloud(items[idx]);
     }
     window.isUploading = false;
 };
 
-// ❤️ لایک — استفاده مشترک در کارت و مودال
 window.toggleLikeItem = async function(itemId) {
   let me = currentUser;
-  if (!me || !me.email) {
-    alert('برای لایک باید وارد حساب بشی!');
-    window.location.href = 'login.html';
-    return;
-  }
+  if (!me || !me.email) return alert('برای لایک باید وارد حساب بشی!');
 
-  // همیشه آخرین نسخه از سرور
   let items = DB.items;
   if (window.getItemsFromCloud) {
     try {
@@ -288,10 +236,7 @@ window.toggleLikeItem = async function(itemId) {
   }
 
   const idx = items.findIndex(i => String(i.id) === String(itemId));
-  if (idx === -1) {
-    alert('❌ اثر پیدا نشد!');
-    return;
-  }
+  if (idx === -1) return alert('❌ اثر پیدا نشد!');
 
   const item = { ...items[idx] };
   item.likedBy = Array.isArray(item.likedBy) ? [...item.likedBy] : [];
@@ -306,71 +251,69 @@ window.toggleLikeItem = async function(itemId) {
     item.likes += 1;
   }
 
-  // آپدیت DB محلی
   const localIdx = DB.items.findIndex(i => String(i.id) === String(itemId));
   if (localIdx >= 0) DB.items[localIdx] = item;
-  else DB.items.push(item);
   save();
-
-  // آپدیت UI فوری (بدون منتظر سرور)
   renderGallery();
 
-  // آپدیت مودال اگه بازه
-  const modal = document.getElementById('modal');
-  if (modal && !modal.classList.contains('hidden')) {
-    const modalLikes = document.getElementById('modalLikes');
-    const modalLikeBtn = document.getElementById('modalLike');
-    if (modalLikes) modalLikes.textContent = item.likes.toLocaleString('fa-IR');
-    if (modalLikeBtn) {
-      if (item.likedBy.includes(me.email)) modalLikeBtn.classList.add('liked');
-      else modalLikeBtn.classList.remove('liked');
-    }
-  }
-
-  // ذخیره در سرور
   try {
-    if (window.updateItemInCloud) {
-      await window.updateItemInCloud(item);
-    }
-  } catch (e) {
-    console.error('like sync error:', e);
-  }
+    if (window.updateItemInCloud) await window.updateItemInCloud(item);
+  } catch (e) { console.error(e); }
 };
 
-// 🔗 اشتراک‌گذاری
 window.shareItemById = async function(itemId) {
   const item = DB.items.find(i => String(i.id) === String(itemId));
   if (!item) return alert('❌ اثر پیدا نشد!');
 
   const url = `${location.origin}${location.pathname}?item=${encodeURIComponent(item.id)}`;
-  const shareData = {
-    title: item.title || 'اثر در Navaa',
-    text: `این اثر رو در Navaa ببین: ${item.title || ''}`,
-    url: url
-  };
-
   try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      alert('✅ لینک اثر کپی شد!');
-    } else {
-      prompt('لینک اثر رو کپی کن:', url);
-    }
-  } catch (e) {
-    if (e && e.name !== 'AbortError') {
-      console.error('share error:', e);
-      if (navigator.clipboard) {
-        try {
-          await navigator.clipboard.writeText(url);
-          alert('✅ لینک اثر کپی شد!');
-        } catch (e2) {
-          prompt('لینک اثر رو کپی کن:', url);
-        }
-      }
-    }
+    if (navigator.share) await navigator.share({ title: item.title, url });
+    else if (navigator.clipboard) { await navigator.clipboard.writeText(url); alert('✅ لینک کپی شد!'); }
+    else prompt('لینک اثر:', url);
+  } catch (e) { console.error(e); }
+};
+
+// ✏️ قابلیت ویرایش اثر
+window.editItem = function(id) {
+  const item = DB.items.find(i => String(i.id) === String(id));
+  if (!item) return;
+
+  // باز کردن مودال آپلود
+  const uploadModal = document.getElementById('uploadModal');
+  const form = document.getElementById('uploadForm');
+  if (!uploadModal || !form) return;
+
+  window.__editItemId = id;
+  
+  // تغییر عنوان مودال
+  const modalTitle = uploadModal.querySelector('h2');
+  if (modalTitle) modalTitle.textContent = 'ویرایش اثر';
+
+  // پر کردن فیلدها
+  form.querySelector('input[name="title"]').value = item.title || '';
+  form.querySelector('input[name="artist"]').value = item.artist || '';
+  form.querySelector('textarea[name="desc"]').value = item.desc || '';
+  form.querySelector('select[name="category"]').value = item.category || '';
+  
+  // هشتگ‌ها
+  const hashtagsInput = document.getElementById('hashtagsInput');
+  if (hashtagsInput) {
+    hashtagsInput.value = (item.hashtags || []).join(' ');
+    hashtagsInput.dispatchEvent(new Event('input'));
   }
+
+  // عکس و صدا (فقط برای نمایش، چون فایل در فرم آپلود نمی‌شود)
+  if (item.image && !item.image.startsWith('data:image/svg')) {
+     const previewWrap = document.getElementById('previewWrap');
+     const preview = document.getElementById('preview');
+     if (previewWrap && preview) {
+        preview.src = item.image;
+        previewWrap.classList.remove('hidden');
+        window.compressedImageData = item.image;
+     }
+  }
+
+  uploadModal.classList.remove('hidden');
 };
 
 function openDetail(id) {
@@ -381,17 +324,14 @@ function openDetail(id) {
   document.getElementById('modalTitle').textContent = item.title;
   document.getElementById('modalArtist').textContent = item.artist ? `👤 ${item.artist}` : '';
   document.getElementById('modalDesc').textContent = item.desc || '';
+  
+  const allTags = item.hashtags || [];
+  document.getElementById('modalTags').innerHTML = allTags.map(t => `<span class="tag">#${escapeHtml(t.replace(/^#+/,''))}</span>`).join('');
 
-  // 🏷️ نمایش تگ‌ها + هشتگ‌ها
-  const tagsList = Array.isArray(item.tags) ? item.tags : [];
-  const hashtagsList = Array.isArray(item.hashtags) ? item.hashtags : [];
-  const allTags = [...new Set([...hashtagsList.map(h => String(h).replace(/^#+/, '')), ...tagsList.map(t => String(t).replace(/^#+/, ''))])];
-  document.getElementById('modalTags').innerHTML = allTags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
-
-  // ❤️ تعداد لایک و وضعیت
   const likesCount = item.likes || 0;
   const likedByMe = Array.isArray(item.likedBy) && item.likedBy.includes(currentUser.email);
   document.getElementById('modalLikes').textContent = likesCount.toLocaleString('fa-IR');
+  
   const modalLikeBtn = document.getElementById('modalLike');
   if (modalLikeBtn) {
     if (likedByMe) modalLikeBtn.classList.add('liked');
@@ -399,24 +339,16 @@ function openDetail(id) {
     modalLikeBtn.onclick = () => window.toggleLikeItem(item.id);
   }
 
-  // 🔗 دکمه شیر
   const modalShareBtn = document.getElementById('modalShare');
-  if (modalShareBtn) {
-    modalShareBtn.onclick = () => window.shareItemById(item.id);
-  }
+  if (modalShareBtn) modalShareBtn.onclick = () => window.shareItemById(item.id);
 
   const audioWrap = document.getElementById('modalAudioWrap');
   const audioEl = document.getElementById('modalAudio');
-  if (item.audio) {
-    audioEl.src = item.audio;
-    audioWrap.classList.remove('hidden');
-  } else {
-    audioEl.pause();
-    audioEl.src = '';
-    audioWrap.classList.add('hidden');
-  }
+  if (item.audio) { audioEl.src = item.audio; audioWrap.classList.remove('hidden'); }
+  else { audioEl.pause(); audioEl.src = ''; audioWrap.classList.add('hidden'); }
 
   const deleteBtn = document.getElementById('modalDelete');
+  const editBtn = document.getElementById('modalEdit');
   const isMyItem = item.uploadedByEmail === currentUser.email;
   const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
 
@@ -427,18 +359,22 @@ function openDetail(id) {
         window.isUploading = true;
         DB.items = DB.items.filter(p => p.id !== id);
         save();
-
-        if (window.deleteItemFromCloud) {
-            await window.deleteItemFromCloud(id);
-        }
-
+        if (window.deleteItemFromCloud) await window.deleteItemFromCloud(id);
         window.isUploading = false;
         document.getElementById('modal').classList.add('hidden');
         renderGallery();
       }
     };
+    if (editBtn) {
+      editBtn.style.display = 'inline-block';
+      editBtn.onclick = () => {
+        document.getElementById('modal').classList.add('hidden');
+        window.editItem(item.id);
+      };
+    }
   } else {
     deleteBtn.style.display = 'none';
+    if (editBtn) editBtn.style.display = 'none';
   }
 
   document.getElementById('modal').classList.remove('hidden');
@@ -449,11 +385,7 @@ function bindDetailModal() {
   const audioEl = document.getElementById('modalAudio');
   if (!modal) return;
 
-  const closeModal = () => {
-    if(audioEl) audioEl.pause();
-    modal.classList.add('hidden');
-  };
-
+  const closeModal = () => { if(audioEl) audioEl.pause(); modal.classList.add('hidden'); };
   document.getElementById('modalClose')?.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 }
@@ -463,7 +395,6 @@ function renderGallery() {
   gallery.innerHTML = '';
 
   const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
-
   let list = [...DB.items].sort((a, b) => b.time - a.time);
 
   list = list.filter(item => {
@@ -481,14 +412,9 @@ function renderGallery() {
     const card = document.createElement('div'); card.className = 'card';
     const isMyItem = item.uploadedByEmail === currentUser.email;
 
-    // ❤️ وضعیت لایک
     const likedByMe = Array.isArray(item.likedBy) && item.likedBy.includes(currentUser.email);
     const likesCount = Number(item.likes || 0);
-
-    // 🏷️ هشتگ‌ها برای نمایش روی کارت
-    const hashtagsList = Array.isArray(item.hashtags) && item.hashtags.length
-      ? item.hashtags
-      : (Array.isArray(item.tags) ? item.tags : []);
+    const hashtagsList = Array.isArray(item.hashtags) ? item.hashtags : [];
 
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
@@ -499,7 +425,7 @@ function renderGallery() {
           ${likedByMe ? '❤️' : '🤍'} <span class="like-count">${likesCount.toLocaleString('fa-IR')}</span>
         </button>
         ${isMyItem || isAdminUser ? `<button class="action-btn delete-btn" title="حذف">🗑️</button>` : ''}
-        ${isMyItem ? `<button class="action-btn visibility-btn" data-id="${item.id}" title="${item.isHidden ? 'نمایش برای همه' : 'مخفی کردن'}">${item.isHidden ? '👁️' : '🙈'}</button>` : ''}
+        ${isMyItem ? `<button class="action-btn visibility-btn" data-id="${item.id}">${item.isHidden ? '👁️' : '🙈'}</button>` : ''}
       </div>
       <div class="card-overlay">
         <p class="card-title">${escapeHtml(item.title)}</p>
@@ -508,49 +434,24 @@ function renderGallery() {
       </div>
     `;
 
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.action-btn')) return;
-      openDetail(item.id);
-    });
+    card.addEventListener('click', (e) => { if (!e.target.closest('.action-btn')) openDetail(item.id); });
 
-    // ❤️ کلیک روی لایک کارت
-    card.querySelector('.like-btn')?.addEventListener('click', async e => {
-      e.stopPropagation();
-      e.preventDefault();
-      await window.toggleLikeItem(item.id);
-    });
-
+    card.querySelector('.like-btn')?.addEventListener('click', async e => { e.stopPropagation(); await window.toggleLikeItem(item.id); });
     card.querySelector('.delete-btn')?.addEventListener('click', async e => {
         e.stopPropagation();
         if(confirm('حذف بشه؟')) {
-            window.isUploading = true;
-            DB.items = DB.items.filter(i => i.id !== item.id);
-            save();
-
-            if (window.deleteItemFromCloud) {
-                await window.deleteItemFromCloud(item.id);
-            }
-
-            window.isUploading = false;
-            renderGallery();
+            DB.items = DB.items.filter(i => i.id !== item.id); save(); renderGallery();
+            if (window.deleteItemFromCloud) await window.deleteItemFromCloud(item.id);
         }
     });
-
-    card.querySelector('.visibility-btn')?.addEventListener('click', e => {
-        e.stopPropagation();
-        if (window.toggleItemVisibility) window.toggleItemVisibility(item.id);
-    });
+    card.querySelector('.visibility-btn')?.addEventListener('click', e => { e.stopPropagation(); if (window.toggleItemVisibility) window.toggleItemVisibility(item.id); });
 
     gallery.appendChild(card);
   });
 }
 
-// 🏷️ نرمال‌سازی هشتگ‌ها (هم‌راستا با gallery.html)
 function normalizeHashtags(raw) {
-  const parts = String(raw || '')
-    .split(/[\s,،]+/)
-    .map(t => t.trim().replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, ''))
-    .filter(Boolean);
+  const parts = String(raw || '').split(/[\s,،]+/).map(t => t.trim().replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, '')).filter(Boolean);
   const unique = [...new Set(parts)];
   return unique.slice(0, 5).map(t => '#' + t);
 }
@@ -567,11 +468,6 @@ function bindUploadModal() {
   const audioFileBox = document.getElementById('audioFileBox');
   const audioFileName = document.getElementById('audioFileName');
   const audioFileRemove = document.getElementById('audioFileRemove');
-
-  const uploadBtnHeader = document.getElementById('uploadBtn');
-  const uploadBtnNav = document.getElementById('uploadNavBtn');
-  const uploadClose = document.getElementById('uploadClose');
-  const cancelUploadBtn = document.getElementById('cancelUploadBtn');
 
   if (!modal || !form) return;
 
@@ -594,14 +490,15 @@ function bindUploadModal() {
     compressedImageData = null;
     window.compressedImageData = null;
     window.__pendingHashtags = null;
+    window.__editItemId = null;
+    const modalTitle = modal.querySelector('h2');
+    if (modalTitle) modalTitle.textContent = 'آپلود اثر جدید';
   };
 
-  uploadBtnHeader?.addEventListener('click', () => modal.classList.remove('hidden'));
-  uploadBtnNav?.addEventListener('click', () => modal.classList.remove('hidden'));
-  uploadClose?.addEventListener('click', closeModal);
-  cancelUploadBtn?.addEventListener('click', closeModal);
+  document.getElementById('uploadClose')?.addEventListener('click', closeModal);
+  document.getElementById('cancelUploadBtn')?.addEventListener('click', closeModal);
 
-  fileIn.addEventListener('change', e => {
+  fileIn?.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
     compressImage(file, 800, 0.7).then(compressed => {
@@ -612,67 +509,60 @@ function bindUploadModal() {
     });
   });
 
-  previewRemove?.addEventListener('click', () => {
-    fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null; window.compressedImageData = null;
-  });
-
+  previewRemove?.addEventListener('click', () => { fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null; window.compressedImageData = null; });
   audioIn?.addEventListener('change', e => {
     const file = e.target.files[0];
     if (file) { audioFileName.textContent = file.name; audioFileBox.classList.remove('hidden'); }
     else { audioFileBox.classList.add('hidden'); }
   });
-
-  audioFileRemove?.addEventListener('click', () => {
-    audioIn.value = ''; audioFileName.textContent = ''; audioFileBox.classList.add('hidden');
-  });
+  audioFileRemove?.addEventListener('click', () => { audioIn.value = ''; audioFileName.textContent = ''; audioFileBox.classList.add('hidden'); });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
     const imageFile = fileIn.files[0];
     const audioFile = audioIn ? audioIn.files[0] : null;
-    if (!imageFile && !audioFile) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
-
-    const perm = checkUploadPermission(imageFile ? imageFile.size : 0);
-    if (!perm.allowed) return alert(perm.reason);
+    if (!imageFile && !audioFile && !window.__editItemId) return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
 
     const titleValue = form.title.value.trim();
     if(!titleValue) return alert('عنوان رو وارد کن!');
 
-    const tagsInput = form.tags.value || '';
-    const tagsArray = tagsInput.split(/[,،]/).map(t => t.trim().replace(/^#+/, '')).filter(Boolean);
-
-    // 🏷️ خواندن هشتگ‌ها از سه منبع (به ترتیب اولویت)
     let hashtagsArr = [];
-
-    // منبع ۱: فیلد مخفی (gallery.html)
     const hiddenHashtags = form.querySelector('input[name="hashtags"]');
     if (hiddenHashtags && hiddenHashtags.value) {
-      try {
-        const parsed = JSON.parse(hiddenHashtags.value);
-        if (Array.isArray(parsed)) hashtagsArr = parsed;
-      } catch (err) {
-        hashtagsArr = String(hiddenHashtags.value).split(/[\s,،]+/);
-      }
+      try { hashtagsArr = JSON.parse(hiddenHashtags.value); } catch (err) { hashtagsArr = String(hiddenHashtags.value).split(/[\s,،]+/); }
     }
-
-    // منبع ۲: گلوبال (gallery.html)
-    if (!hashtagsArr.length && Array.isArray(window.__pendingHashtags)) {
-      hashtagsArr = window.__pendingHashtags;
-    }
-
-    // منبع ۳: از روی تگ‌ها اگه هیچی نبود (fallback)
-    if (!hashtagsArr.length) {
-      hashtagsArr = tagsArray;
-    }
-
-    // نرمال‌سازی نهایی
+    if (!hashtagsArr.length && Array.isArray(window.__pendingHashtags)) hashtagsArr = window.__pendingHashtags;
     hashtagsArr = normalizeHashtags(hashtagsArr.join(' '));
 
     const isPremium = window.__navaaPremium?.isPremium === true;
     const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
 
     const finish = async (finalImage, audioData) => {
+      if (window.__editItemId) {
+        // حالت ویرایش
+        const idx = DB.items.findIndex(i => String(i.id) === String(window.__editItemId));
+        if (idx !== -1) {
+           DB.items[idx].title = titleValue;
+           DB.items[idx].artist = form.artist.value.trim() || currentUser.fullname;
+           DB.items[idx].desc = form.desc.value.trim();
+           DB.items[idx].category = form.category.value;
+           DB.items[idx].hashtags = hashtagsArr;
+           DB.items[idx].isPremium = isPremium;
+           DB.items[idx].price = itemPrice;
+           if (finalImage) DB.items[idx].image = finalImage;
+           if (audioData) DB.items[idx].audio = audioData;
+           
+           if (window.updateItemInCloud) await window.updateItemInCloud(DB.items[idx]);
+           save();
+           closeModal();
+           renderGallery();
+           alert('✅ اثر با موفقیت ویرایش شد!');
+           return;
+        }
+      }
+
+      // حالت آپلود جدید
       const newItem = {
           id: Date.now(),
           image: finalImage || makeSVG(THEME.turquoise, THEME.red, '🎵', 'صوتی'),
@@ -681,8 +571,7 @@ function bindUploadModal() {
           artist: form.artist.value.trim() || currentUser.fullname,
           desc: form.desc.value.trim(),
           category: form.category.value,
-          tags: tagsArray,
-          hashtags: hashtagsArr,   // ✅ این خط کلیدی
+          hashtags: hashtagsArr,
           isPremium: isPremium,
           price: itemPrice,
           time: Date.now(),
@@ -692,20 +581,11 @@ function bindUploadModal() {
           isHidden: false
       };
 
-      window.isUploading = true;
-
       let success = true;
-      if (window.addItemToCloud) {
-          success = await window.addItemToCloud(newItem);
-      } else {
-          DB.items.push(newItem);
-          save();
-      }
+      if (window.addItemToCloud) success = await window.addItemToCloud(newItem);
+      else { DB.items.push(newItem); save(); }
 
-      if (!success) {
-          window.isUploading = false;
-          return;
-      }
+      if (!success) return;
 
       if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
         currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
@@ -713,13 +593,8 @@ function bindUploadModal() {
         await syncCurrentUserToArray();
       }
 
-      window.isUploading = false;
-      window.__pendingHashtags = null;
-
       const reward = await giveUploadReward(currentUser.email);
-
       closeModal();
-
       alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
     };
 
@@ -738,6 +613,8 @@ function renderBottomNav() {
   if (!nav) return;
 
   const isAdminUser = currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin';
+  let savedAvatar = localStorage.getItem('navaa_avatar_' + currentUser.email) || currentUser.avatar;
+  const profileContent = savedAvatar ? `<div class="profile-btn-avatar" style="background-image: url('${savedAvatar}');"></div>` : `<span class="nav-icon">👤</span>`;
 
   nav.innerHTML = `
     <button class="nav-pill-btn logout-pill" onclick="window.location.href='home.html'">
@@ -747,7 +624,7 @@ function renderBottomNav() {
       <span class="nav-pill-icon">✨</span><span class="nav-pill-label">اشتراک</span>
     </button>
     <a href="profile.html" class="nav-center-profile">
-      <span class="nav-icon">👤</span><span class="nav-center-label">پروفایل</span>
+      ${profileContent}<span class="nav-center-label">پروفایل</span>
     </a>
     ${isAdminUser ? `
       <button class="nav-pill-btn admin-pill" onclick="window.location.href='admin.html'">
@@ -757,9 +634,13 @@ function renderBottomNav() {
       <span class="nav-pill-icon">➕</span><span class="nav-pill-label">آپلود اثر</span>
     </button>
   `;
+
+  nav.querySelector('#uploadNavBtn')?.addEventListener('click', () => {
+      if (!hasSubscription) { window.location.href = 'gallery.html?subscribe=1'; return; }
+      window.location.href = 'gallery.html';
+  });
 }
 
-// ✅ ترتیب صحیح اجرا
 setupUserHeader();
 initPremiumSection();
 renderGallery();
