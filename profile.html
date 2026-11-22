@@ -932,9 +932,34 @@
       box-shadow: 0 0 20px rgba(255,46,77,0.15);
     }
 
-    /* 💳 استایل درگاه پرداخت */
-    .payment-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
-    .card-number { font-size: 1.4rem; font-weight: 900; direction: ltr; color: #ffc93c; letter-spacing: 2px; margin: 1rem 0; text-shadow: 0 0 10px rgba(255,201,60,0.3); }
+    /* 💳 استایل جدید کارت بانکی افقی */
+    .payment-card-display {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      margin: 0 1.5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,240,212,0.05);
+    }
+    .payment-card-display::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #00f0d4, #ffc93c, transparent);
+    }
+    .card-number {
+      font-size: 1.5rem;
+      font-weight: 900;
+      direction: ltr;
+      color: #ffc93c;
+      letter-spacing: 3px;
+      margin: 0.5rem 0 0.8rem;
+      text-shadow: 0 0 15px rgba(255,201,60,0.4);
+      font-family: monospace;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .card-number:hover { color: #fff; text-shadow: 0 0 20px rgba(0,240,212,0.6); }
 
     /* 💸 مودال انتقال وجه */
     .transfer-modal-wrap {
@@ -1123,6 +1148,7 @@
       .profile-card { padding: 1.8rem 1.1rem 1.5rem; border-radius: 24px; }
       .profile-tab { font-size: 0.75rem; padding: 0.55rem 0.3rem; }
       .plans { padding: 0 1rem 1rem; }
+      .card-number { font-size: 1.2rem; letter-spacing: 2px; }
     }
   </style>
 </head>
@@ -1311,24 +1337,27 @@
     </div>
   </div>
 
-  <!-- 💳 مودال درگاه پرداخت -->
+  <!-- 💳 مودال درگاه پرداخت (اصلاح شده با کارت افقی) -->
   <div id="paymentModal" class="modal hidden">
     <div class="modal-content" style="max-width: 450px;">
       <button class="modal-close" onclick="document.getElementById('paymentModal').classList.add('hidden')">✕</button>
       <div style="text-align: center; padding-top: 2rem;">
         <div style="font-size: 2.5rem;">💳</div>
         <h2 style="color: #00f0d4; margin: 0.5rem 0;">درگاه پرداخت</h2>
-        <p style="color: #aaa; margin-bottom: 1.5rem;">مبلغ قابل پرداخت: <strong id="payAmount" style="color: #fff; font-size: 1.1rem;"></strong></p>
+        <p style="color: #aaa; margin-bottom: 1rem;">مبلغ قابل پرداخت: <strong id="payAmount" style="color: #fff; font-size: 1.2rem;"></strong></p>
+      </div>
+
+      <!-- 🔥 کارت بانکی افقی زیر مبلغ -->
+      <div class="payment-card-display">
+        <p style="color: #ccc; font-size: 0.85rem; margin: 0 0 0.5rem;">شماره کارت جهت واریز (کلیک = کپی)</p>
+        <div class="card-number" onclick="navigator.clipboard.writeText('6037997519665161'); alert('✅ شماره کارت کپی شد!');" title="برای کپی کلیک کنید">
+          6037-9975-1966-5161
+        </div>
+        <p style="color: #ffc93c; font-size: 0.85rem; margin: 0; font-weight: 700;">بانک ملی - محمد سروش سالاری فنودی</p>
       </div>
 
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
-        <div class="payment-box">
-          <p style="color: #ccc; font-size: 0.85rem; margin: 0;">لطفاً مبلغ را به شماره کارت زیر واریز کنید:</p>
-          <div class="card-number">6037-9975-1966-5161</div>
-          <p style="color: #aaa; font-size: 0.8rem; margin: 0;">بانک ملی - به نام محمد سروش سالاری فنودی</p>
-        </div>
-
-        <div class="upload-field" style="text-align: right; margin-top: 1rem;">
+        <div class="upload-field" style="text-align: right;">
           <label style="color: #ccc; font-size: 0.85rem;">شماره پیگیری تراکنش <span style="color:var(--red);">*</span></label>
           <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789" style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px; width: 100%; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none;">
         </div>
@@ -1641,7 +1670,6 @@
 
     const newImageFile = document.getElementById('editImage').files[0];
     if (newImageFile) {
-       // فشرده سازی ساده
        const reader = new FileReader();
        reader.onload = async (ev) => {
          const img = new Image();
@@ -1859,7 +1887,6 @@
     document.getElementById('paymentModal').classList.add('hidden');
   });
 
-  // دیگر رویدادها
   document.getElementById('withdrawBtn').addEventListener('click', async () => {
     if (!user) return;
     const balance = user.balance || 0;
@@ -1892,7 +1919,6 @@
   });
 
   document.getElementById('transferBtn').addEventListener('click', () => {
-    // کد مودال انتقال (برای جلوگیری از طولانی شدن، فرض میکنیم از قبل داری یا به gallery.html هدایت میکنی)
     window.location.href = 'gallery.html';
   });
 
