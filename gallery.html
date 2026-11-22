@@ -536,11 +536,6 @@
       font-size: 0.72rem;
       font-weight: 700;
     }
-    .hashtag-chip.invalid {
-      background: rgba(255,46,77,0.1);
-      border-color: rgba(255,46,77,0.4);
-      color: var(--red);
-    }
     .hashtag-counter {
       display: inline-block;
       font-size: 0.72rem;
@@ -557,181 +552,102 @@
 
     .sub-content { background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important; }
 
+    /* 🌟 استایل مدرن پلن‌های اشتراک */
     .plans .plan {
-      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)) !important;
-      backdrop-filter: blur(14px) !important;
-      -webkit-backdrop-filter: blur(14px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.09) !important;
-      border-radius: 18px;
-      transition: 0.35s cubic-bezier(.4,0,.2,1);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-      padding: 1.2rem;
+      background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)) !important;
+      backdrop-filter: blur(24px) saturate(200%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+      padding: 1.4rem;
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
-    .plan:hover {
-      background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)) !important;
-      transform: translateY(-5px);
-      border-color: rgba(0,240,212,0.4) !important;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 26px rgba(0,240,212,0.12);
+    .plans .plan::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 212, 0.15), transparent 70%);
+      opacity: 0; transition: opacity 0.4s; pointer-events: none;
     }
-    .plan-silver {
-      background: linear-gradient(135deg, rgba(255, 201, 60, 0.1), rgba(255, 46, 77, 0.04)) !important;
-      border: 1px solid rgba(255, 201, 60, 0.4) !important;
-      box-shadow: 0 0 24px rgba(255,201,60,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+    .plans .plan:hover { transform: translateY(-8px) scale(1.03); }
+    .plans .plan:hover::before { opacity: 1; }
+    
+    .plan-bronze { border-color: rgba(205, 127, 50, 0.5) !important; }
+    .plan-bronze:hover { border-color: #cd7f32 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(205, 127, 50, 0.4) !important; }
+    
+    .plan-silver { border-color: rgba(255, 201, 60, 0.5) !important; }
+    .plan-silver:hover { border-color: #ffc93c !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(255, 201, 60, 0.5) !important; }
+    
+    .plan-diamond { border-color: rgba(0, 240, 212, 0.5) !important; }
+    .plan-diamond:hover { border-color: #00f0d4 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0, 240, 212, 0.5) !important; }
+
+    .plan-btn {
+      width: 100%; padding: 0.9rem; margin-top: 1rem;
+      border: none; border-radius: 12px;
+      font-family: inherit; font-weight: 800; cursor: pointer;
+      transition: all 0.3s;
     }
-    .plan-silver:hover {
-      background: linear-gradient(135deg, rgba(255, 201, 60, 0.16), rgba(255, 46, 77, 0.07)) !important;
-      border-color: rgba(255, 201, 60, 0.7) !important;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.55), 0 0 32px rgba(255,201,60,0.2);
-    }
+    .plan-bronze .plan-btn { background: linear-gradient(135deg, #cd7f32, #e6a800); color: #1a1100; }
+    .plan-silver .plan-btn { background: linear-gradient(135deg, #ffc93c, #ff8c00); color: #1a1100; }
+    .plan-diamond .plan-btn { background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; }
+    
     .plan-badge {
-      position: absolute;
-      top: 0.7rem;
-      left: 0.7rem;
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: #1a1200;
+      position: absolute; top: 0.7rem; left: 0.7rem;
+      font-size: 0.68rem; font-weight: 800; color: #1a1200;
       background: linear-gradient(135deg, #ffc93c, #ff2e4d);
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
+      padding: 0.2rem 0.55rem; border-radius: 999px;
       box-shadow: 0 4px 12px rgba(255,46,77,0.3);
     }
 
-    .plan-btn {
-      width: 100%;
-      padding: 0.8rem;
-      margin-top: 0.9rem;
-      border: none;
-      border-radius: 12px;
-      font-family: inherit;
-      font-weight: 800;
-      font-size: 0.9rem;
-      cursor: pointer;
-      color: #001a1c;
-      background: linear-gradient(135deg, #00f0d4, #38bdf8);
-      box-shadow: 0 6px 20px rgba(0,240,212,0.28), inset 0 1px 0 rgba(255,255,255,0.3);
-      transition: all 0.25s cubic-bezier(.4,0,.2,1);
-      position: relative;
-      overflow: hidden;
-    }
-    .plan-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-    .plan-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.42); }
-    .plan-btn:hover::before { transform: translateX(100%); }
-
     .btn-cancel {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #a0a0a0;
-      padding: 0.95rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1); color: #a0a0a0;
+      padding: 0.95rem; border-radius: 14px; font-family: inherit;
+      font-size: 0.92rem; font-weight: 700; cursor: pointer; width: 100%;
+      margin-top: 1rem; transition: all 0.3s ease;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
     }
-    .btn-cancel:hover {
-      background: rgba(255, 46, 77, 0.1);
-      border-color: rgba(255, 46, 77, 0.45);
-      color: var(--red);
-      box-shadow: 0 0 24px rgba(255, 46, 77, 0.18);
-      transform: translateY(-1px);
-    }
+    .btn-cancel:hover { background: rgba(255, 46, 77, 0.1); border-color: rgba(255, 46, 77, 0.45); color: var(--red); transform: translateY(-1px); }
 
     .btn-publish {
-      width: 100%;
-      padding: 1rem;
-      margin-top: 0.6rem;
-      border: none;
-      border-radius: 14px;
-      font-family: inherit;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      color: #001a1c;
+      width: 100%; padding: 1rem; margin-top: 0.6rem;
+      border: none; border-radius: 14px; font-family: inherit;
+      font-weight: 800; font-size: 0.95rem; cursor: pointer; color: #001a1c;
       background: linear-gradient(135deg, #00f0d4, #38bdf8, #ff2e4d);
       background-size: 200% 100%;
-      box-shadow: 0 8px 26px rgba(0,240,212,0.3), 0 0 24px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.3);
-      transition: all 0.35s cubic-bezier(.4,0,.2,1);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      box-shadow: 0 8px 26px rgba(0,240,212,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.35s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
     }
-    .btn-publish:hover {
-      transform: translateY(-2px);
-      background-position: 100% 0;
-      box-shadow: 0 12px 34px rgba(0,240,212,0.4), 0 0 32px rgba(255,46,77,0.22);
-    }
+    .btn-publish:hover { transform: translateY(-2px); background-position: 100% 0; box-shadow: 0 12px 34px rgba(0,240,212,0.4); }
     .btn-publish-icon { font-size: 1.05rem; }
 
     #uploadBtn {
-      padding: 0.55rem 1.05rem !important;
-      border-radius: 11px !important;
-      font-size: 0.8rem !important;
-      font-weight: 800 !important;
-      white-space: nowrap;
-      border: none;
-      cursor: pointer;
-      color: #001a1c;
+      padding: 0.55rem 1.05rem !important; border-radius: 11px !important;
+      font-size: 0.8rem !important; font-weight: 800 !important; white-space: nowrap;
+      border: none; cursor: pointer; color: #001a1c;
       background: linear-gradient(135deg, #00f0d4, #38bdf8);
       box-shadow: 0 6px 20px rgba(0,240,212,0.28), inset 0 1px 0 rgba(255,255,255,0.3);
-      transition: all 0.25s cubic-bezier(.4,0,.2,1);
-      font-family: inherit;
+      transition: all 0.25s; font-family: inherit;
     }
-    #uploadBtn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(0,240,212,0.42), 0 0 26px rgba(255,46,77,0.15);
-    }
+    #uploadBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.42); }
 
     .btn-like {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.7rem 1.1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.7rem 1.1rem; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+      color: #fff; font-family: inherit; font-weight: 700; cursor: pointer; transition: all 0.25s;
     }
-    .btn-like:hover {
-      background: rgba(255,46,77,0.12);
-      border-color: rgba(255,46,77,0.5);
-      color: var(--red);
-      box-shadow: 0 0 22px rgba(255,46,77,0.2);
-    }
+    .btn-like:hover { background: rgba(255,46,77,0.12); border-color: rgba(255,46,77,0.5); color: var(--red); box-shadow: 0 0 22px rgba(255,46,77,0.2); }
     .btn-like:disabled { opacity: 0.6; cursor: wait; }
-    .btn-like.liked {
-      background: rgba(255,46,77,0.18);
-      border-color: rgba(255,46,77,0.55);
-      color: var(--red);
-      box-shadow: 0 0 22px rgba(255,46,77,0.25);
-    }
+    .btn-like.liked { background: rgba(255,46,77,0.18); border-color: rgba(255,46,77,0.55); color: var(--red); box-shadow: 0 0 22px rgba(255,46,77,0.25); }
+
+    /* 💳 استایل درگاه پرداخت */
+    .payment-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
+    .card-number { font-size: 1.4rem; font-weight: 900; direction: ltr; color: #ffc93c; letter-spacing: 2px; margin: 1rem 0; text-shadow: 0 0 10px rgba(255,201,60,0.3); }
 
     @media (max-width: 720px) {
-      .header-inner {
-        grid-template-columns: 1fr auto;
-        gap: 0.5rem;
-      }
+      .header-inner { grid-template-columns: 1fr auto; gap: 0.5rem; }
       .header-inner > div:nth-child(3) { display: none; }
       .card { width: calc(50% - 0.75rem) !important; }
       .modal-content { border-radius: 22px !important; }
@@ -769,7 +685,7 @@
     <div class="topbar">
       <div class="search-box">
         <span class="search-icon" style="opacity: 0.7; font-size: 0.9rem; margin-left: 0.5rem;">🔍</span>
-        <input type="text" id="searchInput" placeholder="جستجو در عنوان، هنرمند و تگ‌ها...">
+        <input type="text" id="searchInput" placeholder="جستجو در عنوان، هنرمند و هشتگ‌ها...">
       </div>
     </div>
   </div>
@@ -820,6 +736,8 @@
           <button id="modalDownload" class="btn-primary">⬇️ دانلود</button>
           <button id="modalLike" class="btn-like">❤️ <span id="modalLikes">0</span></button>
           <button id="modalShare" class="btn-like">🔗 اشتراک‌گذاری</button>
+          <!-- دکمه ویرایش اضافه شد -->
+          <button id="modalEdit" class="btn-like" style="display:none; background:rgba(255,201,60,0.1); border-color:rgba(255,201,60,0.4); color:#ffc93c;">✏️ ویرایش</button>
           <button id="modalDelete" class="btn-danger hidden" style="display:none;">🗑️ حذف اثر</button>
         </div>
       </div>
@@ -901,10 +819,8 @@
             <label>دسته‌بندی <span class="req">*</span></label>
             <select name="category" id="catSelect" required></select>
           </div>
-          <div class="upload-field">
-            <label>تگ‌ها</label>
-            <input type="text" name="tags" placeholder="پاپ, جدید, عاشقانه (با کاما جدا کن)">
-          </div>
+          
+          <!-- فیلد تگ‌ها کاملاً حذف شد -->
 
           <!-- 🏷️ فیلد ۵ هشتگ اجباری -->
           <div class="upload-field">
@@ -949,7 +865,7 @@
     </div>
   </div>
 
-  <!-- مودال اشتراک -->
+  <!-- مودال اشتراک (مدرن) -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" id="subClose">✕</button>
@@ -959,10 +875,10 @@
       <p class="sub-desc" style="text-align:center; margin-bottom: 1.5rem; color: var(--text-dim, #a0a0a0);">پلن مناسب خودت رو انتخاب کن</p>
 
       <div class="plans" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem 1.5rem;">
-        <div class="plan plan-bronze" data-plan="bronze" data-price="50000" data-days="30">
+        <div class="plan plan-bronze" onclick="window.openPayment('برنزی', 50000, 30)">
           <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
             <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">🥉 برنزی</span>
-            <div class="plan-duration" style="color:#777; font-size:0.72rem;">۱ ماهه</div>
+            <div class="plan-duration" style="color:#cd7f32; font-size:0.72rem;">۱ ماهه</div>
           </div>
           <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
             <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۵۰,۰۰۰</span>
@@ -973,16 +889,15 @@
             <li>✅ نمایش نام هنرمند</li>
             <li>✅ دریافت لایک</li>
             <li style="color:#666;">❌ آپلود موسیقی</li>
-            <li style="color:#666;">❌ دانلود نامحدود</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <div class="plan plan-silver" data-plan="silver" data-price="100000" data-days="365">
+        <div class="plan plan-silver" onclick="window.openPayment('طلایی', 100000, 365)">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
           <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
             <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">🥈 طلایی</span>
-            <div class="plan-duration" style="color:#999; font-size:0.72rem;">۱۲ ماهه</div>
+            <div class="plan-duration" style="color:#ffc93c; font-size:0.72rem;">۱۲ ماهه</div>
           </div>
           <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
             <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۱۰۰,۰۰۰</span>
@@ -991,17 +906,15 @@
           <ul class="plan-features" style="list-style:none; padding:0; margin:0; font-size:0.82rem; color:#bbb; line-height:1.9;">
             <li>✅ آپلود ۱۰۰ عکس در ماه</li>
             <li>✅ آپلود ۵ آهنگ در ماه</li>
-            <li>✅ نمایش نام هنرمند</li>
             <li>✅ دانلود نامحدود عکس</li>
-            <li style="color:#666;">❌ پخش بدون تبلیغ</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
 
-        <div class="plan plan-diamond" data-plan="diamond" data-price="250000" data-days="1260">
+        <div class="plan plan-diamond" onclick="window.openPayment('الماسی', 250000, 1260)">
           <div class="plan-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.7rem;">
             <span class="plan-name" style="color:#fff; font-weight:800; font-size:0.95rem;">💎 الماسی</span>
-            <div class="plan-duration" style="color:#777; font-size:0.72rem;">۳.۵ ساله</div>
+            <div class="plan-duration" style="color:#00f0d4; font-size:0.72rem;">۳.۵ ساله</div>
           </div>
           <div class="plan-price" style="display:flex; align-items:baseline; gap:0.3rem; margin-bottom:0.9rem;">
             <span class="price-num" style="font-size:1.6rem; font-weight:900; color:#fff;">۲۵۰,۰۰۰</span>
@@ -1010,21 +923,44 @@
           <ul class="plan-features" style="list-style:none; padding:0; margin:0; font-size:0.82rem; color:#bbb; line-height:1.9;">
             <li>✅ آپلود نامحدود عکس</li>
             <li>✅ آپلود نامحدود موسیقی</li>
-            <li>✅ دانلود نامحدود</li>
             <li>✅ نشان الماسی روی پروفایل</li>
-            <li>✅ پشتیبانی اولویت‌دار</li>
           </ul>
           <button class="plan-btn">انتخاب پلن</button>
         </div>
       </div>
-
-      <p class="sub-hint" style="text-align:center; font-size: .85rem; color: #a0a0a0; padding: 0 0 1.5rem 0;">💳 پرداخت امن از طریق درگاه بانکی</p>
 
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
         <button type="button" class="btn-cancel" id="cancelSubBtn" style="margin-top: 0;">
           <span>✕</span>
           <span>انصراف و بستن</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💳 مودال درگاه پرداخت کارت به کارت -->
+  <div id="paymentModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 450px;">
+      <button class="modal-close" onclick="document.getElementById('paymentModal').classList.add('hidden')">✕</button>
+      <div style="text-align: center; padding-top: 2rem;">
+        <div style="font-size: 2.5rem;">💳</div>
+        <h2 style="color: #00f0d4; margin: 0.5rem 0;">درگاه پرداخت</h2>
+        <p style="color: #aaa; margin-bottom: 1.5rem;">مبلغ قابل پرداخت: <strong id="payAmount" style="color: #fff; font-size: 1.1rem;"></strong></p>
+      </div>
+
+      <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+        <div class="payment-box">
+          <p style="color: #ccc; font-size: 0.85rem; margin: 0;">لطفاً مبلغ را به شماره کارت زیر واریز کنید:</p>
+          <div class="card-number">6037-9975-1966-5161</div>
+          <p style="color: #aaa; font-size: 0.8rem; margin: 0;">بانک ملی - به نام محمد سروش سالاری فنودی</p>
+        </div>
+
+        <div class="upload-field" style="text-align: right; margin-top: 1rem;">
+          <label style="color: #ccc; font-size: 0.85rem;">شماره پیگیری تراکنش <span style="color:var(--red);">*</span></label>
+          <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789" style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px;">
+        </div>
+
+        <button id="submitPaymentBtn" style="width: 100%; padding: 1rem; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 1rem;">✅ تایید و ارسال رسید</button>
       </div>
     </div>
   </div>
@@ -1067,6 +1003,10 @@
       window.selectedAudioFile = null;
       window.selectedAudioData = null;
       window.__pendingHashtags = null;
+      window.__editItemId = null; // ریست کردن حالت ویرایش
+      
+      const modalTitle = document.querySelector('#uploadModal h2');
+      if (modalTitle) modalTitle.textContent = 'آپلود اثر جدید';
     };
 
     window.navaaOpenSub = function () {
@@ -1094,6 +1034,43 @@
       return unique.slice(0, 5).map(t => '#' + t);
     }
     window.__normalizeHashtags = normalizeHashtags;
+
+    // 💳 باز کردن درگاه پرداخت
+    window.openPayment = function(planName, price, days) {
+      document.getElementById('subModal').classList.add('hidden');
+      document.getElementById('paymentModal').classList.remove('hidden');
+      document.getElementById('payAmount').textContent = price.toLocaleString('fa-IR') + ' تومان';
+      window.__pendingPayment = { planName, price, days };
+      document.getElementById('trackingNumber').value = '';
+    };
+
+    // 💳 ثبت رسید پرداخت
+    document.getElementById('submitPaymentBtn')?.addEventListener('click', async function() {
+      const tracking = document.getElementById('trackingNumber').value.trim();
+      if (!tracking || tracking.length < 5) return alert('❌ لطفاً شماره پیگیری معتبر وارد کنید!');
+      
+      const me = JSON.parse(localStorage.getItem('navaa_current_user'));
+      if (!me) return alert('ابتدا وارد حساب شوید!');
+
+      const req = {
+        id: Date.now(),
+        userEmail: me.email,
+        userName: me.fullname,
+        plan: window.__pendingPayment.planName,
+        price: window.__pendingPayment.price,
+        days: window.__pendingPayment.days,
+        trackingNumber: tracking,
+        status: 'pending',
+        time: Date.now()
+      };
+
+      let requests = JSON.parse(localStorage.getItem('navaa_payment_requests') || '[]');
+      requests.push(req);
+      localStorage.setItem('navaa_payment_requests', JSON.stringify(requests));
+      
+      alert('✅ رسید شما ثبت شد. پس از تایید مدیر، اشتراک فعال می‌شود.');
+      document.getElementById('paymentModal').classList.add('hidden');
+    });
   </script>
 
   <script>
@@ -1143,23 +1120,6 @@
 
       const subModal = document.getElementById('subModal');
       if (subModal) subModal.addEventListener('click', function (e) { if (e.target === this) window.navaaCloseSub(); });
-
-      setTimeout(function () {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('subscribe') === '1') {
-          const subModalEl = document.getElementById('subModal');
-          if (subModalEl) subModalEl.classList.remove('hidden');
-          const planName = params.get('plan');
-          const price = params.get('price');
-          const days = params.get('days');
-          if (planName && price && days && typeof window.startPayment === 'function') {
-            setTimeout(function () {
-              subModalEl.classList.add('hidden');
-              window.startPayment(planName, parseInt(price, 10), parseInt(days, 10));
-            }, 500);
-          }
-        }
-      }, 300);
     });
   </script>
 
@@ -1281,40 +1241,27 @@
     window.addItemToCloud = async function (item) {
       try {
         await setDoc(doc(db, 'navaa_items', item.id.toString()), item);
-        console.log('✅ فایل با موفقیت در دیتابیس ذخیره شد.');
         return true;
       } catch (error) {
         console.error('❌ خطا در ذخیره فایل:', error);
-        if (error && (error.code === 'resource-exhausted' || /too large|exceeds/i.test(error.message || ''))) {
-          alert('حجم این فایل از سقف مجاز فایربیس (1MB) بیشتره. لطفاً فایل کوچکتری انتخاب کن یا از Firebase Storage استفاده کن.');
-        } else {
-          alert('خطا در ذخیره‌سازی روی سرور. لطفاً اتصال اینترنت را بررسی کن و دوباره تلاش کن.');
-        }
+        alert('خطا در ذخیره‌سازی روی سرور. لطفاً اتصال اینترنت را بررسی کن.');
         return false;
       }
     };
 
     window.deleteItemFromCloud = async function (id) {
-      try {
-        await deleteDoc(doc(db, 'navaa_items', id.toString()));
-        console.log('🗑️ فایل حذف شد.');
-      } catch (error) { console.error('Error deleting item:', error); }
+      try { await deleteDoc(doc(db, 'navaa_items', id.toString())); } catch (error) {}
     };
 
     window.updateItemInCloud = async function (item) {
-      try {
-        await setDoc(doc(db, 'navaa_items', item.id.toString()), item);
-        console.log('🔄 فایل آپدیت شد.');
-      } catch (error) { console.error('Error updating item:', error); }
+      try { await setDoc(doc(db, 'navaa_items', item.id.toString()), item); } catch (error) {}
     };
 
     window.getItemsFromCloud = async function () {
       if (window.DB && Array.isArray(window.DB.items) && window.DB.items.length) {
         return window.DB.items;
       }
-      try {
-        return JSON.parse(localStorage.getItem('navaa_items_v3') || '[]');
-      } catch (e) { return []; }
+      try { return JSON.parse(localStorage.getItem('navaa_items_v3') || '[]'); } catch (e) { return []; }
     };
 
     function tryRenderGallery(retries = 0) {
@@ -1322,8 +1269,6 @@
         try { window.renderGallery(); } catch (e) { console.error('renderGallery error:', e); }
       } else if (retries < 30) {
         setTimeout(function () { tryRenderGallery(retries + 1); }, 200);
-      } else {
-        console.warn('⚠️ renderGallery پس از ۶ ثانیه هنوز لود نشده بود.');
       }
     }
 
@@ -1337,9 +1282,6 @@
       localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
 
       tryRenderGallery();
-      console.log('🔔 لیست فایل‌ها از سرور آپدیت شد. تعداد:', cloudItems.length);
-    }, function (error) {
-      console.error('❌ onSnapshot (items) error:', error);
     });
 
     onSnapshot(docRefUsers, function (docSnap) {
@@ -1359,8 +1301,6 @@
           if (greeting && freshMe.fullname) greeting.textContent = freshMe.fullname;
         }
       }
-    }, function (error) {
-      console.error('❌ onSnapshot (users) error:', error);
     });
 
     const script = document.createElement('script');
@@ -1369,9 +1309,6 @@
       if (window.DB && Array.isArray(window.DB.items) && window.DB.items.length) {
         tryRenderGallery();
       }
-    };
-    script.onerror = function () {
-      console.error('❌ js/app.js لود نشد! مسیر فایل را بررسی کن.');
     };
     document.body.appendChild(script);
   </script>
