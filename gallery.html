@@ -26,7 +26,6 @@
       position: relative;
     }
 
-    /* 🌌 پس‌زمینهٔ زنده */
     body::before {
       content: '';
       position: fixed;
@@ -77,7 +76,6 @@
     footer .brand-name { color: var(--turquoise, #00f0d4); font-weight: 800; }
     footer .heart { color: var(--red); }
 
-    /* 🌟 هدر شیشه‌ای */
     header {
       position: sticky;
       top: 0;
@@ -120,7 +118,6 @@
       white-space: nowrap;
     }
 
-    /* 🌟 کادر سرچ */
     .topbar-wrap {
       padding-top: 1rem;
       padding-bottom: 1rem;
@@ -159,9 +156,6 @@
     }
     .search-box input::placeholder { color: #666; }
 
-    /* ==========================================
-       🔥 گالری (راست‌چین)
-       ========================================== */
     #gallery.gallery {
       display: flex !important;
       flex-wrap: wrap !important;
@@ -205,7 +199,6 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
-    /* 🔥 پیام خالی */
     .gallery > .empty {
       width: 100% !important;
       display: flex !important;
@@ -220,9 +213,6 @@
     .gallery > .empty h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
     .gallery > .empty p { font-size: 0.95rem; }
 
-    /* ==========================================
-       🌟 نوار پایین (بازطراحی شده و درخشان)
-       ========================================== */
     .bottom-nav {
       position: fixed !important;
       bottom: 0 !important;
@@ -341,9 +331,6 @@
       color: #fff !important;
     }
 
-    /* ==========================================
-       🔥 مودال‌ها با شیشهٔ پرمیوم + قرمز
-       ========================================== */
     .modal {
       background:
         radial-gradient(circle at 10% 20%, rgba(0, 240, 212, 0.12), transparent 40%),
@@ -421,9 +408,6 @@
       box-shadow: 0 0 24px var(--red-glow);
     }
 
-    /* ==========================================
-       🔥 پنل آپلود اثر
-       ========================================== */
     .upload-section {
       background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)) !important;
       backdrop-filter: blur(20px) saturate(180%) !important;
@@ -534,7 +518,6 @@
       box-shadow: 0 0 0 3px rgba(255,46,77,0.15), inset 0 2px 5px rgba(0,0,0,0.3) !important;
     }
 
-    /* 🏷️ چیپ‌های هشتگ */
     .hashtag-preview {
       display: flex;
       flex-wrap: wrap;
@@ -572,7 +555,6 @@
     .hashtag-counter.warn { background: rgba(255,201,60,0.15); color: #ffc93c; }
     .hashtag-counter.error { background: rgba(255,46,77,0.15); color: var(--red); }
 
-    /* 💎 اشتراک */
     .sub-content { background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important; }
 
     .plans .plan {
@@ -717,7 +699,6 @@
       box-shadow: 0 10px 28px rgba(0,240,212,0.42), 0 0 26px rgba(255,46,77,0.15);
     }
 
-    /* 🔥 دکمهٔ لایک و شیر */
     .btn-like {
       display: inline-flex;
       align-items: center;
@@ -746,7 +727,6 @@
       box-shadow: 0 0 22px rgba(255,46,77,0.25);
     }
 
-    /* 🔥 موبایل */
     @media (max-width: 720px) {
       .header-inner {
         grid-template-columns: 1fr auto;
@@ -1183,7 +1163,7 @@
     });
   </script>
 
-  <!-- 🏷️ هشتگ‌ها: پیش‌نمایش و اعتبارسنجی زنده -->
+  <!-- 🏷️ هشتگ‌ها: پیش‌نمایش زنده -->
   <script>
     (function () {
       const input = document.getElementById('hashtagsInput');
@@ -1223,215 +1203,42 @@
     })();
   </script>
 
-  <!-- ❤️ لایک + 🔗 اشتراک‌گذاری در مودال -->
+  <!-- 🏷️ اعتبارسنجی ۵ هشتگ قبل از ارسال فرم -->
   <script>
     (function () {
-      // پیدا کردن آیتم فعلی مودال بر اساس تصویر / عنوان / هنرمند
-      function getCurrentModalItem() {
-        const items = (window.DB && Array.isArray(window.DB.items)) ? window.DB.items : [];
-        if (!items.length) return null;
-
-        const imgSrc = document.getElementById('modalImg')?.src || '';
-        const title = (document.getElementById('modalTitle')?.textContent || '').trim();
-        const artist = (document.getElementById('modalArtist')?.textContent || '').trim();
-
-        if (imgSrc) {
-          const byImg = items.find(i => i.image === imgSrc);
-          if (byImg) return byImg;
-        }
-        if (title) {
-          const matches = items.filter(i => (i.title || '').trim() === title);
-          if (matches.length === 1) return matches[0];
-          if (matches.length > 1 && artist) {
-            const byArtist = matches.find(i => (i.artist || '').trim() === artist);
-            if (byArtist) return byArtist;
-          }
-        }
-        return null;
-      }
-
-      function updateModalLikeState() {
-        const item = getCurrentModalItem();
-        if (!item) return;
-
-        let me = null;
-        try { me = JSON.parse(localStorage.getItem('navaa_current_user')); } catch (e) {}
-
-        const likeBtn = document.getElementById('modalLike');
-        const likesSpan = document.getElementById('modalLikes');
-
-        if (likesSpan) likesSpan.textContent = (item.likes || 0).toLocaleString('fa-IR');
-
-        if (likeBtn) {
-          const likedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
-          if (me && likedBy.includes(me.email)) {
-            likeBtn.classList.add('liked');
-          } else {
-            likeBtn.classList.remove('liked');
-          }
-        }
-      }
-
-      // observer روی تغییر تصویر و عنوان مودال
-      const imgEl = document.getElementById('modalImg');
-      const titleEl = document.getElementById('modalTitle');
-      if (imgEl) {
-        new MutationObserver(updateModalLikeState).observe(imgEl, { attributes: true, attributeFilter: ['src'] });
-      }
-      if (titleEl) {
-        new MutationObserver(updateModalLikeState).observe(titleEl, { childList: true, characterData: true, subtree: true });
-      }
-
-      // ✅ لایک
-      document.getElementById('modalLike')?.addEventListener('click', async function () {
-        let me = null;
-        try { me = JSON.parse(localStorage.getItem('navaa_current_user')); } catch (e) {}
-
-        if (!me || !me.email) {
-          alert('برای لایک باید وارد حساب بشی!');
-          window.location.href = 'login.html';
-          return;
-        }
-
-        const item = getCurrentModalItem();
-        if (!item) {
-          alert('❌ اثر پیدا نشد! لطفاً مودال رو ببند و دوباره باز کن.');
-          return;
-        }
-
-        const btn = document.getElementById('modalLike');
-        if (btn) btn.disabled = true;
-
-        try {
-          item.likedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
-          const idx = item.likedBy.indexOf(me.email);
-
-          if (idx >= 0) {
-            item.likedBy.splice(idx, 1);
-            item.likes = Math.max(0, (item.likes || 0) - 1);
-          } else {
-            item.likedBy.push(me.email);
-            item.likes = (item.likes || 0) + 1;
-          }
-
-          // آپدیت UI فوری
-          const likesSpan = document.getElementById('modalLikes');
-          if (likesSpan) likesSpan.textContent = item.likes.toLocaleString('fa-IR');
-          if (btn) {
-            if (item.likedBy.includes(me.email)) btn.classList.add('liked');
-            else btn.classList.remove('liked');
-          }
-
-          // ذخیره در Firebase
-          if (typeof window.updateItemInCloud === 'function') {
-            await window.updateItemInCloud(item);
-          }
-
-          // آپدیت localStorage (برای fallback)
-          try {
-            const stored = JSON.parse(localStorage.getItem('navaa_items_v3') || '[]');
-            const idx2 = stored.findIndex(i => String(i.id) === String(item.id));
-            if (idx2 >= 0) {
-              stored[idx2] = item;
-              localStorage.setItem('navaa_items_v3', JSON.stringify(stored));
-            }
-          } catch (e) {}
-
-          // رفرش گالری
-          if (typeof window.renderGallery === 'function') {
-            try { window.renderGallery(); } catch (e) {}
-          }
-        } catch (e) {
-          console.error('like error:', e);
-          alert('❌ خطا در ثبت لایک! لطفاً دوباره تلاش کن.');
-        } finally {
-          if (btn) btn.disabled = false;
-        }
-      });
-
-      // 🔗 اشتراک‌گذاری
-      document.getElementById('modalShare')?.addEventListener('click', async function () {
-        const item = getCurrentModalItem();
-        if (!item) {
-          alert('❌ اثر پیدا نشد!');
-          return;
-        }
-
-        const url = `${location.origin}${location.pathname}?item=${encodeURIComponent(item.id)}`;
-        const shareData = {
-          title: item.title || 'اثر در Navaa',
-          text: `این اثر رو در Navaa ببین: ${item.title || ''}`,
-          url: url
-        };
-
-        try {
-          if (navigator.share) {
-            await navigator.share(shareData);
-          } else if (navigator.clipboard) {
-            await navigator.clipboard.writeText(url);
-            alert('✅ لینک اثر کپی شد!');
-          } else {
-            prompt('لینک اثر رو کپی کن:', url);
-          }
-        } catch (e) {
-          if (e && e.name !== 'AbortError') {
-            console.error('share error:', e);
-            if (navigator.clipboard) {
-              try {
-                await navigator.clipboard.writeText(url);
-                alert('✅ لینک اثر کپی شد!');
-              } catch (e2) {
-                prompt('لینک اثر رو کپی کن:', url);
-              }
-            }
-          }
-        }
-      });
-
-      // 🔥 اعتبارسنجی ۵ هشتگ قبل از ثبت فرم (capture)
       const uploadForm = document.getElementById('uploadForm');
-      if (uploadForm) {
-        uploadForm.addEventListener('submit', function (e) {
-          const input = document.getElementById('hashtagsInput');
-          const raw = input?.value || '';
-          const hashtags = window.__normalizeHashtags(raw);
+      if (!uploadForm) return;
 
-          if (hashtags.length !== 5) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            alert('❌ باید دقیقاً ۵ هشتگ وارد کنی!\nالان ' + hashtags.length + ' تا وارد کردی.');
-            if (input) {
-              input.focus();
-              input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            return;
+      uploadForm.addEventListener('submit', function (e) {
+        const input = document.getElementById('hashtagsInput');
+        const raw = input?.value || '';
+        const hashtags = window.__normalizeHashtags(raw);
+
+        if (hashtags.length !== 5) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          alert('❌ باید دقیقاً ۵ هشتگ وارد کنی!\nالان ' + hashtags.length + ' تا وارد کردی.');
+          if (input) {
+            input.focus();
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
+          return;
+        }
 
-          // ذخیره هشتگ‌ها به‌صورت گلوبال (برای app.js)
-          window.__pendingHashtags = hashtags;
+        // ذخیره هشتگ‌ها به‌صورت گلوبال برای app.js
+        window.__pendingHashtags = hashtags;
 
-          // فیلد مخفی برای FormData
-          let hidden = document.getElementById('__hashtags_hidden');
-          if (!hidden) {
-            hidden = document.createElement('input');
-            hidden.type = 'hidden';
-            hidden.name = 'hashtags';
-            hidden.id = '__hashtags_hidden';
-            uploadForm.appendChild(hidden);
-          }
-          hidden.value = JSON.stringify(hashtags);
-
-          // سازگاری: هشتگ‌ها به تگ‌ها هم اضافه بشن (در صورت استفاده app.js از tags)
-          const tagsInput = uploadForm.querySelector('input[name="tags"]');
-          if (tagsInput) {
-            const existing = (tagsInput.value || '').trim();
-            const hashtagStr = hashtags.join(' ');
-            if (!existing.includes(hashtags[0])) {
-              tagsInput.value = existing ? existing + ', ' + hashtagStr : hashtagStr;
-            }
-          }
-        }, true);
-      }
+        // فیلد مخفی برای FormData
+        let hidden = document.getElementById('__hashtags_hidden');
+        if (!hidden) {
+          hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.name = 'hashtags';
+          hidden.id = '__hashtags_hidden';
+          uploadForm.appendChild(hidden);
+        }
+        hidden.value = JSON.stringify(hashtags);
+      }, true);
     })();
   </script>
 
