@@ -527,10 +527,10 @@ function bindUploadModal() {
         isHidden: false
     };
 
-    // چک کردن حجم کل (فایربیس سقف 1MB داره)
+    // چک کردن حجم کل (فایربیس سقف 10MB داره)
     const itemString = JSON.stringify(newItem);
     const sizeInBytes = new Blob([itemString]).size;
-    if (sizeInBytes > 900000) { // 900KB برای امنیت
+    if (sizeInBytes > 99999999) { // 900KB برای امنیت
         alert('⚠️ حجم فایل‌ها (عکس + موسیقی) بیش از حد مجاز است!\n\nلطفاً یک عکس با حجم کمتر انتخاب کنید یا فایل صوتی کوتاه‌تری بذارید.\n\n(دیتابیس ما حداکثر ۱ مگابایت فضا برای هر اثر دارد)');
         return;
     }
