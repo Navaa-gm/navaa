@@ -166,7 +166,6 @@ function initPremiumSection() {
   const modal = document.getElementById('uploadModal'); if (!modal) return;
   const premiumSection = document.getElementById('premiumSection'); if (!premiumSection) return;
 
-  // 🎨 استایل شیشه‌ای + اکسنت قرمز برای فیلد قیمت
   if (!document.getElementById('navaaPremiumStyle')) {
     const s = document.createElement('style');
     s.id = 'navaaPremiumStyle';
@@ -270,6 +269,110 @@ window.toggleItemVisibility = async function(id) {
     window.isUploading = false;
 };
 
+// ❤️ لایک — استفاده مشترک در کارت و مودال
+window.toggleLikeItem = async function(itemId) {
+  let me = currentUser;
+  if (!me || !me.email) {
+    alert('برای لایک باید وارد حساب بشی!');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // همیشه آخرین نسخه از سرور
+  let items = DB.items;
+  if (window.getItemsFromCloud) {
+    try {
+      const cloudItems = await window.getItemsFromCloud();
+      if (Array.isArray(cloudItems) && cloudItems.length) items = cloudItems;
+    } catch (e) {}
+  }
+
+  const idx = items.findIndex(i => String(i.id) === String(itemId));
+  if (idx === -1) {
+    alert('❌ اثر پیدا نشد!');
+    return;
+  }
+
+  const item = { ...items[idx] };
+  item.likedBy = Array.isArray(item.likedBy) ? [...item.likedBy] : [];
+  item.likes = Number(item.likes || 0);
+
+  const likedIdx = item.likedBy.indexOf(me.email);
+  if (likedIdx >= 0) {
+    item.likedBy.splice(likedIdx, 1);
+    item.likes = Math.max(0, item.likes - 1);
+  } else {
+    item.likedBy.push(me.email);
+    item.likes += 1;
+  }
+
+  // آپدیت DB محلی
+  const localIdx = DB.items.findIndex(i => String(i.id) === String(itemId));
+  if (localIdx >= 0) DB.items[localIdx] = item;
+  else DB.items.push(item);
+  save();
+
+  // آپدیت UI فوری (بدون منتظر سرور)
+  renderGallery();
+
+  // آپدیت مودال اگه بازه
+  const modal = document.getElementById('modal');
+  if (modal && !modal.classList.contains('hidden')) {
+    const modalLikes = document.getElementById('modalLikes');
+    const modalLikeBtn = document.getElementById('modalLike');
+    if (modalLikes) modalLikes.textContent = item.likes.toLocaleString('fa-IR');
+    if (modalLikeBtn) {
+      if (item.likedBy.includes(me.email)) modalLikeBtn.classList.add('liked');
+      else modalLikeBtn.classList.remove('liked');
+    }
+  }
+
+  // ذخیره در سرور
+  try {
+    if (window.updateItemInCloud) {
+      await window.updateItemInCloud(item);
+    }
+  } catch (e) {
+    console.error('like sync error:', e);
+  }
+};
+
+// 🔗 اشتراک‌گذاری
+window.shareItemById = async function(itemId) {
+  const item = DB.items.find(i => String(i.id) === String(itemId));
+  if (!item) return alert('❌ اثر پیدا نشد!');
+
+  const url = `${location.origin}${location.pathname}?item=${encodeURIComponent(item.id)}`;
+  const shareData = {
+    title: item.title || 'اثر در Navaa',
+    text: `این اثر رو در Navaa ببین: ${item.title || ''}`,
+    url: url
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+      alert('✅ لینک اثر کپی شد!');
+    } else {
+      prompt('لینک اثر رو کپی کن:', url);
+    }
+  } catch (e) {
+    if (e && e.name !== 'AbortError') {
+      console.error('share error:', e);
+      if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(url);
+          alert('✅ لینک اثر کپی شد!');
+        } catch (e2) {
+          prompt('لینک اثر رو کپی کن:', url);
+        }
+      }
+    }
+  }
+};
+
 function openDetail(id) {
   const item = DB.items.find(p => p.id === id);
   if (!item) return;
@@ -278,8 +381,29 @@ function openDetail(id) {
   document.getElementById('modalTitle').textContent = item.title;
   document.getElementById('modalArtist').textContent = item.artist ? `👤 ${item.artist}` : '';
   document.getElementById('modalDesc').textContent = item.desc || '';
-  document.getElementById('modalTags').innerHTML = (item.tags || []).map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
-  document.getElementById('modalLikes').textContent = item.likes || 0;
+
+  // 🏷️ نمایش تگ‌ها + هشتگ‌ها
+  const tagsList = Array.isArray(item.tags) ? item.tags : [];
+  const hashtagsList = Array.isArray(item.hashtags) ? item.hashtags : [];
+  const allTags = [...new Set([...hashtagsList.map(h => String(h).replace(/^#+/, '')), ...tagsList.map(t => String(t).replace(/^#+/, ''))])];
+  document.getElementById('modalTags').innerHTML = allTags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('');
+
+  // ❤️ تعداد لایک و وضعیت
+  const likesCount = item.likes || 0;
+  const likedByMe = Array.isArray(item.likedBy) && item.likedBy.includes(currentUser.email);
+  document.getElementById('modalLikes').textContent = likesCount.toLocaleString('fa-IR');
+  const modalLikeBtn = document.getElementById('modalLike');
+  if (modalLikeBtn) {
+    if (likedByMe) modalLikeBtn.classList.add('liked');
+    else modalLikeBtn.classList.remove('liked');
+    modalLikeBtn.onclick = () => window.toggleLikeItem(item.id);
+  }
+
+  // 🔗 دکمه شیر
+  const modalShareBtn = document.getElementById('modalShare');
+  if (modalShareBtn) {
+    modalShareBtn.onclick = () => window.shareItemById(item.id);
+  }
 
   const audioWrap = document.getElementById('modalAudioWrap');
   const audioEl = document.getElementById('modalAudio');
@@ -357,25 +481,43 @@ function renderGallery() {
     const card = document.createElement('div'); card.className = 'card';
     const isMyItem = item.uploadedByEmail === currentUser.email;
 
+    // ❤️ وضعیت لایک
+    const likedByMe = Array.isArray(item.likedBy) && item.likedBy.includes(currentUser.email);
+    const likesCount = Number(item.likes || 0);
+
+    // 🏷️ هشتگ‌ها برای نمایش روی کارت
+    const hashtagsList = Array.isArray(item.hashtags) && item.hashtags.length
+      ? item.hashtags
+      : (Array.isArray(item.tags) ? item.tags : []);
+
     card.innerHTML = `
       <img src="${item.image}" alt="" loading="lazy">
       ${item.isPremium ? '<span class="premium-badge">💎 ویژه</span>' : ''}
       ${item.isHidden ? '<span class="hidden-badge">🙈 مخفی</span>' : ''}
       <div class="card-actions">
-        <button class="action-btn like-btn">${item.likedByMe ? '❤️' : '🤍'}</button>
-        ${isMyItem || isAdminUser ? `<button class="action-btn delete-btn">🗑️</button>` : ''}
+        <button class="action-btn like-btn ${likedByMe ? 'liked' : ''}" title="لایک">
+          ${likedByMe ? '❤️' : '🤍'} <span class="like-count">${likesCount.toLocaleString('fa-IR')}</span>
+        </button>
+        ${isMyItem || isAdminUser ? `<button class="action-btn delete-btn" title="حذف">🗑️</button>` : ''}
         ${isMyItem ? `<button class="action-btn visibility-btn" data-id="${item.id}" title="${item.isHidden ? 'نمایش برای همه' : 'مخفی کردن'}">${item.isHidden ? '👁️' : '🙈'}</button>` : ''}
       </div>
       <div class="card-overlay">
         <p class="card-title">${escapeHtml(item.title)}</p>
         <p class="card-artist">👤 ${escapeHtml(item.artist)}</p>
-        <div class="card-tags">${(item.tags || []).map(t => `#${escapeHtml(t)}`).join(' ')}</div>
+        <div class="card-tags">${hashtagsList.slice(0, 5).map(t => `#${escapeHtml(String(t).replace(/^#+/, ''))}`).join(' ')}</div>
       </div>
     `;
 
     card.addEventListener('click', (e) => {
       if (e.target.closest('.action-btn')) return;
       openDetail(item.id);
+    });
+
+    // ❤️ کلیک روی لایک کارت
+    card.querySelector('.like-btn')?.addEventListener('click', async e => {
+      e.stopPropagation();
+      e.preventDefault();
+      await window.toggleLikeItem(item.id);
     });
 
     card.querySelector('.delete-btn')?.addEventListener('click', async e => {
@@ -401,6 +543,16 @@ function renderGallery() {
 
     gallery.appendChild(card);
   });
+}
+
+// 🏷️ نرمال‌سازی هشتگ‌ها (هم‌راستا با gallery.html)
+function normalizeHashtags(raw) {
+  const parts = String(raw || '')
+    .split(/[\s,،]+/)
+    .map(t => t.trim().replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, ''))
+    .filter(Boolean);
+  const unique = [...new Set(parts)];
+  return unique.slice(0, 5).map(t => '#' + t);
 }
 
 function bindUploadModal() {
@@ -441,6 +593,7 @@ function bindUploadModal() {
     if (audioFileBox) audioFileBox.classList.add('hidden');
     compressedImageData = null;
     window.compressedImageData = null;
+    window.__pendingHashtags = null;
   };
 
   uploadBtnHeader?.addEventListener('click', () => modal.classList.remove('hidden'));
@@ -487,7 +640,34 @@ function bindUploadModal() {
     if(!titleValue) return alert('عنوان رو وارد کن!');
 
     const tagsInput = form.tags.value || '';
-    const tagsArray = tagsInput.split(/[,،]/).map(t => t.trim()).filter(Boolean);
+    const tagsArray = tagsInput.split(/[,،]/).map(t => t.trim().replace(/^#+/, '')).filter(Boolean);
+
+    // 🏷️ خواندن هشتگ‌ها از سه منبع (به ترتیب اولویت)
+    let hashtagsArr = [];
+
+    // منبع ۱: فیلد مخفی (gallery.html)
+    const hiddenHashtags = form.querySelector('input[name="hashtags"]');
+    if (hiddenHashtags && hiddenHashtags.value) {
+      try {
+        const parsed = JSON.parse(hiddenHashtags.value);
+        if (Array.isArray(parsed)) hashtagsArr = parsed;
+      } catch (err) {
+        hashtagsArr = String(hiddenHashtags.value).split(/[\s,،]+/);
+      }
+    }
+
+    // منبع ۲: گلوبال (gallery.html)
+    if (!hashtagsArr.length && Array.isArray(window.__pendingHashtags)) {
+      hashtagsArr = window.__pendingHashtags;
+    }
+
+    // منبع ۳: از روی تگ‌ها اگه هیچی نبود (fallback)
+    if (!hashtagsArr.length) {
+      hashtagsArr = tagsArray;
+    }
+
+    // نرمال‌سازی نهایی
+    hashtagsArr = normalizeHashtags(hashtagsArr.join(' '));
 
     const isPremium = window.__navaaPremium?.isPremium === true;
     const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
@@ -495,7 +675,6 @@ function bindUploadModal() {
     const finish = async (finalImage, audioData) => {
       const newItem = {
           id: Date.now(),
-          // 🎨 fallback با گرادیان فیروزه‌ای → قرمز
           image: finalImage || makeSVG(THEME.turquoise, THEME.red, '🎵', 'صوتی'),
           audio: audioData || null,
           title: titleValue,
@@ -503,11 +682,13 @@ function bindUploadModal() {
           desc: form.desc.value.trim(),
           category: form.category.value,
           tags: tagsArray,
+          hashtags: hashtagsArr,   // ✅ این خط کلیدی
           isPremium: isPremium,
           price: itemPrice,
           time: Date.now(),
           uploadedByEmail: currentUser.email,
           likes: 0,
+          likedBy: [],
           isHidden: false
       };
 
@@ -533,6 +714,7 @@ function bindUploadModal() {
       }
 
       window.isUploading = false;
+      window.__pendingHashtags = null;
 
       const reward = await giveUploadReward(currentUser.email);
 
@@ -577,10 +759,10 @@ function renderBottomNav() {
   `;
 }
 
-// ✅ ترتیب صحیح اجرا (renderBottomNav قبل از bindUploadModal)
+// ✅ ترتیب صحیح اجرا
 setupUserHeader();
 initPremiumSection();
 renderGallery();
-renderBottomNav();     // ← اول nav ساخته می‌شه
-bindUploadModal();     // ← بعد دکمه‌های nav بایند می‌شن
+renderBottomNav();
+bindUploadModal();
 bindDetailModal();
