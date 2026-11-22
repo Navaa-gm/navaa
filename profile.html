@@ -1367,7 +1367,7 @@
     </div>
   </div>
 
-  <!-- ✏️ مودال ویرایش اثر -->
+  <!-- ✏️ مودال ویرایش اثر (با قابلیت آپلود همزمان عکس و صدا) -->
   <div id="editItemModal" class="modal hidden">
     <div class="modal-content" style="max-width: 500px; padding: 1.5rem;">
       <button class="modal-close" onclick="document.getElementById('editItemModal').classList.add('hidden')">✕</button>
@@ -1393,6 +1393,13 @@
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر عکس (اختیاری)</label>
           <input type="file" id="editImage" accept="image/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
+        </div>
+
+        <!-- 🔥 فیلد آپلود صدا -->
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر فایل صوتی (اختیاری)</label>
+          <input type="file" id="editAudio" accept="audio/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
+          <small id="editAudioHint" style="color: #ffc93c; display: none; margin-top: 0.3rem; font-size: 0.7rem;">فایل صوتی فعلی موجود است. برای تغییر، فایل جدید انتخاب کنید.</small>
         </div>
 
         <button type="submit" style="width: 100%; padding: 1rem; border-radius: 12px; background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; font-weight: 800; border: none; cursor: pointer;">💾 ذخیره تغییرات</button>
@@ -1640,7 +1647,7 @@
     });
   }
 
-  // ✏️ ویرایش اثر
+  // ✏️ ویرایش اثر (با پشتیبانی از صدا)
   window.openEditItemModal = function(id) {
     const items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
     const item = items.find(i => i.id === id);
@@ -1651,6 +1658,14 @@
     document.getElementById('editDesc').value = item.desc || '';
     document.getElementById('editHashtags').value = (item.hashtags || []).join(' ');
     document.getElementById('editImage').value = '';
+    document.getElementById('editAudio').value = '';
+    
+    const audioHint = document.getElementById('editAudioHint');
+    if (item.audio) {
+       audioHint.style.display = 'block';
+    } else {
+       audioHint.style.display = 'none';
+    }
     
     document.getElementById('editItemModal').classList.remove('hidden');
   };
@@ -1669,34 +1684,52 @@
     items[idx].hashtags = hashtags;
 
     const newImageFile = document.getElementById('editImage').files[0];
-    if (newImageFile) {
-       const reader = new FileReader();
-       reader.onload = async (ev) => {
-         const img = new Image();
-         img.onload = async () => {
-            const canvas = document.createElement('canvas');
-            let w = img.width, h = img.height;
-            if (w > 800) { h = Math.round((h * 800) / w); w = 800; }
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            items[idx].image = canvas.toDataURL('image/jpeg', 0.7);
-            
-            localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-            if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
-            
-            alert('✅ اثر ویرایش شد!');
-            document.getElementById('editItemModal').classList.add('hidden');
-            renderMyItems();
-         };
-         img.src = ev.target.result;
-       };
-       reader.readAsDataURL(newImageFile);
-    } else {
+    const newAudioFile = document.getElementById('editAudio').files[0];
+
+    const finishEdit = async () => {
        localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
        if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
        alert('✅ اثر ویرایش شد!');
        document.getElementById('editItemModal').classList.add('hidden');
        renderMyItems();
+    };
+
+    if (newImageFile || newAudioFile) {
+       let imageLoaded = !newImageFile;
+       let audioLoaded = !newAudioFile;
+
+       const checkFinish = () => { if (imageLoaded && audioLoaded) finishEdit(); };
+
+       if (newImageFile) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+             const img = new Image();
+             img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > 800) { h = Math.round((h * 800) / w); w = 800; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                items[idx].image = canvas.toDataURL('image/jpeg', 0.7);
+                imageLoaded = true;
+                checkFinish();
+             };
+             img.src = ev.target.result;
+          };
+          reader.readAsDataURL(newImageFile);
+       }
+
+       if (newAudioFile) {
+          const audioReader = new FileReader();
+          audioReader.onload = (ev) => {
+             items[idx].audio = ev.target.result;
+             audioLoaded = true;
+             checkFinish();
+          };
+          audioReader.readAsDataURL(newAudioFile);
+       }
+    } else {
+       finishEdit();
     }
   });
 
