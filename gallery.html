@@ -243,7 +243,6 @@
       box-shadow: 0 -10px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.15), 0 -2px 20px rgba(0,240,212,0.2) !important;
     }
 
-    /* خط رنگی بالای نوار (ضخیم‌تر و درخشان‌تر) */
     .bottom-nav::before {
       content: '';
       position: absolute; top: -2px; left: 0; right: 0;
@@ -278,7 +277,6 @@
     }
     .nav-pill-icon { font-size: 1rem !important; }
 
-    /* دکمه آپلود در نوار پایین */
     .upload-pill {
       background: linear-gradient(135deg, #00f0d4, #38bdf8) !important;
       color: #001a1c !important;
@@ -290,7 +288,6 @@
       filter: brightness(1.1);
     }
 
-    /* دایره پروفایل وسط نوار */
     .nav-center-profile {
       position: relative !important;
       width: 58px !important;
@@ -425,7 +422,7 @@
     }
 
     /* ==========================================
-       🔥 پنل آپلود اثر (کاملا بازطراحی شده)
+       🔥 پنل آپلود اثر
        ========================================== */
     .upload-section {
       background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)) !important;
@@ -474,7 +471,6 @@
       transform: translateY(-2px);
     }
 
-    /* باکس فایل صوتی (طلایی/قرمز) */
     .upload-file-audio {
       background: linear-gradient(135deg, rgba(255,201,60,0.05), rgba(255,46,77,0.02)) !important;
       border-color: rgba(255,201,60,0.4) !important;
@@ -511,7 +507,6 @@
     }
     .upload-field .req { color: var(--red); }
 
-    /* استایل اینپوت‌ها و سلکت */
     .upload-field input,
     .upload-field textarea,
     .upload-field select {
@@ -539,13 +534,43 @@
       box-shadow: 0 0 0 3px rgba(255,46,77,0.15), inset 0 2px 5px rgba(0,0,0,0.3) !important;
     }
 
-    #premiumSection {
-      background: rgba(255, 201, 60, 0.03) !important;
-      backdrop-filter: blur(5px) !important;
-      border: 1.5px dashed rgba(255, 201, 60, 0.3) !important;
-      border-radius: 14px;
-      padding: 1rem;
+    /* 🏷️ چیپ‌های هشتگ */
+    .hashtag-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+      min-height: 1rem;
     }
+    .hashtag-chip {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(0,240,212,0.1);
+      border: 1px solid rgba(0,240,212,0.3);
+      color: #00f0d4;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .hashtag-chip.invalid {
+      background: rgba(255,46,77,0.1);
+      border-color: rgba(255,46,77,0.4);
+      color: var(--red);
+    }
+    .hashtag-counter {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: #a0a0a0;
+      margin-right: 0.4rem;
+    }
+    .hashtag-counter.ok { background: rgba(0,240,212,0.15); color: #00f0d4; }
+    .hashtag-counter.warn { background: rgba(255,201,60,0.15); color: #ffc93c; }
+    .hashtag-counter.error { background: rgba(255,46,77,0.15); color: var(--red); }
 
     /* 💎 اشتراک */
     .sub-content { background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important; }
@@ -619,7 +644,6 @@
     .plan-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.42); }
     .plan-btn:hover::before { transform: translateX(100%); }
 
-    /* 🔘 دکمهٔ انصراف با اکسنت قرمز */
     .btn-cancel {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(10px);
@@ -647,7 +671,6 @@
       transform: translateY(-1px);
     }
 
-    /* 🚀 دکمهٔ انتشار */
     .btn-publish {
       width: 100%;
       padding: 1rem;
@@ -675,7 +698,6 @@
     }
     .btn-publish-icon { font-size: 1.05rem; }
 
-    /* 🧩 دکمهٔ آپلود هدر */
     #uploadBtn {
       padding: 0.55rem 1.05rem !important;
       border-radius: 11px !important;
@@ -695,7 +717,7 @@
       box-shadow: 0 10px 28px rgba(0,240,212,0.42), 0 0 26px rgba(255,46,77,0.15);
     }
 
-    /* 🔥 دکمهٔ لایک در مودال */
+    /* 🔥 دکمهٔ لایک و شیر */
     .btn-like {
       display: inline-flex;
       align-items: center;
@@ -715,6 +737,13 @@
       border-color: rgba(255,46,77,0.5);
       color: var(--red);
       box-shadow: 0 0 22px rgba(255,46,77,0.2);
+    }
+    .btn-like:disabled { opacity: 0.6; cursor: wait; }
+    .btn-like.liked {
+      background: rgba(255,46,77,0.18);
+      border-color: rgba(255,46,77,0.55);
+      color: var(--red);
+      box-shadow: 0 0 22px rgba(255,46,77,0.25);
     }
 
     /* 🔥 موبایل */
@@ -807,9 +836,10 @@
         <p class="modal-artist" id="modalArtist"></p>
         <p id="modalDesc"></p>
         <div class="modal-tags" id="modalTags"></div>
-        <div class="modal-actions" style="margin-top:1.5rem;">
+        <div class="modal-actions" style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:0.5rem;">
           <button id="modalDownload" class="btn-primary">⬇️ دانلود</button>
           <button id="modalLike" class="btn-like">❤️ <span id="modalLikes">0</span></button>
+          <button id="modalShare" class="btn-like">🔗 اشتراک‌گذاری</button>
           <button id="modalDelete" class="btn-danger hidden" style="display:none;">🗑️ حذف اثر</button>
         </div>
       </div>
@@ -894,6 +924,26 @@
           <div class="upload-field">
             <label>تگ‌ها</label>
             <input type="text" name="tags" placeholder="پاپ, جدید, عاشقانه (با کاما جدا کن)">
+          </div>
+
+          <!-- 🏷️ فیلد ۵ هشتگ اجباری -->
+          <div class="upload-field">
+            <label>
+              هشتگ‌ها <span class="req">*</span>
+              <span id="hashtagCounter" class="hashtag-counter" style="margin-right:0.4rem;">۰/۵</span>
+              <small style="color:#777; font-size:0.68rem; font-weight:400;">(دقیقاً ۵ عدد)</small>
+            </label>
+            <input
+              type="text"
+              name="hashtags"
+              id="hashtagsInput"
+              placeholder="مثلاً: هنر موسیقی عکاسی طراحی خلاقیت"
+              autocomplete="off"
+            >
+            <small style="display:block; color:#666; font-size:0.7rem; margin-top:0.35rem;">
+              بین هشتگ‌ها فاصله یا کاما (,) بذار. می‌تونی # هم اولش بذاری.
+            </small>
+            <div id="hashtagsPreview" class="hashtag-preview"></div>
           </div>
         </div>
 
@@ -1023,9 +1073,20 @@
       const previewImg = document.getElementById('preview');
       if (previewImg) previewImg.src = '';
 
+      const hashtagsInput = document.getElementById('hashtagsInput');
+      if (hashtagsInput) hashtagsInput.value = '';
+      const hashtagsPreview = document.getElementById('hashtagsPreview');
+      if (hashtagsPreview) hashtagsPreview.innerHTML = '';
+      const counter = document.getElementById('hashtagCounter');
+      if (counter) {
+        counter.textContent = '۰/۵';
+        counter.className = 'hashtag-counter';
+      }
+
       window.compressedImageData = null;
       window.selectedAudioFile = null;
       window.selectedAudioData = null;
+      window.__pendingHashtags = null;
     };
 
     window.navaaOpenSub = function () {
@@ -1042,6 +1103,17 @@
       const m = document.getElementById('modal');
       if (m) m.classList.add('hidden');
     };
+
+    // 🏷️ نرمال‌سازی هشتگ‌ها
+    function normalizeHashtags(raw) {
+      const parts = String(raw || '')
+        .split(/[\s,،]+/)
+        .map(t => t.trim().replace(/^#+/, '').replace(/[^\p{L}\p{N}_]/gu, ''))
+        .filter(Boolean);
+      const unique = [...new Set(parts)];
+      return unique.slice(0, 5).map(t => '#' + t);
+    }
+    window.__normalizeHashtags = normalizeHashtags;
   </script>
 
   <script>
@@ -1109,6 +1181,258 @@
         }
       }, 300);
     });
+  </script>
+
+  <!-- 🏷️ هشتگ‌ها: پیش‌نمایش و اعتبارسنجی زنده -->
+  <script>
+    (function () {
+      const input = document.getElementById('hashtagsInput');
+      const preview = document.getElementById('hashtagsPreview');
+      const counter = document.getElementById('hashtagCounter');
+
+      function renderPreview() {
+        if (!input) return;
+        const hashtags = window.__normalizeHashtags(input.value);
+        const totalRaw = String(input.value || '')
+          .split(/[\s,،]+/)
+          .map(t => t.trim().replace(/^#+/, ''))
+          .filter(Boolean).length;
+
+        if (preview) {
+          preview.innerHTML = hashtags.map(h =>
+            `<span class="hashtag-chip">${h}</span>`
+          ).join('');
+          if (hashtags.length === 0) {
+            preview.innerHTML = '<span style="color:#666;font-size:0.72rem;">هنوز هشتگی وارد نشده</span>';
+          }
+        }
+
+        if (counter) {
+          counter.textContent = hashtags.length.toLocaleString('fa-IR') + '/۵';
+          counter.className = 'hashtag-counter';
+          if (hashtags.length === 5 && totalRaw === 5) counter.classList.add('ok');
+          else if (hashtags.length < 5) counter.classList.add('warn');
+          else counter.classList.add('error');
+        }
+      }
+
+      if (input) {
+        input.addEventListener('input', renderPreview);
+        renderPreview();
+      }
+    })();
+  </script>
+
+  <!-- ❤️ لایک + 🔗 اشتراک‌گذاری در مودال -->
+  <script>
+    (function () {
+      // پیدا کردن آیتم فعلی مودال بر اساس تصویر / عنوان / هنرمند
+      function getCurrentModalItem() {
+        const items = (window.DB && Array.isArray(window.DB.items)) ? window.DB.items : [];
+        if (!items.length) return null;
+
+        const imgSrc = document.getElementById('modalImg')?.src || '';
+        const title = (document.getElementById('modalTitle')?.textContent || '').trim();
+        const artist = (document.getElementById('modalArtist')?.textContent || '').trim();
+
+        if (imgSrc) {
+          const byImg = items.find(i => i.image === imgSrc);
+          if (byImg) return byImg;
+        }
+        if (title) {
+          const matches = items.filter(i => (i.title || '').trim() === title);
+          if (matches.length === 1) return matches[0];
+          if (matches.length > 1 && artist) {
+            const byArtist = matches.find(i => (i.artist || '').trim() === artist);
+            if (byArtist) return byArtist;
+          }
+        }
+        return null;
+      }
+
+      function updateModalLikeState() {
+        const item = getCurrentModalItem();
+        if (!item) return;
+
+        let me = null;
+        try { me = JSON.parse(localStorage.getItem('navaa_current_user')); } catch (e) {}
+
+        const likeBtn = document.getElementById('modalLike');
+        const likesSpan = document.getElementById('modalLikes');
+
+        if (likesSpan) likesSpan.textContent = (item.likes || 0).toLocaleString('fa-IR');
+
+        if (likeBtn) {
+          const likedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
+          if (me && likedBy.includes(me.email)) {
+            likeBtn.classList.add('liked');
+          } else {
+            likeBtn.classList.remove('liked');
+          }
+        }
+      }
+
+      // observer روی تغییر تصویر و عنوان مودال
+      const imgEl = document.getElementById('modalImg');
+      const titleEl = document.getElementById('modalTitle');
+      if (imgEl) {
+        new MutationObserver(updateModalLikeState).observe(imgEl, { attributes: true, attributeFilter: ['src'] });
+      }
+      if (titleEl) {
+        new MutationObserver(updateModalLikeState).observe(titleEl, { childList: true, characterData: true, subtree: true });
+      }
+
+      // ✅ لایک
+      document.getElementById('modalLike')?.addEventListener('click', async function () {
+        let me = null;
+        try { me = JSON.parse(localStorage.getItem('navaa_current_user')); } catch (e) {}
+
+        if (!me || !me.email) {
+          alert('برای لایک باید وارد حساب بشی!');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const item = getCurrentModalItem();
+        if (!item) {
+          alert('❌ اثر پیدا نشد! لطفاً مودال رو ببند و دوباره باز کن.');
+          return;
+        }
+
+        const btn = document.getElementById('modalLike');
+        if (btn) btn.disabled = true;
+
+        try {
+          item.likedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
+          const idx = item.likedBy.indexOf(me.email);
+
+          if (idx >= 0) {
+            item.likedBy.splice(idx, 1);
+            item.likes = Math.max(0, (item.likes || 0) - 1);
+          } else {
+            item.likedBy.push(me.email);
+            item.likes = (item.likes || 0) + 1;
+          }
+
+          // آپدیت UI فوری
+          const likesSpan = document.getElementById('modalLikes');
+          if (likesSpan) likesSpan.textContent = item.likes.toLocaleString('fa-IR');
+          if (btn) {
+            if (item.likedBy.includes(me.email)) btn.classList.add('liked');
+            else btn.classList.remove('liked');
+          }
+
+          // ذخیره در Firebase
+          if (typeof window.updateItemInCloud === 'function') {
+            await window.updateItemInCloud(item);
+          }
+
+          // آپدیت localStorage (برای fallback)
+          try {
+            const stored = JSON.parse(localStorage.getItem('navaa_items_v3') || '[]');
+            const idx2 = stored.findIndex(i => String(i.id) === String(item.id));
+            if (idx2 >= 0) {
+              stored[idx2] = item;
+              localStorage.setItem('navaa_items_v3', JSON.stringify(stored));
+            }
+          } catch (e) {}
+
+          // رفرش گالری
+          if (typeof window.renderGallery === 'function') {
+            try { window.renderGallery(); } catch (e) {}
+          }
+        } catch (e) {
+          console.error('like error:', e);
+          alert('❌ خطا در ثبت لایک! لطفاً دوباره تلاش کن.');
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      });
+
+      // 🔗 اشتراک‌گذاری
+      document.getElementById('modalShare')?.addEventListener('click', async function () {
+        const item = getCurrentModalItem();
+        if (!item) {
+          alert('❌ اثر پیدا نشد!');
+          return;
+        }
+
+        const url = `${location.origin}${location.pathname}?item=${encodeURIComponent(item.id)}`;
+        const shareData = {
+          title: item.title || 'اثر در Navaa',
+          text: `این اثر رو در Navaa ببین: ${item.title || ''}`,
+          url: url
+        };
+
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+          } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(url);
+            alert('✅ لینک اثر کپی شد!');
+          } else {
+            prompt('لینک اثر رو کپی کن:', url);
+          }
+        } catch (e) {
+          if (e && e.name !== 'AbortError') {
+            console.error('share error:', e);
+            if (navigator.clipboard) {
+              try {
+                await navigator.clipboard.writeText(url);
+                alert('✅ لینک اثر کپی شد!');
+              } catch (e2) {
+                prompt('لینک اثر رو کپی کن:', url);
+              }
+            }
+          }
+        }
+      });
+
+      // 🔥 اعتبارسنجی ۵ هشتگ قبل از ثبت فرم (capture)
+      const uploadForm = document.getElementById('uploadForm');
+      if (uploadForm) {
+        uploadForm.addEventListener('submit', function (e) {
+          const input = document.getElementById('hashtagsInput');
+          const raw = input?.value || '';
+          const hashtags = window.__normalizeHashtags(raw);
+
+          if (hashtags.length !== 5) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            alert('❌ باید دقیقاً ۵ هشتگ وارد کنی!\nالان ' + hashtags.length + ' تا وارد کردی.');
+            if (input) {
+              input.focus();
+              input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+          }
+
+          // ذخیره هشتگ‌ها به‌صورت گلوبال (برای app.js)
+          window.__pendingHashtags = hashtags;
+
+          // فیلد مخفی برای FormData
+          let hidden = document.getElementById('__hashtags_hidden');
+          if (!hidden) {
+            hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'hashtags';
+            hidden.id = '__hashtags_hidden';
+            uploadForm.appendChild(hidden);
+          }
+          hidden.value = JSON.stringify(hashtags);
+
+          // سازگاری: هشتگ‌ها به تگ‌ها هم اضافه بشن (در صورت استفاده app.js از tags)
+          const tagsInput = uploadForm.querySelector('input[name="tags"]');
+          if (tagsInput) {
+            const existing = (tagsInput.value || '').trim();
+            const hashtagStr = hashtags.join(' ');
+            if (!existing.includes(hashtags[0])) {
+              tagsInput.value = existing ? existing + ', ' + hashtagStr : hashtagStr;
+            }
+          }
+        }, true);
+      }
+    })();
   </script>
 
   <script type="module">
