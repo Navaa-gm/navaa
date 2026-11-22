@@ -932,9 +932,19 @@
       box-shadow: 0 0 20px rgba(255,46,77,0.15);
     }
 
-    /* 💳 استایل جدید کارت بانکی افقی */
+    /* 🔥 استایل اختصاصی برای شیشه‌ای کردن مودال پرداخت */
+    #paymentModal .modal-content {
+      background: rgba(20, 24, 28, 0.4) !important; 
+      backdrop-filter: blur(40px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.05) !important;
+    }
+
+    /* 💳 استایل کارت بانکی افقی */
     .payment-card-display {
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 16px;
       padding: 1.5rem 1rem;
@@ -947,19 +957,26 @@
     .payment-card-display::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #00f0d4, #ffc93c, transparent);
     }
+    
+    /* فیکس کردن حالت افقی شماره کارت */
     .card-number {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 900;
       direction: ltr;
       color: #ffc93c;
-      letter-spacing: 3px;
+      letter-spacing: 1px;
+      white-space: nowrap; /* جلوگیری از شکستن خط */
       margin: 0.5rem 0 0.8rem;
       text-shadow: 0 0 15px rgba(255,201,60,0.4);
-      font-family: monospace;
+      font-family: monospace, inherit;
       cursor: pointer;
       transition: 0.2s;
     }
     .card-number:hover { color: #fff; text-shadow: 0 0 20px rgba(0,240,212,0.6); }
+    
+    @media (max-width: 480px) {
+      .card-number { font-size: 1.1rem; letter-spacing: 0px; } /* سایز کوچکتر برای موبایل */
+    }
 
     /* 💸 مودال انتقال وجه */
     .transfer-modal-wrap {
@@ -1148,7 +1165,6 @@
       .profile-card { padding: 1.8rem 1.1rem 1.5rem; border-radius: 24px; }
       .profile-tab { font-size: 0.75rem; padding: 0.55rem 0.3rem; }
       .plans { padding: 0 1rem 1rem; }
-      .card-number { font-size: 1.2rem; letter-spacing: 2px; }
     }
   </style>
 </head>
@@ -1337,17 +1353,18 @@
     </div>
   </div>
 
-  <!-- 💳 مودال درگاه پرداخت (اصلاح شده با کارت افقی) -->
+  <!-- 💳 مودال درگاه پرداخت (شیشه‌ای + شماره کارت افقی) -->
   <div id="paymentModal" class="modal hidden">
     <div class="modal-content" style="max-width: 450px;">
       <button class="modal-close" onclick="document.getElementById('paymentModal').classList.add('hidden')">✕</button>
+      
       <div style="text-align: center; padding-top: 2rem;">
-        <div style="font-size: 2.5rem;">💳</div>
+        <div style="font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(0,240,212,0.5));">💳</div>
         <h2 style="color: #00f0d4; margin: 0.5rem 0;">درگاه پرداخت</h2>
-        <p style="color: #aaa; margin-bottom: 1rem;">مبلغ قابل پرداخت: <strong id="payAmount" style="color: #fff; font-size: 1.2rem;"></strong></p>
+        <p style="color: #aaa; margin-bottom: 1.5rem;">مبلغ قابل پرداخت: <br><strong id="payAmount" style="color: #fff; font-size: 1.4rem; font-weight: 900;"></strong></p>
       </div>
 
-      <!-- 🔥 کارت بانکی افقی زیر مبلغ -->
+      <!-- کارت بانکی افقی زیر مبلغ -->
       <div class="payment-card-display">
         <p style="color: #ccc; font-size: 0.85rem; margin: 0 0 0.5rem;">شماره کارت جهت واریز (کلیک = کپی)</p>
         <div class="card-number" onclick="navigator.clipboard.writeText('6037997519665161'); alert('✅ شماره کارت کپی شد!');" title="برای کپی کلیک کنید">
@@ -1359,10 +1376,10 @@
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
         <div class="upload-field" style="text-align: right;">
           <label style="color: #ccc; font-size: 0.85rem;">شماره پیگیری تراکنش <span style="color:var(--red);">*</span></label>
-          <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789" style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px; width: 100%; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none;">
+          <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789" style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px; width: 100%; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none; margin-top: 0.5rem;">
         </div>
 
-        <button id="submitPaymentBtn" style="width: 100%; padding: 1rem; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 1rem;">✅ تایید و ارسال رسید</button>
+        <button id="submitPaymentBtn" style="width: 100%; padding: 1rem; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 1.5rem;">✅ تایید و ارسال رسید</button>
       </div>
     </div>
   </div>
@@ -1395,7 +1412,7 @@
           <input type="file" id="editImage" accept="image/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
         </div>
 
-        <!-- 🔥 فیلد آپلود صدا -->
+        <!-- فیلد آپلود صدا -->
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر فایل صوتی (اختیاری)</label>
           <input type="file" id="editAudio" accept="audio/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
