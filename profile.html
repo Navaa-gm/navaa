@@ -803,13 +803,10 @@
     </div>
   </div>
 
-  <!-- =============================================================
-       اسکریپت اصلی (UI) — آپلودها به Firebase Storage منتقل شدند
-       ============================================================= -->
   <script>
   const CURRENT_KEY = 'navaa_current_user';
   const USERS_KEY = 'navaa_users';
-  const ITEMS_KEY = 'navaa_items_v3';   // همان کش مشترک با gallery.html
+  const ITEMS_KEY = 'navaa_items_v3';   
   const PURCHASES_KEY = 'navaa_purchases';
   const WITHDRAW_KEY = 'navaa_withdraw_requests';
   const TRANSFERS_KEY = 'navaa_transfers';
@@ -975,7 +972,6 @@
   avatarEditBtn.addEventListener('click', e => { e.stopPropagation(); avatarInput.click(); });
   avatarBox.addEventListener('click', () => avatarInput.click());
 
-  // 🔥 آواتار → Firebase Storage (نه Base64)
   avatarInput.addEventListener('change', async e => {
     if (!user) return;
     const file = e.target.files[0];
@@ -1020,7 +1016,6 @@
     }
   });
 
-  /* ------------------ آیتم‌های من ------------------ */
   function getItemsCache() {
     try { return JSON.parse(localStorage.getItem(ITEMS_KEY)) || []; } catch (e) { return []; }
   }
@@ -1029,7 +1024,6 @@
     if (!user) return;
     const items = getItemsCache();
 
-    // فیلتر: هم با uploadedByEmail و هم با email قدیمی سازگار
     const myItems = items
       .filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email || i.email === user.email)
       .sort((a, b) => b.time - a.time);
@@ -1076,7 +1070,6 @@
   }
   window.renderMyItems = renderMyItems;
 
-  // ✏️ باز کردن مودال ویرایش
   window.openEditItemModal = function(id) {
     const items = getItemsCache();
     const item = items.find(i => String(i.id) === String(id));
@@ -1095,7 +1088,6 @@
     document.getElementById('editItemModal').classList.remove('hidden');
   };
 
-  // ✏️ ارسال فرم ویرایش → آپلود فایل‌ها به Storage + updateItemInCloud
   document.getElementById('editItemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!user) return;
@@ -1131,10 +1123,8 @@
         delete items[idx].audioData;
       }
 
-      // ذخیره در کش محلی
       localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
 
-      // ذخیره در Firestore (کالکشن navaa_items)
       if (window.updateItemInCloud) await window.updateItemInCloud(items[idx]);
 
       alert('✅ اثر ویرایش شد!');
@@ -1149,7 +1139,6 @@
     }
   });
 
-  // 🙈 مخفی/نمایش → updateItemInCloud
   async function toggleMyItemVisibility(id) {
     if (!user) return;
     let items = getItemsCache();
@@ -1167,7 +1156,6 @@
     renderMyItems();
   }
 
-  // 🗑️ حذف → deleteItemFromCloud
   async function deleteMyItem(id) {
     if (!user) return;
     let items = getItemsCache();
@@ -1186,7 +1174,6 @@
     renderMyItems(); renderWallet();
   }
 
-  /* ------------------ اشتراک / کیف پول ------------------ */
   function renderSubscriptions() {
     if (!user) return;
     const list = document.getElementById('subscriptionsList');
@@ -1387,14 +1374,12 @@
 
     const email = user.email;
 
-    // حذف آثار کاربر از Firestore
     const items = getItemsCache();
     const mine = items.filter(i => i.uploadedByEmail === email || i.email === email);
     for (const it of mine) {
       try { if (window.deleteItemFromCloud) await window.deleteItemFromCloud(it.id); } catch (e) {}
     }
 
-    // حذف کاربر
     users = users.filter(u => u.email !== email);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
     localStorage.removeItem(CURRENT_KEY);
@@ -1406,7 +1391,6 @@
     window.location.href = 'home.html';
   });
 
-  // به‌روزرسانی از Cloud (توسط ماژول فراخوانی می‌شود)
   window.updateUserDataFromCloud = function(cloudUsers) {
     users = cloudUsers;
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -1422,13 +1406,10 @@
   renderInfo(); renderMyItems(); renderSubscriptions(); renderWallet(); renderTransfers(); renderPlanLimits(); renderBottomNav();
   </script>
 
-  <!-- =============================================================
-       Firebase Module — Firestore + Storage
-       ============================================================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -1446,21 +1427,40 @@
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
     const itemsCollection = collection(db, 'navaa_items');
 
-    /* 🌟 آپلود فایل به Firebase Storage */
-    window.uploadFileToStorage = async function (file, folder) {
-      try {
-        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-        const uniqueName = `${folder}/${Date.now()}_${safeName}`;
-        const storageRef = ref(storage, uniqueName);
-        await uploadBytes(storageRef, file);
-        return await getDownloadURL(storageRef);
-      } catch (error) {
-        console.error('خطا در آپلود به Storage:', error);
-        throw new Error('آپلود به سرور ابری با خطا مواجه شد (احتمالاً Storage فعال نیست).');
-      }
+    window.uploadFileToStorage = function (file, folder) {
+      return new Promise((resolve, reject) => {
+        try {
+          const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+          const uniqueName = `${folder}/${Date.now()}_${safeName}`;
+          const storageRef = ref(storage, uniqueName);
+
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`در حال آپلود ${folder}: ${progress.toFixed(0)}%`);
+            }, 
+            (error) => {
+              console.error('خطای دقیق Storage:', error.code, error.message);
+              reject(new Error(`آپلود ناموفق بود (${error.code}). لطفاً اینترنت خود را بررسی کنید.`));
+            }, 
+            async () => {
+              try {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(downloadURL);
+              } catch (err) {
+                reject(err);
+              }
+            }
+          );
+        } catch (error) {
+          console.error('خطای غیرمنتظره:', error);
+          reject(new Error('خطا در فرآیند آپلود.'));
+        }
+      });
     };
 
-    /* ---------- Users ---------- */
     window.saveUsersToCloud = async function (usersArray) {
       const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
       try { await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() }); }
@@ -1474,7 +1474,6 @@
       return [];
     };
 
-    /* ---------- Items (collection-based) ---------- */
     window.updateItemInCloud = async function (item) {
       try { await setDoc(doc(db, 'navaa_items', item.id.toString()), item); }
       catch (e) { console.error('updateItemInCloud:', e); }
@@ -1488,7 +1487,6 @@
       catch (e) { console.error('addItemToCloud:', e); return false; }
     };
 
-    /* ---------- Initial users load ---------- */
     async function loadInitialUsers() {
       try {
         const snap = await getDoc(docRefUsers);
@@ -1509,7 +1507,6 @@
       }
     });
 
-    /* ---------- Items snapshot (همگام با gallery.html) ---------- */
     onSnapshot(itemsCollection, (snapshot) => {
       const cloudItems = [];
       snapshot.forEach(d => cloudItems.push(d.data()));
@@ -1530,4 +1527,4 @@
   </script>
 
 </body>
-</html>
+</html>س
