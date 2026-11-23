@@ -69,7 +69,6 @@ async function giveUploadReward(uploaderEmail) {
 
 function checkUploadPermission(fileSize) {
   if (currentUser.email === ADMIN_EMAIL || currentUser.role === 'admin' || hasSubscription) return { allowed: true };
-
   const currentMonth = new Date().getMonth();
   if (currentUser.lastUploadMonth !== currentMonth) {
     currentUser.monthlyUploads = 0;
@@ -77,7 +76,6 @@ function checkUploadPermission(fileSize) {
     localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
     syncCurrentUserToArray();
   }
-
   if ((currentUser.monthlyUploads || 0) >= 50) {
     return { allowed: false, reason: '❌ سهمیه ۵۰ فایل رایگان ماهانه شما تمام شده!\nبرای آپلود بیشتر، لطفاً اشتراک تهیه کنید.' };
   }
@@ -91,31 +89,6 @@ const SUBCATS = {
 };
 
 function setupUserHeader() { const greeting = document.getElementById('userGreeting'); if (greeting) greeting.textContent = currentUser.fullname; }
-
-// فشرده‌سازی بهینه‌تر برای جا شدن صدا در فایربیس
-function compressImage(file, maxWidth = 600, quality = 0.6) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
-        const canvas = document.createElement('canvas');
-        canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.onerror = reject; img.src = e.target.result;
-    };
-    reader.onerror = reject; reader.readAsDataURL(file);
-  });
-}
-
-function makeSVG(color1, color2, emoji, label) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${color1}"/><stop offset="100%" stop-color="${color2}"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="45%" font-size="180" text-anchor="middle" dominant-baseline="middle">${emoji}</text><text x="50%" y="75%" font-size="34" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Vazirmatn,sans-serif" font-weight="700">${label}</text></svg>`;
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-}
 
 function initPremiumSection() {
   const modal = document.getElementById('uploadModal'); if (!modal) return;
@@ -167,36 +140,23 @@ window.toggleItemVisibility = async function(id) {
 window.toggleLikeItem = async function(itemId) {
   let me = currentUser;
   if (!me || !me.email) return alert('برای لایک باید وارد حساب بشی!');
-
   let items = DB.items;
   if (window.getItemsFromCloud) {
-    try {
-      const cloudItems = await window.getItemsFromCloud();
-      if (Array.isArray(cloudItems) && cloudItems.length) items = cloudItems;
-    } catch (e) {}
+    try { const cloudItems = await window.getItemsFromCloud(); if (Array.isArray(cloudItems) && cloudItems.length) items = cloudItems; } catch (e) {}
   }
-
   const idx = items.findIndex(i => String(i.id) === String(itemId));
   if (idx === -1) return alert('❌ اثر پیدا نشد!');
 
   const item = { ...items[idx] };
   item.likedBy = Array.isArray(item.likedBy) ? [...item.likedBy] : [];
   item.likes = Number(item.likes || 0);
-
   const likedIdx = item.likedBy.indexOf(me.email);
-  if (likedIdx >= 0) {
-    item.likedBy.splice(likedIdx, 1);
-    item.likes = Math.max(0, item.likes - 1);
-  } else {
-    item.likedBy.push(me.email);
-    item.likes += 1;
-  }
+  if (likedIdx >= 0) { item.likedBy.splice(likedIdx, 1); item.likes = Math.max(0, item.likes - 1); }
+  else { item.likedBy.push(me.email); item.likes += 1; }
 
   const localIdx = DB.items.findIndex(i => String(i.id) === String(itemId));
   if (localIdx >= 0) DB.items[localIdx] = item;
-  save();
-  renderGallery();
-
+  save(); renderGallery();
   try { if (window.updateItemInCloud) await window.updateItemInCloud(item); } catch (e) {}
 };
 
@@ -233,14 +193,11 @@ window.editItem = function(id) {
     hashtagsInput.dispatchEvent(new Event('input'));
   }
 
-  if (item.image && !item.image.startsWith('data:image/svg')) {
-     const previewWrap = document.getElementById('previewWrap');
-     const preview = document.getElementById('preview');
-     if (previewWrap && preview) {
-        preview.src = item.image;
-        previewWrap.classList.remove('hidden');
-        window.compressedImageData = item.image;
-     }
+  const previewWrap = document.getElementById('previewWrap');
+  const preview = document.getElementById('preview');
+  if (item.image && previewWrap && preview) {
+     preview.src = item.image;
+     previewWrap.classList.remove('hidden');
   }
   uploadModal.classList.remove('hidden');
 };
@@ -362,7 +319,6 @@ function renderGallery() {
     `;
 
     card.addEventListener('click', (e) => { if (!e.target.closest('.action-btn')) openDetail(item.id); });
-
     card.querySelector('.like-btn')?.addEventListener('click', async e => { e.stopPropagation(); await window.toggleLikeItem(item.id); });
     card.querySelector('.delete-btn')?.addEventListener('click', async e => {
         e.stopPropagation();
@@ -388,8 +344,8 @@ function bindUploadModal() {
   const catSel = document.getElementById('catSelect');
   const fileIn = document.getElementById('fileInput');
   const audioIn = document.getElementById('audioInput');
-  const preview = document.getElementById('preview');
   const previewWrap = document.getElementById('previewWrap');
+  const preview = document.getElementById('preview');
   const previewRemove = document.getElementById('previewRemove');
   const audioFileBox = document.getElementById('audioFileBox');
   const audioFileName = document.getElementById('audioFileName');
@@ -405,18 +361,16 @@ function bindUploadModal() {
     catSel.innerHTML = allSubs.join('');
   }
 
-  let compressedImageData = null;
-  window.compressedImageData = null;
-  let audioDataResult = null; // ذخیره دیتای صدا
+  let imageFileToUpload = null;
+  let audioFileToUpload = null;
 
   const closeModal = () => {
     modal.classList.add('hidden');
     form.reset();
     if (previewWrap) previewWrap.classList.add('hidden');
     if (audioFileBox) audioFileBox.classList.add('hidden');
-    compressedImageData = null;
-    window.compressedImageData = null;
-    audioDataResult = null;
+    imageFileToUpload = null;
+    audioFileToUpload = null;
     window.__pendingHashtags = null;
     window.__editItemId = null;
     const modalTitle = modal.querySelector('h2');
@@ -426,40 +380,44 @@ function bindUploadModal() {
   document.getElementById('uploadClose')?.addEventListener('click', closeModal);
   document.getElementById('cancelUploadBtn')?.addEventListener('click', closeModal);
 
-  // عکس رو فشرده میکنیم
+  // انتخاب عکس (فقط پیش‌نمایش، آپلود در زمان سابمیت انجام میشود)
   fileIn?.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
-    compressImage(file, 600, 0.6).then(compressed => {
-      compressedImageData = compressed;
-      window.compressedImageData = compressed;
-      preview.src = compressed;
-      previewWrap.classList.remove('hidden');
-    });
+    if (file.size > 5 * 1024 * 1024 * 1024) return alert('حجم عکس نباید بیشتر از ۵ گیگابایت باشد!');
+    imageFileToUpload = file;
+    preview.src = URL.createObjectURL(file);
+    previewWrap.classList.remove('hidden');
   });
 
-  previewRemove?.addEventListener('click', () => { fileIn.value = ''; preview.src = ''; previewWrap.classList.add('hidden'); compressedImageData = null; window.compressedImageData = null; });
+  previewRemove?.addEventListener('click', () => { 
+    fileIn.value = ''; 
+    preview.src = ''; 
+    previewWrap.classList.add('hidden'); 
+    imageFileToUpload = null; 
+  });
   
-  // خواندن فایل صوتی
+  // انتخاب صدا
   audioIn?.addEventListener('change', e => {
     const file = e.target.files[0];
     if (file) { 
+      if (file.size > 100 * 1024 * 1024 * 1024) return alert('حجم موسیقی نباید بیشتر از ۱۰۰ گیگابایت باشد!');
+      audioFileToUpload = file;
       audioFileName.textContent = file.name; 
       audioFileBox.classList.remove('hidden'); 
-      
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-         audioDataResult = ev.target.result;
-      };
-      reader.readAsDataURL(file);
     }
     else { 
       audioFileBox.classList.add('hidden'); 
-      audioDataResult = null;
+      audioFileToUpload = null;
     }
   });
   
-  audioFileRemove?.addEventListener('click', () => { audioIn.value = ''; audioFileName.textContent = ''; audioFileBox.classList.add('hidden'); audioDataResult = null; });
+  audioFileRemove?.addEventListener('click', () => { 
+    audioIn.value = ''; 
+    audioFileName.textContent = ''; 
+    audioFileBox.classList.add('hidden'); 
+    audioFileToUpload = null; 
+  });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -478,78 +436,98 @@ function bindUploadModal() {
     const isPremium = window.__navaaPremium?.isPremium === true;
     const itemPrice = isPremium ? parseInt(window.__navaaPremium?.price || 0) : 0;
 
-    const finalImage = compressedImageData;
-    const finalAudio = audioDataResult;
-
-    if (!finalImage && !finalAudio && !window.__editItemId) {
+    if (!imageFileToUpload && !audioFileToUpload && !window.__editItemId) {
        return alert('حداقل یه تصویر یا یه فایل صوتی انتخاب کن!');
     }
 
-    if (window.__editItemId) {
-      // حالت ویرایش
-      const idx = DB.items.findIndex(i => String(i.id) === String(window.__editItemId));
-      if (idx !== -1) {
-         DB.items[idx].title = titleValue;
-         DB.items[idx].artist = form.artist.value.trim() || currentUser.fullname;
-         DB.items[idx].desc = form.desc.value.trim();
-         DB.items[idx].category = form.category.value;
-         DB.items[idx].hashtags = hashtagsArr;
-         DB.items[idx].isPremium = isPremium;
-         DB.items[idx].price = itemPrice;
-         if (finalImage) DB.items[idx].image = finalImage;
-         if (finalAudio) DB.items[idx].audio = finalAudio;
-         
-         if (window.updateItemInCloud) await window.updateItemInCloud(DB.items[idx]);
-         save();
-         closeModal();
-         renderGallery();
-         alert('✅ اثر با موفقیت ویرایش شد!');
-         return;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '⏳ در حال آپلود... (لطفا صبر کنید)';
+    submitBtn.disabled = true;
+
+    try {
+      let finalImageUrl = null;
+      let finalAudioUrl = null;
+
+      // آپلود عکس به Firebase Storage
+      if (imageFileToUpload) {
+        if (window.uploadFileToStorage) {
+           finalImageUrl = await window.uploadFileToStorage(imageFileToUpload, 'images');
+        } else {
+           throw new Error('سیستم آپلود فایل لود نشده است.');
+        }
       }
+
+      // آپلود صدا به Firebase Storage
+      if (audioFileToUpload) {
+        if (window.uploadFileToStorage) {
+           finalAudioUrl = await window.uploadFileToStorage(audioFileToUpload, 'audios');
+        } else {
+           throw new Error('سیستم آپلود فایل لود نشده است.');
+        }
+      }
+
+      if (window.__editItemId) {
+        const idx = DB.items.findIndex(i => String(i.id) === String(window.__editItemId));
+        if (idx !== -1) {
+           DB.items[idx].title = titleValue;
+           DB.items[idx].artist = form.artist.value.trim() || currentUser.fullname;
+           DB.items[idx].desc = form.desc.value.trim();
+           DB.items[idx].category = form.category.value;
+           DB.items[idx].hashtags = hashtagsArr;
+           DB.items[idx].isPremium = isPremium;
+           DB.items[idx].price = itemPrice;
+           if (finalImageUrl) DB.items[idx].image = finalImageUrl;
+           if (finalAudioUrl) DB.items[idx].audio = finalAudioUrl;
+           
+           if (window.updateItemInCloud) await window.updateItemInCloud(DB.items[idx]);
+           save();
+           closeModal();
+           renderGallery();
+           alert('✅ اثر با موفقیت ویرایش شد!');
+           return;
+        }
+      }
+
+      const newItem = {
+          id: Date.now(),
+          image: finalImageUrl || 'https://via.placeholder.com/600x600/141414/00f0d4?text=Audio',
+          audio: finalAudioUrl || null,
+          title: titleValue,
+          artist: form.artist.value.trim() || currentUser.fullname,
+          desc: form.desc.value.trim(),
+          category: form.category.value,
+          hashtags: hashtagsArr,
+          isPremium: isPremium,
+          price: itemPrice,
+          time: Date.now(),
+          uploadedByEmail: currentUser.email,
+          likes: 0, likedBy: [], isHidden: false
+      };
+
+      let success = true;
+      if (window.addItemToCloud) success = await window.addItemToCloud(newItem);
+      else { DB.items.push(newItem); save(); }
+
+      if (!success) return;
+
+      if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
+        currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
+        await syncCurrentUserToArray();
+      }
+
+      const reward = await giveUploadReward(currentUser.email);
+      closeModal();
+      alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
+
+    } catch (err) {
+      console.error(err);
+      alert('❌ خطا در آپلود: ' + (err.message || 'لطفاً اتصال اینترنت را بررسی کنید.'));
+    } finally {
+      submitBtn.innerHTML = originalBtnText;
+      submitBtn.disabled = false;
     }
-
-    // حالت آپلود جدید
-    const newItem = {
-        id: Date.now(),
-        image: finalImage || makeSVG(THEME.turquoise, THEME.red, '🎵', 'صوتی'),
-        audio: finalAudio || null,
-        title: titleValue,
-        artist: form.artist.value.trim() || currentUser.fullname,
-        desc: form.desc.value.trim(),
-        category: form.category.value,
-        hashtags: hashtagsArr,
-        isPremium: isPremium,
-        price: itemPrice,
-        time: Date.now(),
-        uploadedByEmail: currentUser.email,
-        likes: 0,
-        likedBy: [],
-        isHidden: false
-    };
-
-    // چک کردن حجم کل (فایربیس سقف 1MB داره)
-    const itemString = JSON.stringify(newItem);
-    const sizeInBytes = new Blob([itemString]).size;
-    if (sizeInBytes > 900000) { // 900KB برای امنیت
-        alert('⚠️ حجم فایل‌ها (عکس + موسیقی) بیش از حد مجاز است!\n\nلطفاً یک عکس با حجم کمتر انتخاب کنید یا فایل صوتی کوتاه‌تری بذارید.\n\n(دیتابیس ما حداکثر ۱ مگابایت فضا برای هر اثر دارد)');
-        return;
-    }
-
-    let success = true;
-    if (window.addItemToCloud) success = await window.addItemToCloud(newItem);
-    else { DB.items.push(newItem); save(); }
-
-    if (!success) return;
-
-    if (!hasSubscription && currentUser.email !== ADMIN_EMAIL) {
-      currentUser.monthlyUploads = (currentUser.monthlyUploads || 0) + 1;
-      localStorage.setItem(CURRENT_KEY, JSON.stringify(currentUser));
-      await syncCurrentUserToArray();
-    }
-
-    const reward = await giveUploadReward(currentUser.email);
-    closeModal();
-    alert('🎉 اثر منتشر شد!' + (reward.success ? `\n💰 +${formatMoney(UPLOAD_REWARD)} تومان` : ''));
   });
 }
 
