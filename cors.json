@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://navaa-gm.github.io"],
+    "method": ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"],
+    "responseHeader": ["Content-Type", "x-firebase-storage-version", "x-goog-upload-protocol", "x-goog-upload-command", "x-goog-upload-offset"],
+    "maxAgeSeconds": 3600
+  }
+]
