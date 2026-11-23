@@ -1003,7 +1003,7 @@
       window.selectedAudioFile = null;
       window.selectedAudioData = null;
       window.__pendingHashtags = null;
-      window.__editItemId = null; // ریست کردن حالت ویرایش
+      window.__editItemId = null;
       
       const modalTitle = document.querySelector('#uploadModal h2');
       if (modalTitle) modalTitle.textContent = 'آپلود اثر جدید';
@@ -1024,7 +1024,6 @@
       if (m) m.classList.add('hidden');
     };
 
-    // 🏷️ نرمال‌سازی هشتگ‌ها
     function normalizeHashtags(raw) {
       const parts = String(raw || '')
         .split(/[\s,،]+/)
@@ -1035,7 +1034,6 @@
     }
     window.__normalizeHashtags = normalizeHashtags;
 
-    // 💳 باز کردن درگاه پرداخت
     window.openPayment = function(planName, price, days) {
       document.getElementById('subModal').classList.add('hidden');
       document.getElementById('paymentModal').classList.remove('hidden');
@@ -1044,7 +1042,6 @@
       document.getElementById('trackingNumber').value = '';
     };
 
-    // 💳 ثبت رسید پرداخت
     document.getElementById('submitPaymentBtn')?.addEventListener('click', async function() {
       const tracking = document.getElementById('trackingNumber').value.trim();
       if (!tracking || tracking.length < 5) return alert('❌ لطفاً شماره پیگیری معتبر وارد کنید!');
@@ -1123,7 +1120,6 @@
     });
   </script>
 
-  <!-- 🏷️ هشتگ‌ها: پیش‌نمایش زنده -->
   <script>
     (function () {
       const input = document.getElementById('hashtagsInput');
@@ -1163,7 +1159,6 @@
     })();
   </script>
 
-  <!-- 🏷️ اعتبارسنجی ۵ هشتگ قبل از ارسال فرم -->
   <script>
     (function () {
       const uploadForm = document.getElementById('uploadForm');
@@ -1185,10 +1180,8 @@
           return;
         }
 
-        // ذخیره هشتگ‌ها به‌صورت گلوبال برای app.js
         window.__pendingHashtags = hashtags;
 
-        // فیلد مخفی برای FormData
         let hidden = document.getElementById('__hashtags_hidden');
         if (!hidden) {
           hidden = document.createElement('input');
@@ -1202,9 +1195,11 @@
     })();
   </script>
 
+  <!-- 🔥 آپدیت شده با Firebase Storage -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -1217,11 +1212,25 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     const itemsCollection = collection(db, 'navaa_items');
     const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
 
     window.DB = window.DB || { items: [] };
+
+    // 🌟 تابع آپلود به فایربیس استوریج
+    window.uploadFileToStorage = async function(file, folder) {
+      try {
+        const uniqueName = `${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
+        const storageRef = ref(storage, uniqueName);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      } catch (error) {
+        console.error('خطا در آپلود به Storage:', error);
+        throw new Error('آپلود به سرور ابری با خطا مواجه شد (احتمالا Storage فعال نیست).');
+      }
+    };
 
     window.saveUsersToCloud = async function (usersArray) {
       const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
