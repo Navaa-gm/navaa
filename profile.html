@@ -30,7 +30,6 @@
       position: relative;
     }
 
-    /* 🌌 پس‌زمینهٔ زنده */
     body::before {
       content: '';
       position: fixed;
@@ -52,7 +51,6 @@
 
     header, main, nav.bottom-nav { position: relative; z-index: 1; }
 
-    /* 🌟 هدر شیشه‌ای */
     header {
       position: sticky;
       top: 0;
@@ -70,64 +68,29 @@
       justify-content: space-between;
       align-items: center;
     }
-    .logo-small {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      text-decoration: none;
-    }
-    .logo-icon-sm {
-      font-size: 1.6rem;
-      filter: drop-shadow(0 0 12px rgba(0,240,212,0.6));
-    }
+    .logo-small { display: flex; align-items: center; gap: 0.4rem; text-decoration: none; }
+    .logo-icon-sm { font-size: 1.6rem; filter: drop-shadow(0 0 12px rgba(0,240,212,0.6)); }
     .logo-name-sm {
-      font-size: 1.6rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
+      font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px;
       background: linear-gradient(90deg, #fff 0%, #00f0d4 45%, #38bdf8 70%, #ff2e4d 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
     .profile-back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
       background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
-      color: #001a1c !important;
-      text-decoration: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 800;
+      color: #001a1c !important; text-decoration: none;
+      padding: 0.65rem 1.2rem; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 800;
       box-shadow: 0 4px 20px rgba(0,240,212,0.5), 0 0 18px rgba(255,46,77,0.12);
-      transition: all 0.25s;
-      position: relative;
-      overflow: hidden;
+      transition: all 0.25s; position: relative; overflow: hidden;
     }
-    .profile-back-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-    .profile-back-btn:hover::before { transform: translateX(100%); }
     .profile-back-btn:hover {
       transform: translateY(-2px) scale(1.02);
       box-shadow: 0 0 0 1px rgba(0,240,212,0.8), 0 8px 32px rgba(0,240,212,0.6), 0 0 40px rgba(255,46,77,0.25);
     }
-    .profile-back-btn-icon { font-size: 1.1rem; transition: transform 0.3s; }
-    .profile-back-btn:hover .profile-back-btn-icon { transform: translateX(-4px) scale(1.15); }
 
-    /* 🌟 کارت پروفایل */
-    .profile-main {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 1.5rem 1.2rem 110px;
-    }
+    .profile-main { max-width: 520px; margin: 0 auto; padding: 1.5rem 1.2rem 110px; }
     .profile-card {
       background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
       backdrop-filter: blur(30px) saturate(180%);
@@ -135,38 +98,24 @@
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 28px;
       padding: 2rem 1.5rem 1.8rem;
-      box-shadow:
-        0 30px 80px rgba(0,0,0,0.6),
-        0 0 60px rgba(0,240,212,0.06),
-        0 0 50px rgba(255,46,77,0.05),
-        inset 0 1px 0 rgba(255,255,255,0.12);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,240,212,0.06), 0 0 50px rgba(255,46,77,0.05), inset 0 1px 0 rgba(255,255,255,0.12);
       position: relative;
     }
     .profile-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 20%; right: 20%;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
       border-radius: 999px;
     }
 
-    /* 👤 آواتار */
     .profile-avatar-wrap { position: relative; width: 118px; height: 118px; margin: 0 auto 1rem; }
     .profile-avatar {
       width: 118px; height: 118px; border-radius: 50%;
       background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
       display: flex; align-items: center; justify-content: center;
       font-size: 3.2rem;
-      box-shadow:
-        0 0 0 4px rgba(10,10,10,0.9),
-        0 0 28px rgba(0,240,212,0.5),
-        0 0 20px rgba(255,46,77,0.2);
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-      cursor: pointer;
-      transition: transform 0.25s;
+      box-shadow: 0 0 0 4px rgba(10,10,10,0.9), 0 0 28px rgba(0,240,212,0.5), 0 0 20px rgba(255,46,77,0.2);
+      overflow: hidden; background-size: cover; background-position: center;
+      cursor: pointer; transition: transform 0.25s;
     }
     .profile-avatar:hover { transform: scale(1.04); }
     .avatar-edit-btn {
@@ -179,62 +128,36 @@
       box-shadow: 0 0 14px rgba(0,240,212,0.6);
     }
     .avatar-edit-btn:hover { transform: scale(1.15); }
+    .avatar-edit-btn:disabled { opacity: 0.6; cursor: wait; }
 
-    #profileName {
-      text-align: center;
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin: 0 0 0.2rem;
-      color: #fff;
-    }
-    .profile-email {
-      text-align: center;
-      color: var(--text-dim, #a0a0a0);
-      font-size: 0.82rem;
-      margin: 0 0 0.6rem;
-      direction: ltr;
-    }
+    #profileName { text-align: center; font-size: 1.4rem; font-weight: 800; margin: 0 0 0.2rem; color: #fff; }
+    .profile-email { text-align: center; color: var(--text-dim, #a0a0a0); font-size: 0.82rem; margin: 0 0 0.6rem; direction: ltr; }
 
     .admin-badge {
       display: inline-block;
       background: linear-gradient(135deg, #ffc93c, var(--red));
-      color: #1a1100;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 0.3rem 0.9rem;
-      border-radius: 999px;
-      margin: 0.2rem auto 0;
-      box-shadow: 0 0 16px rgba(255,46,77,0.4);
-      text-align: center;
+      color: #1a1100; font-size: 0.75rem; font-weight: 800;
+      padding: 0.3rem 0.9rem; border-radius: 999px;
+      box-shadow: 0 0 16px rgba(255,46,77,0.4); text-align: center;
     }
     #adminBadgeBox { text-align: center; }
 
     .sub-status-active { color: var(--turquoise, #00f0d4); font-weight: 700; }
     .sub-status-inactive { color: var(--red); font-weight: 700; }
 
-    /* 🔀 تب‌ها */
     .profile-tabs {
-      display: flex;
-      gap: 0.3rem;
+      display: flex; gap: 0.3rem;
       background: rgba(0,0,0,0.4);
       border: 1px solid rgba(255,255,255,0.06);
-      padding: 0.3rem;
-      border-radius: 999px;
+      padding: 0.3rem; border-radius: 999px;
       margin: 1.2rem 0;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
     .profile-tab {
-      flex: 1;
-      background: transparent;
-      border: none;
+      flex: 1; background: transparent; border: none;
       color: var(--text-dim, #a0a0a0);
-      padding: 0.65rem 0.5rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
+      padding: 0.65rem 0.5rem; border-radius: 999px;
+      cursor: pointer; font-family: inherit; font-size: 0.82rem; font-weight: 700;
       transition: all 0.3s cubic-bezier(.4,0,.2,1);
     }
     .profile-tab:hover { color: #fff; }
@@ -245,25 +168,16 @@
     }
     .tab-content { display: none; animation: fadeIn 0.35s ease-out; }
     .tab-content.active { display: block; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* 📋 اطلاعات */
     .profile-info { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
     .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 0.8rem 0.95rem;
-      border-radius: 12px;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: 0.8rem 0.95rem; border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.07);
-      font-size: 0.85rem;
-      gap: 0.5rem;
+      font-size: 0.85rem; gap: 0.5rem;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
       transition: all 0.25s;
     }
@@ -275,69 +189,42 @@
       background: rgba(0,240,212,0.12);
       border: 1px solid rgba(0,240,212,0.4);
       color: var(--turquoise, #00f0d4);
-      padding: 0.3rem 0.65rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.72rem;
-      font-weight: 700;
-      transition: all 0.2s;
-      white-space: nowrap;
+      padding: 0.3rem 0.65rem; border-radius: 8px;
+      cursor: pointer; font-family: inherit; font-size: 0.72rem; font-weight: 700;
+      transition: all 0.2s; white-space: nowrap;
     }
-    .edit-btn:hover {
-      background: rgba(0,240,212,0.25);
-      box-shadow: 0 0 14px rgba(0,240,212,0.2);
-    }
+    .edit-btn:hover { background: rgba(0,240,212,0.25); box-shadow: 0 0 14px rgba(0,240,212,0.2); }
 
-    /* 📊 آمار */
     .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
     .stat-box {
       background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04));
       border: 1.5px solid rgba(0,240,212,0.3);
-      border-radius: 16px;
-      padding: 1rem;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      border-radius: 16px; padding: 1rem; text-align: center;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(0,240,212,0.06);
       transition: all 0.3s;
     }
-    .stat-box:hover {
-      border-color: rgba(255,46,77,0.4);
-      box-shadow: 0 0 24px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
+    .stat-box:hover { border-color: rgba(255,46,77,0.4); box-shadow: 0 0 24px rgba(255,46,77,0.12), inset 0 1px 0 rgba(255,255,255,0.05); }
     .stat-box strong {
-      display: block;
-      font-size: 1.9rem;
-      font-weight: 900;
+      display: block; font-size: 1.9rem; font-weight: 900;
       background: linear-gradient(90deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8), var(--red));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .stat-box span { font-size: 0.75rem; color: var(--text-dim, #a0a0a0); }
 
-    /* 💰 کیف پول */
     .wallet-card {
       background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04), rgba(255,46,77,0.05));
       border: 1.5px solid rgba(0,240,212,0.35);
-      border-radius: 20px;
-      padding: 1.6rem 1.2rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px; padding: 1.6rem 1.2rem; text-align: center; margin-bottom: 1rem;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 0 30px rgba(0,240,212,0.1), inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .wallet-title { font-size: 0.9rem; color: #fff; font-weight: 700; margin-bottom: 0.8rem; }
     .wallet-balance { display: flex; align-items: baseline; justify-content: center; gap: 0.4rem; margin-bottom: 0.6rem; }
     .wallet-balance strong {
-      font-size: 2.5rem;
-      font-weight: 900;
+      font-size: 2.5rem; font-weight: 900;
       background: linear-gradient(90deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8), #ffc93c, var(--red));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .wallet-balance span { color: var(--text-dim, #a0a0a0); font-size: 0.9rem; }
     .wallet-hint { font-size: 0.75rem; color: var(--text-dim, #a0a0a0); margin-bottom: 1rem; }
@@ -346,54 +233,31 @@
 
     .btn-transfer {
       background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
-      color: #001a1c;
-      border: none;
-      padding: 0.8rem 1.2rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 800;
+      color: #001a1c; border: none; padding: 0.8rem 1.2rem; border-radius: 999px;
+      cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 800;
       box-shadow: 0 6px 20px rgba(0,240,212,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
       transition: all 0.25s cubic-bezier(.4,0,.2,1);
     }
-    .btn-transfer:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(0,240,212,0.5), 0 0 24px rgba(255,46,77,0.15);
-    }
-    .btn-transfer:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .btn-transfer:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,240,212,0.5), 0 0 24px rgba(255,46,77,0.15); }
+    .btn-transfer:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-withdraw {
       background: linear-gradient(135deg, #ffc93c, var(--red));
-      color: #1a1100;
-      border: none;
-      padding: 0.8rem 1.2rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 800;
+      color: #1a1100; border: none; padding: 0.8rem 1.2rem; border-radius: 999px;
+      cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 800;
       box-shadow: 0 6px 20px rgba(255,46,77,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
       transition: all 0.25s cubic-bezier(.4,0,.2,1);
     }
-    .btn-withdraw:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(255,46,77,0.45);
-    }
-    .btn-withdraw:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .btn-withdraw:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,46,77,0.45); }
+    .btn-withdraw:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* 🎨 آثار من */
     .my-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 1rem; }
     @media (max-width: 420px) { .my-items-grid { grid-template-columns: 1fr; } }
     .my-item {
       background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(.4,0,.2,1);
-      position: relative;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      border-radius: 14px; overflow: hidden; transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      position: relative; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     }
     .my-item:hover {
       border-color: rgba(0,240,212,0.4);
@@ -405,54 +269,26 @@
     .my-item-thumb .music-tag {
       position: absolute; top: 6px; right: 6px;
       background: linear-gradient(135deg, #ffc93c, var(--red));
-      color: #1a1100;
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.68rem;
+      color: #1a1100; width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 0.68rem;
       box-shadow: 0 0 10px rgba(255,46,77,0.5);
     }
     .my-item-thumb .premium-tag {
       position: absolute; top: 6px; left: 6px;
       background: linear-gradient(135deg, #ffc93c, var(--red));
-      color: #1a1100;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.6rem;
-      font-weight: 800;
-      box-shadow: 0 0 10px rgba(255,46,77,0.5);
+      color: #1a1100; padding: 0.15rem 0.5rem; border-radius: 999px;
+      font-size: 0.6rem; font-weight: 800; box-shadow: 0 0 10px rgba(255,46,77,0.5);
     }
-    .my-item-del {
-      position: absolute; top: 6px; left: 6px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(255,46,77,0.92); color: #fff; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem;
-      transition: all 0.2s;
+    .my-item-del, .my-item-edit, .my-item-visibility {
+      position: absolute; width: 28px; height: 28px; border-radius: 50%;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; transition: all 0.2s;
       box-shadow: 0 2px 10px rgba(0,0,0,0.4);
       opacity: 0; transform: scale(0.85); z-index: 3;
     }
-    .my-item-edit {
-      position: absolute; top: 6px; right: 36px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(255,201,60,0.92); color: #1a1100;
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem;
-      transition: all 0.2s;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-      opacity: 0; transform: scale(0.85); z-index: 3;
-    }
-    .my-item-visibility {
-      position: absolute; top: 6px; right: 6px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(0,0,0,0.65); color: #fff;
-      border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem;
-      transition: all 0.2s;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-      opacity: 0; transform: scale(0.85); z-index: 3;
-    }
+    .my-item-del { top: 6px; left: 6px; background: rgba(255,46,77,0.92); color: #fff; }
+    .my-item-edit { top: 6px; right: 36px; background: rgba(255,201,60,0.92); color: #1a1100; }
+    .my-item-visibility { top: 6px; right: 6px; background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
     .my-item:hover .my-item-del,
     .my-item:hover .my-item-edit,
     .my-item:hover .my-item-visibility { opacity: 1; transform: scale(1); }
@@ -461,40 +297,25 @@
     .my-item-visibility:hover { background: #ffc93c; color: #000; transform: scale(1.15) !important; }
 
     .my-item-info { padding: 0.55rem 0.65rem; }
-    .my-item-title {
-      margin: 0 0 0.25rem; font-size: 0.8rem; color: #fff; font-weight: 700;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .my-item-meta {
-      margin: 0; font-size: 0.68rem; color: var(--text-dim, #a0a0a0);
-      display: flex; justify-content: space-between;
-    }
+    .my-item-title { margin: 0 0 0.25rem; font-size: 0.8rem; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .my-item-meta { margin: 0; font-size: 0.68rem; color: var(--text-dim, #a0a0a0); display: flex; justify-content: space-between; }
     .my-item-revenue { font-size: 0.68rem; color: #ffc93c; margin-top: 0.3rem; font-weight: 700; }
 
     .no-items {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      color: var(--text-dim, #a0a0a0);
-      font-size: 0.85rem;
+      text-align: center; padding: 1.5rem 1rem;
+      color: var(--text-dim, #a0a0a0); font-size: 0.85rem;
       background: rgba(255,255,255,0.03);
-      border-radius: 14px;
-      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 14px; border: 1px dashed rgba(255,255,255,0.12);
     }
 
-    /* 🧾 ردیف‌ها */
     .purchase-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       padding: 0.75rem 0.85rem;
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 12px;
-      margin-bottom: 0.5rem;
-      font-size: 0.82rem;
-      transition: all 0.2s;
+      border-radius: 12px; margin-bottom: 0.5rem;
+      font-size: 0.82rem; transition: all 0.2s;
     }
     .purchase-row:hover { border-color: rgba(255,46,77,0.25); background: rgba(255,255,255,0.05); }
     .purchase-row strong { color: #fff; }
@@ -502,123 +323,67 @@
     .purchase-amount { color: var(--red); font-weight: 800; }
     .earn-amount { color: var(--turquoise, #00f0d4); font-weight: 800; }
 
-    /* 📊 محدودیت پلن */
     .plan-limits-card {
       background: linear-gradient(135deg, rgba(0,240,212,0.07), rgba(56,189,248,0.03), rgba(255,46,77,0.04));
       border: 1.5px solid rgba(0,240,212,0.35);
-      border-radius: 18px;
-      padding: 1.2rem;
-      text-align: right;
-      margin-bottom: 1rem;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      border-radius: 18px; padding: 1.2rem; text-align: right; margin-bottom: 1rem;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
     }
     .plan-limits-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
     .plan-limits-title { color: #fff; font-weight: 700; font-size: 0.9rem; }
     .plan-badge-pill {
-      background: rgba(0,240,212,0.15);
-      color: #00f0d4;
-      padding: 0.25rem 0.75rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      background: rgba(0,240,212,0.15); color: #00f0d4;
+      padding: 0.25rem 0.75rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 700;
       border: 1px solid rgba(0,240,212,0.3);
     }
     .limits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; font-size: 0.78rem; }
-    .limit-box {
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 10px;
-      padding: 0.65rem;
-    }
+    .limit-box { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 0.65rem; }
     .limit-box-label { color: #a0a0a0; font-size: 0.7rem; margin-bottom: 0.25rem; }
     .limit-box-value { color: #ffc93c; font-weight: 800; }
 
-    /* 💎 اشتراک */
     .subscription-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       padding: 0.85rem 0.95rem;
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 12px;
-      margin-bottom: 0.5rem;
-      font-size: 0.82rem;
+      border-radius: 12px; margin-bottom: 0.5rem; font-size: 0.82rem;
       border-right: 3px solid #ffc93c;
     }
     .subscription-row.wallet { border-right-color: var(--turquoise, #00f0d4); }
     .subscription-row.card { border-right-color: #ffc93c; }
     .subscription-row strong { color: #fff; }
     .subscription-row small { color: var(--text-dim, #a0a0a0); font-size: 0.7rem; display: block; margin-top: 0.2rem; }
-    .subscription-badge {
-      display: inline-block;
-      padding: 0.15rem 0.55rem;
-      border-radius: 999px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      margin-right: 0.3rem;
-    }
+    .subscription-badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.65rem; font-weight: 700; margin-right: 0.3rem; }
     .badge-wallet { background: rgba(0,240,212,0.15); color: var(--turquoise, #00f0d4); border: 1px solid rgba(0,240,212,0.3); }
     .badge-card { background: rgba(255,201,60,0.15); color: #ffc93c; border: 1px solid rgba(255,201,60,0.3); }
 
-    /* 🚪 خروج و حذف */
     #logoutBtn2.btn-ghost-sm {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.1);
-      color: #a0a0a0;
-      padding: 0.85rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 0.6rem;
-      transition: all 0.25s;
+      color: #a0a0a0; padding: 0.85rem; border-radius: 14px;
+      font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      width: 100%; margin-top: 0.6rem; transition: all 0.25s;
     }
-    #logoutBtn2.btn-ghost-sm:hover {
-      border-color: rgba(255,255,255,0.2);
-      color: #fff;
-      background: rgba(255,255,255,0.06);
-    }
+    #logoutBtn2.btn-ghost-sm:hover { border-color: rgba(255,255,255,0.2); color: #fff; background: rgba(255,255,255,0.06); }
 
     .btn-delete-account {
       background: rgba(255,46,77,0.08);
       border: 1px solid rgba(255,46,77,0.35);
-      color: var(--red);
-      padding: 0.85rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s;
-      margin-top: 0.6rem;
-      width: 100%;
+      color: var(--red); padding: 0.85rem; border-radius: 14px;
+      font-family: inherit; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: all 0.25s; margin-top: 0.6rem; width: 100%;
     }
-    .btn-delete-account:hover {
-      background: rgba(255,46,77,0.18);
-      border-color: var(--red);
-      box-shadow: 0 0 20px rgba(255,46,77,0.2);
-    }
+    .btn-delete-account:hover { background: rgba(255,46,77,0.18); border-color: var(--red); box-shadow: 0 0 20px rgba(255,46,77,0.2); }
 
-    /* 🌟 نوار پایین */
     .bottom-nav {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      height: 66px !important;
-      padding: 0.2rem 3% !important;
+      position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+      height: 66px !important; padding: 0.2rem 3% !important;
       border-radius: 20px 20px 0 0 !important;
       box-shadow: 0 -8px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
+      display: flex !important; align-items: center !important; justify-content: space-between !important;
       z-index: 1000 !important;
       background: rgba(10,10,10,0.72) !important;
       backdrop-filter: blur(28px) saturate(180%) !important;
@@ -627,97 +392,51 @@
       margin: 0 !important;
     }
     .nav-pill-btn {
-      padding: 0.35rem 0.85rem !important;
-      font-size: 0.75rem !important;
-      gap: 0.3rem !important;
+      padding: 0.35rem 0.85rem !important; font-size: 0.75rem !important; gap: 0.3rem !important;
       border-radius: 11px !important;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.07);
       color: var(--text-dim, #a0a0a0);
-      font-family: inherit;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
+      font-family: inherit; font-weight: 700;
+      display: inline-flex; align-items: center; cursor: pointer;
       transition: all 0.25s cubic-bezier(.4,0,.2,1);
     }
-    .nav-pill-btn:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(0,240,212,0.35);
-      box-shadow: 0 0 16px rgba(0,240,212,0.12);
-      transform: translateY(-1px);
-    }
+    .nav-pill-btn:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(0,240,212,0.35); box-shadow: 0 0 16px rgba(0,240,212,0.12); transform: translateY(-1px); }
     .nav-pill-icon { font-size: 1rem !important; position: relative; display: inline-flex; }
-    .pill-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--red);
-      margin-right: 2px;
-      box-shadow: 0 0 8px var(--red);
-      animation: pulseDot 1.6s infinite;
-    }
-    @keyframes pulseDot {
-      0%,100% { opacity: 1; }
-      50%     { opacity: 0.4; }
-    }
+    .pill-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 2px; box-shadow: 0 0 8px var(--red); animation: pulseDot 1.6s infinite; }
+    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
     .nav-center-profile {
       position: relative !important;
-      width: 58px !important;
-      height: 58px !important;
-      min-width: 58px !important;
-      min-height: 58px !important;
-      flex: 0 0 58px !important;
-      border-radius: 50% !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      padding: 0 !important;
-      margin-top: -20px !important;
-      box-sizing: border-box !important;
-      text-decoration: none;
+      width: 58px !important; height: 58px !important;
+      min-width: 58px !important; min-height: 58px !important;
+      flex: 0 0 58px !important; border-radius: 50% !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      padding: 0 !important; margin-top: -20px !important;
+      box-sizing: border-box !important; text-decoration: none;
     }
     .profile-btn-avatar {
-      width: 100% !important;
-      height: 100% !important;
-      border-radius: 50% !important;
-      background-size: cover !important;
-      background-position: center !important;
+      width: 100% !important; height: 100% !important; border-radius: 50% !important;
+      background-size: cover !important; background-position: center !important;
       box-sizing: border-box !important;
       border: 3px solid #0a0a0a !important;
-      box-shadow:
-        0 0 0 2px rgba(0,240,212,0.6),
-        0 0 22px rgba(0,240,212,0.45),
-        0 0 18px rgba(255,46,77,0.15) !important;
+      box-shadow: 0 0 0 2px rgba(0,240,212,0.6), 0 0 22px rgba(0,240,212,0.45), 0 0 18px rgba(255,46,77,0.15) !important;
     }
     .nav-center-profile .nav-icon {
-      width: 100% !important;
-      height: 100% !important;
-      border-radius: 50% !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
+      width: 100% !important; height: 100% !important; border-radius: 50% !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
       background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8)) !important;
-      color: #001a1c !important;
-      font-size: 1.25rem !important;
+      color: #001a1c !important; font-size: 1.25rem !important;
       box-sizing: border-box !important;
       border: 3px solid #0a0a0a !important;
       box-shadow: 0 0 22px rgba(0,240,212,0.5) !important;
     }
     .nav-center-label {
-      position: absolute !important;
-      bottom: -18px !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      font-size: 0.65rem !important;
-      white-space: nowrap !important;
-      color: #fff !important;
+      position: absolute !important; bottom: -18px !important;
+      left: 50% !important; transform: translateX(-50%) !important;
+      font-size: 0.65rem !important; white-space: nowrap !important; color: #fff !important;
     }
 
-    /* ==========================================
-       🔥 مودال‌ها با شیشهٔ پرمیوم + قرمز
-       ========================================== */
     .modal {
       background:
         radial-gradient(circle at 10% 20%, rgba(0,240,212,0.10), transparent 40%),
@@ -729,8 +448,7 @@
       position: fixed; inset: 0;
       z-index: 2000 !important;
       display: flex; align-items: center; justify-content: center;
-      padding: 1rem;
-      box-sizing: border-box;
+      padding: 1rem; box-sizing: border-box;
     }
     .modal-content {
       background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
@@ -738,27 +456,15 @@
       -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
       border: 1px solid rgba(255,255,255,0.14) !important;
       border-top: 1px solid rgba(255,255,255,0.28) !important;
-      box-shadow:
-        0 30px 70px rgba(0,0,0,0.8),
-        0 0 50px rgba(0,240,212,0.06),
-        0 0 40px rgba(255,46,77,0.06),
-        inset 0 0 30px rgba(255,255,255,0.02) !important;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.8), 0 0 50px rgba(0,240,212,0.06), 0 0 40px rgba(255,46,77,0.06), inset 0 0 30px rgba(255,255,255,0.02) !important;
       border-radius: 28px !important;
-      max-width: 620px;
-      width: 100%;
-      max-height: 88vh;
-      overflow-y: auto;
-      margin: 0 auto;
-      position: relative;
+      max-width: 620px; width: 100%; max-height: 88vh; overflow-y: auto;
+      margin: 0 auto; position: relative;
     }
     .modal-content::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 20%; right: 20%;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
-      border-radius: 999px;
-      pointer-events: none;
+      border-radius: 999px; pointer-events: none;
     }
     .modal-content::-webkit-scrollbar { width: 6px; }
     .modal-content::-webkit-scrollbar-track { background: transparent; }
@@ -766,400 +472,97 @@
     .modal-content::-webkit-scrollbar-thumb:hover { background: rgba(0,240,212,0.5); }
 
     .modal-close {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      position: absolute; top: 15px; left: 15px;
+      width: 40px; height: 40px; border-radius: 50%;
       background: rgba(255,255,255,0.07) !important;
       border: 1px solid rgba(255,255,255,0.16) !important;
-      color: #fff !important;
-      font-size: 1.15rem !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 2100 !important;
+      color: #fff !important; font-size: 1.15rem !important;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2100 !important;
       transition: all 0.3s cubic-bezier(.4,0,.2,1);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35); backdrop-filter: blur(10px);
     }
-    .modal-close:hover {
-      background: var(--red) !important;
-      border-color: var(--red) !important;
-      transform: rotate(90deg) scale(1.08);
-      box-shadow: 0 0 24px var(--red-glow);
-    }
+    .modal-close:hover { background: var(--red) !important; border-color: var(--red) !important; transform: rotate(90deg) scale(1.08); box-shadow: 0 0 24px var(--red-glow); }
 
-    /* 💎 پلن‌ها */
-    .sub-content h2 {
-      text-align: center;
-      margin: 0.4rem 0 0.3rem;
-      color: #fff;
-      font-size: 1.3rem;
-      font-weight: 800;
-    }
-    .sub-content .sub-desc {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: var(--text-dim, #a0a0a0);
-      font-size: 0.88rem;
-    }
-    .sub-content .sub-icon {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-top: 1rem;
-      filter: drop-shadow(0 0 16px rgba(0,240,212,0.6));
-    }
-    .plans {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      padding: 0 1.5rem 1.5rem;
-    }
+    .sub-content h2 { text-align: center; margin: 0.4rem 0 0.3rem; color: #fff; font-size: 1.3rem; font-weight: 800; }
+    .sub-content .sub-desc { text-align: center; margin-bottom: 1.5rem; color: var(--text-dim, #a0a0a0); font-size: 0.88rem; }
+    .sub-content .sub-icon { text-align: center; font-size: 2.5rem; margin-top: 1rem; filter: drop-shadow(0 0 16px rgba(0,240,212,0.6)); }
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; padding: 0 1.5rem 1.5rem; }
     .plans .plan {
       background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
       backdrop-filter: blur(24px) saturate(200%);
       -webkit-backdrop-filter: blur(24px) saturate(200%);
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255,255,255,0.15);
       border-radius: 20px;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
-      padding: 1.4rem;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .plans .plan::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 212, 0.15), transparent 70%);
-      opacity: 0; transition: opacity 0.4s; pointer-events: none;
+      padding: 1.4rem; position: relative; overflow: hidden; cursor: pointer;
     }
     .plans .plan:hover { transform: translateY(-8px) scale(1.03); }
-    .plans .plan:hover::before { opacity: 1; }
-
-    .plan-bronze { border-color: rgba(205, 127, 50, 0.5) !important; }
-    .plan-bronze:hover { border-color: #cd7f32 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(205, 127, 50, 0.4) !important; }
-    
-    .plan-silver { border-color: rgba(255, 201, 60, 0.5) !important; }
-    .plan-silver:hover { border-color: #ffc93c !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(255, 201, 60, 0.5) !important; }
-    
-    .plan-diamond { border-color: rgba(0, 240, 212, 0.5) !important; }
-    .plan-diamond:hover { border-color: #00f0d4 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0, 240, 212, 0.5) !important; }
-
+    .plan-bronze { border-color: rgba(205,127,50,0.5) !important; }
+    .plan-bronze:hover { border-color: #cd7f32 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(205,127,50,0.4) !important; }
+    .plan-silver { border-color: rgba(255,201,60,0.5) !important; }
+    .plan-silver:hover { border-color: #ffc93c !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(255,201,60,0.5) !important; }
+    .plan-diamond { border-color: rgba(0,240,212,0.5) !important; }
+    .plan-diamond:hover { border-color: #00f0d4 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,240,212,0.5) !important; }
     .plan-badge {
-      position: absolute;
-      top: 0.7rem;
-      left: 0.7rem;
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: #1a1200;
+      position: absolute; top: 0.7rem; left: 0.7rem;
+      font-size: 0.68rem; font-weight: 800; color: #1a1200;
       background: linear-gradient(135deg, #ffc93c, var(--red));
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
+      padding: 0.2rem 0.55rem; border-radius: 999px;
       box-shadow: 0 4px 12px rgba(255,46,77,0.3);
     }
-    .plan-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.7rem;
-    }
+    .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
     .plan-name { color: #fff; font-weight: 800; font-size: 0.95rem; }
     .plan-duration { color: #777; font-size: 0.72rem; }
-    .plan-price {
-      display: flex;
-      align-items: baseline;
-      gap: 0.3rem;
-      margin-bottom: 0.9rem;
-    }
+    .plan-price { display: flex; align-items: baseline; gap: 0.3rem; margin-bottom: 0.9rem; }
     .price-num { font-size: 1.6rem; font-weight: 900; color: #fff; }
     .price-unit { color: #777; font-size: 0.8rem; }
-    .plan-features {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      font-size: 0.82rem;
-      color: #bbb;
-      line-height: 1.9;
-    }
-    .plan-btn {
-      width: 100%;
-      padding: 0.9rem;
-      margin-top: 1rem;
-      border: none;
-      border-radius: 12px;
-      font-family: inherit;
-      font-weight: 800;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
+    .plan-features { list-style: none; padding: 0; margin: 0; font-size: 0.82rem; color: #bbb; line-height: 1.9; }
+    .plan-btn { width: 100%; padding: 0.9rem; margin-top: 1rem; border: none; border-radius: 12px; font-family: inherit; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; }
     .plan-bronze .plan-btn { background: linear-gradient(135deg, #cd7f32, #e6a800); color: #1a1100; }
     .plan-silver .plan-btn { background: linear-gradient(135deg, #ffc93c, #ff8c00); color: #1a1100; }
     .plan-diamond .plan-btn { background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; }
 
-    .sub-hint {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #a0a0a0;
-      padding: 0 0 1.5rem 0;
-    }
     .btn-cancel-sub {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #a0a0a0;
-      padding: 1rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      background: rgba(255,255,255,0.03); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1); color: #a0a0a0;
+      padding: 1rem; border-radius: 14px; font-family: inherit;
+      font-size: 0.92rem; font-weight: 700; cursor: pointer; width: 100%;
+      margin-top: 1rem; transition: all 0.3s ease;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
     }
-    .btn-cancel-sub:hover {
-      background: rgba(255,46,77,0.1);
-      border-color: rgba(255,46,77,0.4);
-      color: var(--red);
-      box-shadow: 0 0 20px rgba(255,46,77,0.15);
-    }
+    .btn-cancel-sub:hover { background: rgba(255,46,77,0.1); border-color: rgba(255,46,77,0.4); color: var(--red); box-shadow: 0 0 20px rgba(255,46,77,0.15); }
 
-    /* 🔥 استایل اختصاصی برای شیشه‌ای کردن مودال پرداخت */
     #paymentModal .modal-content {
-      background: rgba(20, 24, 28, 0.4) !important; 
+      background: rgba(20,24,28,0.4) !important;
       backdrop-filter: blur(40px) saturate(200%) !important;
       -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+      border: 1px solid rgba(255,255,255,0.15) !important;
+      border-top: 1px solid rgba(255,255,255,0.3) !important;
       box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 0 40px rgba(255,255,255,0.05) !important;
     }
 
-    /* 💳 استایل کارت بانکی افقی */
     .payment-card-display {
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
       border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 1.5rem 1rem;
-      margin: 0 1.5rem 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      border-radius: 16px; padding: 1.5rem 1rem; margin: 0 1.5rem 1.5rem;
+      text-align: center; position: relative; overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,240,212,0.05);
     }
     .payment-card-display::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #00f0d4, #ffc93c, transparent);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #00f0d4, #ffc93c, transparent);
     }
-    
-    /* فیکس کردن حالت افقی شماره کارت */
     .card-number {
-      font-size: 1.35rem;
-      font-weight: 900;
-      direction: ltr;
-      color: #ffc93c;
-      letter-spacing: 1px;
-      white-space: nowrap; /* جلوگیری از شکستن خط */
-      margin: 0.5rem 0 0.8rem;
+      font-size: 1.35rem; font-weight: 900; direction: ltr; color: #ffc93c;
+      letter-spacing: 1px; white-space: nowrap; margin: 0.5rem 0 0.8rem;
       text-shadow: 0 0 15px rgba(255,201,60,0.4);
-      font-family: monospace, inherit;
-      cursor: pointer;
-      transition: 0.2s;
+      font-family: monospace, inherit; cursor: pointer; transition: 0.2s;
     }
     .card-number:hover { color: #fff; text-shadow: 0 0 20px rgba(0,240,212,0.6); }
-    
-    @media (max-width: 480px) {
-      .card-number { font-size: 1.1rem; letter-spacing: 0px; } /* سایز کوچکتر برای موبایل */
-    }
+    @media (max-width: 480px) { .card-number { font-size: 1.1rem; letter-spacing: 0; } }
 
-    /* 💸 مودال انتقال وجه */
-    .transfer-modal-wrap {
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 10% 20%, rgba(0,240,212,0.10), transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(255,46,77,0.10), transparent 40%),
-        rgba(5,8,10,0.8);
-      z-index: 3000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      backdrop-filter: blur(20px) saturate(150%);
-      -webkit-backdrop-filter: blur(20px) saturate(150%);
-      overflow-y: auto;
-    }
-    .transfer-modal-card {
-      background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
-      backdrop-filter: blur(40px) saturate(220%);
-      -webkit-backdrop-filter: blur(40px) saturate(220%);
-      border: 1px solid rgba(255,255,255,0.14);
-      border-top: 1px solid rgba(255,255,255,0.28);
-      border-radius: 24px;
-      padding: 1.8rem 1.5rem;
-      max-width: 520px;
-      width: 100%;
-      box-shadow:
-        0 30px 70px rgba(0,0,0,0.8),
-        0 0 50px rgba(0,240,212,0.08),
-        0 0 40px rgba(255,46,77,0.08),
-        inset 0 0 30px rgba(255,255,255,0.02);
-      animation: popIn 0.3s ease-out;
-      position: relative;
-    }
-    .transfer-modal-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 20%; right: 20%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,240,212,0.8), rgba(255,46,77,0.6), transparent);
-      border-radius: 999px;
-      pointer-events: none;
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .transfer-modal-card h2 {
-      margin: 0 0 0.3rem;
-      font-size: 1.35rem;
-      text-align: center;
-      background: linear-gradient(90deg, #fff, var(--turquoise, #00f0d4), var(--red));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 900;
-    }
-    .transfer-modal-card .transfer-sub {
-      text-align: center;
-      color: var(--text-dim, #a0a0a0);
-      font-size: 0.85rem;
-      margin: 0 0 1.2rem;
-    }
-    .transfer-field { margin-bottom: 1rem; }
-    .transfer-field label {
-      display: block;
-      font-size: 0.82rem;
-      color: #fff;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-    .transfer-field input {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      background: rgba(0,0,0,0.35);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      color: #f0f0f0;
-      font-family: inherit;
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.25s;
-      direction: ltr;
-      text-align: center;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .transfer-field input:focus {
-      border-color: var(--turquoise, #00f0d4);
-      box-shadow: 0 0 0 3px rgba(0,240,212,0.12), inset 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .transfer-field input::placeholder { color: #555; font-size: 0.85rem; }
-
-    .transfer-recipient-info {
-      background: linear-gradient(135deg, rgba(0,240,212,0.08), rgba(56,189,248,0.04));
-      border: 1.5px solid rgba(0,240,212,0.35);
-      border-radius: 12px;
-      padding: 0.9rem 1rem;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .transfer-recipient-info.show { display: block; }
-    .transfer-recipient-info .info-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      padding: 0.2rem 0;
-      border: none;
-      background: none;
-      box-shadow: none;
-    }
-    .transfer-recipient-info .info-row span { color: var(--text-dim, #a0a0a0); font-size: 0.78rem; }
-    .transfer-recipient-info .info-row strong { color: #fff; }
-
-    .transfer-actions { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
-    .transfer-actions .btn-primary {
-      background: linear-gradient(135deg, var(--turquoise, #00f0d4), var(--sky, #38bdf8));
-      color: #001a1c;
-      border: none;
-      padding: 0.95rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 6px 22px rgba(0,240,212,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
-      transition: all 0.25s cubic-bezier(.4,0,.2,1);
-    }
-    .transfer-actions .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,240,212,0.45);
-    }
-    .transfer-actions .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .transfer-actions .btn-cancel {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #a0a0a0;
-      padding: 0.8rem;
-      border-radius: 14px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 700;
-      transition: all 0.25s;
-    }
-    .transfer-actions .btn-cancel:hover {
-      border-color: rgba(255,46,77,0.4);
-      color: var(--red);
-      background: rgba(255,46,77,0.08);
-    }
-
-    .transfer-alert {
-      background: rgba(255,46,77,0.1);
-      border: 1px solid rgba(255,46,77,0.4);
-      color: var(--red);
-      padding: 0.65rem 0.9rem;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      margin-bottom: 0.8rem;
-      display: none;
-    }
-    .transfer-alert.show { display: block; }
-
-    .user-row {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      padding: 0.65rem 0.7rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 0.25rem;
-    }
-    .user-row:hover {
-      background: rgba(0,240,212,0.08);
-      box-shadow: inset 0 0 0 1px rgba(0,240,212,0.2);
-    }
-
-    /* 📱 موبایل */
     @media (max-width: 520px) {
       .profile-main { padding: 1rem 0.8rem 110px; }
       .profile-card { padding: 1.8rem 1.1rem 1.5rem; border-radius: 24px; }
@@ -1178,21 +581,21 @@
       </a>
       <div class="header-actions">
         <a href="gallery.html" class="profile-back-btn">
-          <span class="profile-back-btn-icon">🎨</span>
+          <span>🎨</span>
           <span>رفتن به گالری</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main class="profile-main" style="max-width:520px;">
+  <main class="profile-main">
     <div class="profile-card">
 
       <div class="profile-avatar-wrap">
         <div class="profile-avatar" id="avatarBox">
           <span id="avatarEmoji">👤</span>
         </div>
-        <button class="avatar-edit-btn" id="avatarEditBtn">📷</button>
+        <button class="avatar-edit-btn" id="avatarEditBtn" title="تغییر عکس پروفایل">📷</button>
         <input type="file" id="avatarInput" accept="image/*" style="display:none;">
       </div>
 
@@ -1208,7 +611,6 @@
 
       <div class="tab-content active" id="tab-info">
         <div class="profile-info" id="profileInfoBox"></div>
-
         <div class="profile-stats">
           <div class="stat-box"><strong id="myUploads">0</strong><span>آپلود</span></div>
           <div class="stat-box"><strong id="myLikes">0</strong><span>لایک گرفته</span></div>
@@ -1273,32 +675,24 @@
 
       <button id="renewSubBtn" class="btn-primary full" style="margin-top:1.2rem;width:100%;padding:0.95rem;border:none;border-radius:14px;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer;color:#001a1c;background:linear-gradient(135deg,#00f0d4,#38bdf8);box-shadow:0 8px 24px rgba(0,240,212,0.3),inset 0 1px 0 rgba(255,255,255,0.3);">✨ تمدید / ارتقای اشتراک</button>
       <button id="logoutBtn2" class="btn-ghost-sm full">🚪 خروج از حساب</button>
-
       <button id="deleteAccountBtn" class="btn-delete-account">🗑️ حذف کامل حساب کاربری</button>
     </div>
   </main>
 
   <nav class="bottom-nav" id="bottomNav"></nav>
 
-  <!-- مودال اشتراک (مدرن) -->
+  <!-- مودال اشتراک -->
   <div id="subModal" class="modal hidden">
     <div class="modal-content sub-content">
       <button class="modal-close" onclick="document.getElementById('subModal').classList.add('hidden')">✕</button>
-
       <div class="sub-icon">✨</div>
       <h2>پلن‌های اشتراک Navaa</h2>
       <p class="sub-desc">پلن مناسب خودت رو انتخاب کن</p>
 
       <div class="plans">
         <div class="plan plan-bronze" onclick="window.openPayment('برنزی', 50000, 30)">
-          <div class="plan-header">
-            <span class="plan-name">🥉 برنزی</span>
-            <div class="plan-duration">۱ ماهه</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">🥉 برنزی</span><div class="plan-duration">۱ ماهه</div></div>
+          <div class="plan-price"><span class="price-num">۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <ul class="plan-features">
             <li>✅ آپلود ۲۰ عکس در ماه</li>
             <li>✅ نمایش نام هنرمند</li>
@@ -1310,14 +704,8 @@
 
         <div class="plan plan-silver" onclick="window.openPayment('طلایی', 100000, 365)">
           <div class="plan-badge">🔥 پیشنهاد ویژه</div>
-          <div class="plan-header">
-            <span class="plan-name">🥈 طلایی</span>
-            <div class="plan-duration">۱۲ ماهه (۱ ساله)</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۱۰۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">🥈 طلایی</span><div class="plan-duration">۱۲ ماهه (۱ ساله)</div></div>
+          <div class="plan-price"><span class="price-num">۱۰۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <ul class="plan-features">
             <li>✅ آپلود ۱۰۰ عکس در ماه</li>
             <li>✅ آپلود ۵ آهنگ در ماه</li>
@@ -1327,14 +715,8 @@
         </div>
 
         <div class="plan plan-diamond" onclick="window.openPayment('الماسی', 250000, 1260)">
-          <div class="plan-header">
-            <span class="plan-name">💎 الماسی</span>
-            <div class="plan-duration">۳.۵ ساله</div>
-          </div>
-          <div class="plan-price">
-            <span class="price-num">۲۵۰,۰۰۰</span>
-            <span class="price-unit">تومان</span>
-          </div>
+          <div class="plan-header"><span class="plan-name">💎 الماسی</span><div class="plan-duration">۳.۵ ساله</div></div>
+          <div class="plan-price"><span class="price-num">۲۵۰,۰۰۰</span><span class="price-unit">تومان</span></div>
           <ul class="plan-features">
             <li>✅ آپلود نامحدود عکس</li>
             <li>✅ آپلود نامحدود موسیقی</li>
@@ -1346,25 +728,23 @@
 
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
         <button type="button" class="btn-cancel-sub" id="cancelSubBtn" style="margin-top: 0;">
-          <span>✕</span>
-          <span>انصراف و بستن</span>
+          <span>✕</span><span>انصراف و بستن</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 💳 مودال درگاه پرداخت (شیشه‌ای + شماره کارت افقی) -->
+  <!-- مودال درگاه پرداخت -->
   <div id="paymentModal" class="modal hidden">
     <div class="modal-content" style="max-width: 450px;">
       <button class="modal-close" onclick="document.getElementById('paymentModal').classList.add('hidden')">✕</button>
-      
+
       <div style="text-align: center; padding-top: 2rem;">
         <div style="font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(0,240,212,0.5));">💳</div>
         <h2 style="color: #00f0d4; margin: 0.5rem 0;">درگاه پرداخت</h2>
         <p style="color: #aaa; margin-bottom: 1.5rem;">مبلغ قابل پرداخت: <br><strong id="payAmount" style="color: #fff; font-size: 1.4rem; font-weight: 900;"></strong></p>
       </div>
 
-      <!-- کارت بانکی افقی زیر مبلغ -->
       <div class="payment-card-display">
         <p style="color: #ccc; font-size: 0.85rem; margin: 0 0 0.5rem;">شماره کارت جهت واریز (کلیک = کپی)</p>
         <div class="card-number" onclick="navigator.clipboard.writeText('6037997519665161'); alert('✅ شماره کارت کپی شد!');" title="برای کپی کلیک کنید">
@@ -1376,26 +756,26 @@
       <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
         <div class="upload-field" style="text-align: right;">
           <label style="color: #ccc; font-size: 0.85rem;">شماره پیگیری تراکنش <span style="color:var(--red);">*</span></label>
-          <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789" style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px; width: 100%; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none; margin-top: 0.5rem;">
+          <input type="text" id="trackingNumber" placeholder="مثلاً: 123456789"
+                 style="text-align: center; direction: ltr; font-weight: 700; letter-spacing: 1px; width: 100%; padding: 0.9rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none; margin-top: 0.5rem;">
         </div>
-
         <button id="submitPaymentBtn" style="width: 100%; padding: 1rem; border-radius: 12px; border: none; background: linear-gradient(135deg, #00f0d4, #38bdf8); color: #001a1c; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 1.5rem;">✅ تایید و ارسال رسید</button>
       </div>
     </div>
   </div>
 
-  <!-- ✏️ مودال ویرایش اثر (با قابلیت آپلود همزمان عکس و صدا) -->
+  <!-- مودال ویرایش اثر -->
   <div id="editItemModal" class="modal hidden">
     <div class="modal-content" style="max-width: 500px; padding: 1.5rem;">
       <button class="modal-close" onclick="document.getElementById('editItemModal').classList.add('hidden')">✕</button>
       <h2 style="text-align: center; margin-top: 1rem; color: var(--turquoise);">✏️ ویرایش اثر</h2>
-      
+
       <form id="editItemForm" style="margin-top: 1.5rem;">
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">عنوان اثر</label>
           <input type="text" id="editTitle" required style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; outline: none;">
         </div>
-        
+
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">توضیحات</label>
           <textarea id="editDesc" rows="3" style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); color: #fff; outline: none;"></textarea>
@@ -1408,13 +788,12 @@
         </div>
 
         <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر عکس (اختیاری)</label>
+          <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر عکس (اختیاری — آپلود به Storage)</label>
           <input type="file" id="editImage" accept="image/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
         </div>
 
-        <!-- فیلد آپلود صدا -->
         <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر فایل صوتی (اختیاری)</label>
+          <label style="display: block; margin-bottom: 0.4rem; color: #ccc; font-size: 0.85rem;">تغییر فایل صوتی (اختیاری — آپلود به Storage)</label>
           <input type="file" id="editAudio" accept="audio/*" style="width: 100%; padding: 0.5rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.2); color: #aaa;">
           <small id="editAudioHint" style="color: #ffc93c; display: none; margin-top: 0.3rem; font-size: 0.7rem;">فایل صوتی فعلی موجود است. برای تغییر، فایل جدید انتخاب کنید.</small>
         </div>
@@ -1424,10 +803,13 @@
     </div>
   </div>
 
+  <!-- =============================================================
+       اسکریپت اصلی (UI) — آپلودها به Firebase Storage منتقل شدند
+       ============================================================= -->
   <script>
   const CURRENT_KEY = 'navaa_current_user';
   const USERS_KEY = 'navaa_users';
-  const ITEMS_KEY = 'navaa_items_v3';
+  const ITEMS_KEY = 'navaa_items_v3';   // همان کش مشترک با gallery.html
   const PURCHASES_KEY = 'navaa_purchases';
   const WITHDRAW_KEY = 'navaa_withdraw_requests';
   const TRANSFERS_KEY = 'navaa_transfers';
@@ -1444,11 +826,7 @@
     const _freshU = users.find(u => u.email === user.email);
     if (_freshU && _freshU.banned === true) {
       localStorage.removeItem(CURRENT_KEY);
-      alert(
-        '🚫 حساب شما مسدود شده!\n\n' +
-        (_freshU.bannedReason ? `دلیل: ${_freshU.bannedReason}\n\n` : '') +
-        'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.'
-      );
+      alert('🚫 حساب شما مسدود شده!\n\n' + (_freshU.bannedReason ? `دلیل: ${_freshU.bannedReason}\n\n` : '') + 'برای اطلاعات بیشتر با مدیر سایت تماس بگیرید.');
       window.location.href = 'home.html';
     } else if (user && user.email) {
       const freshUser = users.find(u => u.email === user.email);
@@ -1461,6 +839,7 @@
         user.balance = freshUser.balance || 0;
         user.purchasedItems = freshUser.purchasedItems || [];
         user.joinDate = freshUser.joinDate;
+        user.avatar = freshUser.avatar || user.avatar;
         localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
       }
     }
@@ -1506,15 +885,13 @@
       if (user.subscriptionPlan) label += ` — ${plans[user.subscriptionPlan] || ''}`;
       if (user.subscriptionPlan === 'admin') label = '✅ فعال (رایگان — ادمین)';
       subHtml = `<span class="sub-status-active">${label}</span>`;
-
       if (user.subscriptionExpiry && user.subscriptionPlan !== 'admin') {
         const expDate = new Date(user.subscriptionExpiry);
         const daysLeft = Math.ceil((expDate - Date.now()) / (1000 * 60 * 60 * 24));
         if (daysLeft > 0) {
           subTimeHtml = `
             <div class="info-row"><span>⏳ زمان باقی‌مانده:</span><strong style="color: var(--turquoise);">${daysLeft.toLocaleString('fa-IR')} روز</strong></div>
-            <div class="info-row"><span>📅 تاریخ انقضا:</span><strong>${expDate.toLocaleDateString('fa-IR')}</strong></div>
-          `;
+            <div class="info-row"><span>📅 تاریخ انقضا:</span><strong>${expDate.toLocaleDateString('fa-IR')}</strong></div>`;
         } else {
           subTimeHtml = `<div class="info-row"><span>⏳ زمان باقی‌مانده:</span><strong style="color: var(--red);">منقضی شده</strong></div>`;
         }
@@ -1532,8 +909,7 @@
       <div class="info-row"><span>📧 ایمیل:</span><strong style="direction:ltr;font-size:.75rem;">${escapeHtml(user.email || '')}</strong><button class="edit-btn" onclick="editField('email')">✏️</button></div>
       <div class="info-row"><span>📅 تاریخ عضویت:</span><strong>${new Date(user.joinDate || Date.now()).toLocaleDateString('fa-IR')}</strong></div>
       <div class="info-row"><span>💎 اشتراک:</span><strong>${subHtml}</strong></div>
-      ${subTimeHtml}
-    `;
+      ${subTimeHtml}`;
   }
 
   window.editField = async function(field) {
@@ -1559,7 +935,6 @@
 
     let idx = users.findIndex(u => u.email === oldEmail);
     if (idx === -1) { users.push(user); idx = users.length - 1; }
-
     users[idx][field] = newVal;
     if (field === 'email') users[idx].email = newEmail;
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -1578,6 +953,7 @@
   const avatarBox = document.getElementById('avatarBox');
   const avatarEmoji = document.getElementById('avatarEmoji');
   const avatarInput = document.getElementById('avatarInput');
+  const avatarEditBtn = document.getElementById('avatarEditBtn');
 
   function getAvatarKey() { return 'navaa_avatar_' + (user ? user.email : ''); }
 
@@ -1596,34 +972,67 @@
   }
   loadAvatar();
 
-  document.getElementById('avatarEditBtn').addEventListener('click', e => { e.stopPropagation(); avatarInput.click(); });
+  avatarEditBtn.addEventListener('click', e => { e.stopPropagation(); avatarInput.click(); });
   avatarBox.addEventListener('click', () => avatarInput.click());
 
-  avatarInput.addEventListener('change', e => {
+  // 🔥 آواتار → Firebase Storage (نه Base64)
+  avatarInput.addEventListener('change', async e => {
     if (!user) return;
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { alert('⚠️ حجم عکس باید کمتر از ۲ مگابایت باشه!'); avatarInput.value = ''; return; }
 
-    const reader = new FileReader();
-    reader.onload = async ev => {
-      const imgData = ev.target.result;
-      try {
-        localStorage.setItem(getAvatarKey(), imgData);
-        let idx = users.findIndex(u => u.email === user.email);
-        if (idx !== -1) { users[idx].avatar = imgData; localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-        user.avatar = imgData; localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-        if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
-        loadAvatar(); alert('✅ عکس پروفایل ذخیره شد!');
-      } catch (err) { alert('❌ خطا در ذخیره‌سازی!'); }
-    };
-    reader.readAsDataURL(file);
+    if (!file.type.startsWith('image/')) { alert('❌ فقط فایل تصویری مجاز است!'); avatarInput.value = ''; return; }
+    if (file.size > 5 * 1024 * 1024) { alert('⚠️ حجم عکس باید کمتر از ۵ مگابایت باشد!'); avatarInput.value = ''; return; }
+    if (typeof window.uploadFileToStorage !== 'function') {
+      alert('❌ سیستم آپلود آماده نیست. لطفاً چند ثانیه دیگر تلاش کنید.'); avatarInput.value = ''; return;
+    }
+
+    const oldText = avatarEditBtn.textContent;
+    avatarEditBtn.disabled = true;
+    avatarEditBtn.textContent = '⏳';
+
+    try {
+      const url = await window.uploadFileToStorage(file, 'avatars');
+      if (!url) throw new Error('آدرس فایل دریافت نشد.');
+
+      localStorage.setItem(getAvatarKey(), url);
+
+      let idx = users.findIndex(u => u.email === user.email);
+      if (idx !== -1) {
+        users[idx].avatar = url;
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      }
+      user.avatar = url;
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+
+      if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
+
+      loadAvatar();
+      renderBottomNav();
+      alert('✅ عکس پروفایل ذخیره شد!');
+    } catch (err) {
+      console.error(err);
+      alert('❌ ' + (err.message || 'خطا در آپلود عکس!'));
+    } finally {
+      avatarEditBtn.disabled = false;
+      avatarEditBtn.textContent = oldText;
+      avatarInput.value = '';
+    }
   });
+
+  /* ------------------ آیتم‌های من ------------------ */
+  function getItemsCache() {
+    try { return JSON.parse(localStorage.getItem(ITEMS_KEY)) || []; } catch (e) { return []; }
+  }
 
   function renderMyItems() {
     if (!user) return;
-    const items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    const myItems = items.filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email).sort((a, b) => b.time - a.time);
+    const items = getItemsCache();
+
+    // فیلتر: هم با uploadedByEmail و هم با email قدیمی سازگار
+    const myItems = items
+      .filter(i => i.uploadedBy === user.id || i.uploadedByEmail === user.email || i.email === user.email)
+      .sort((a, b) => b.time - a.time);
 
     document.getElementById('myUploads').textContent = myItems.length;
     document.getElementById('myLikes').textContent = myItems.reduce((s, i) => s + (i.likes || 0), 0);
@@ -1636,10 +1045,13 @@
       const card = document.createElement('div');
       card.className = 'my-item';
       const isPremium = item.isPremium && item.price > 0;
+      const imgSrc = item.image || item.img || item.imageUrl || '';
+      const hasAudio = !!(item.audio || item.audioUrl);
+
       card.innerHTML = `
         <div class="my-item-thumb">
-          <img src="${item.image}" alt="" loading="lazy">
-          ${item.audio ? '<span class="music-tag">🎵</span>' : ''}
+          ${imgSrc ? `<img src="${imgSrc}" alt="" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(0,240,212,0.15),rgba(255,46,77,0.1));">${hasAudio ? '🎵' : '🖼️'}</div>`}
+          ${hasAudio ? '<span class="music-tag">🎵</span>' : ''}
           ${isPremium ? '<span class="premium-tag">💎 ویژه</span>' : ''}
           <button class="my-item-edit" data-id="${item.id}" title="ویرایش">✏️</button>
           <button class="my-item-del" data-id="${item.id}" title="حذف">🗑️</button>
@@ -1650,24 +1062,24 @@
           <p class="my-item-meta"><span>❤️ ${item.likes || 0}</span><span>${new Date(item.time).toLocaleDateString('fa-IR')}</span></p>
           ${isPremium ? `<p class="my-item-revenue">💰 ${formatMoney(item.price)} تومان${item.purchases?.length ? ` • ${item.purchases.length} خرید` : ''}</p>` : ''}
         </div>`;
-      
+
       card.querySelector('.my-item-thumb').addEventListener('click', e => {
         if (e.target.closest('.my-item-del') || e.target.closest('.my-item-visibility') || e.target.closest('.my-item-edit')) return;
         window.location.href = 'gallery.html';
       });
-      
       card.querySelector('.my-item-del').addEventListener('click', e => { e.stopPropagation(); deleteMyItem(item.id); });
       card.querySelector('.my-item-visibility').addEventListener('click', async e => { e.stopPropagation(); await toggleMyItemVisibility(item.id); });
       card.querySelector('.my-item-edit').addEventListener('click', e => { e.stopPropagation(); openEditItemModal(item.id); });
-      
+
       grid.appendChild(card);
     });
   }
+  window.renderMyItems = renderMyItems;
 
-  // ✏️ ویرایش اثر (با پشتیبانی از صدا)
+  // ✏️ باز کردن مودال ویرایش
   window.openEditItemModal = function(id) {
-    const items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    const item = items.find(i => i.id === id);
+    const items = getItemsCache();
+    const item = items.find(i => String(i.id) === String(id));
     if (!item) return;
 
     window.__editItemId = id;
@@ -1676,108 +1088,105 @@
     document.getElementById('editHashtags').value = (item.hashtags || []).join(' ');
     document.getElementById('editImage').value = '';
     document.getElementById('editAudio').value = '';
-    
+
     const audioHint = document.getElementById('editAudioHint');
-    if (item.audio) {
-       audioHint.style.display = 'block';
-    } else {
-       audioHint.style.display = 'none';
-    }
-    
+    audioHint.style.display = (item.audio || item.audioUrl) ? 'block' : 'none';
+
     document.getElementById('editItemModal').classList.remove('hidden');
   };
 
+  // ✏️ ارسال فرم ویرایش → آپلود فایل‌ها به Storage + updateItemInCloud
   document.getElementById('editItemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!user) return;
+
     const hashtags = normalizeHashtags(document.getElementById('editHashtags').value);
     if (hashtags.length !== 5) return alert('❌ باید دقیقاً ۵ هشتگ وارد کنید!');
 
-    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    const idx = items.findIndex(i => i.id === window.__editItemId);
-    if (idx === -1) return;
+    let items = getItemsCache();
+    const idx = items.findIndex(i => String(i.id) === String(window.__editItemId));
+    if (idx === -1) return alert('❌ اثر پیدا نشد.');
 
-    items[idx].title = document.getElementById('editTitle').value.trim();
-    items[idx].desc = document.getElementById('editDesc').value.trim();
-    items[idx].hashtags = hashtags;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const oldText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ در حال ذخیره...';
 
-    const newImageFile = document.getElementById('editImage').files[0];
-    const newAudioFile = document.getElementById('editAudio').files[0];
+    try {
+      items[idx].title = document.getElementById('editTitle').value.trim();
+      items[idx].desc = document.getElementById('editDesc').value.trim();
+      items[idx].hashtags = hashtags;
 
-    const finishEdit = async () => {
-       localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-       if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
-       alert('✅ اثر ویرایش شد!');
-       document.getElementById('editItemModal').classList.add('hidden');
-       renderMyItems();
-    };
+      const newImageFile = document.getElementById('editImage').files[0];
+      const newAudioFile = document.getElementById('editAudio').files[0];
 
-    if (newImageFile || newAudioFile) {
-       let imageLoaded = !newImageFile;
-       let audioLoaded = !newAudioFile;
+      if (newImageFile) {
+        if (typeof window.uploadFileToStorage !== 'function') throw new Error('سیستم آپلود آماده نیست.');
+        items[idx].image = await window.uploadFileToStorage(newImageFile, 'items');
+        delete items[idx].imageData;
+      }
+      if (newAudioFile) {
+        if (typeof window.uploadFileToStorage !== 'function') throw new Error('سیستم آپلود آماده نیست.');
+        items[idx].audio = await window.uploadFileToStorage(newAudioFile, 'items');
+        delete items[idx].audioData;
+      }
 
-       const checkFinish = () => { if (imageLoaded && audioLoaded) finishEdit(); };
+      // ذخیره در کش محلی
+      localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
 
-       if (newImageFile) {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-             const img = new Image();
-             img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let w = img.width, h = img.height;
-                if (w > 800) { h = Math.round((h * 800) / w); w = 800; }
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                items[idx].image = canvas.toDataURL('image/jpeg', 0.7);
-                imageLoaded = true;
-                checkFinish();
-             };
-             img.src = ev.target.result;
-          };
-          reader.readAsDataURL(newImageFile);
-       }
+      // ذخیره در Firestore (کالکشن navaa_items)
+      if (window.updateItemInCloud) await window.updateItemInCloud(items[idx]);
 
-       if (newAudioFile) {
-          const audioReader = new FileReader();
-          audioReader.onload = (ev) => {
-             items[idx].audio = ev.target.result;
-             audioLoaded = true;
-             checkFinish();
-          };
-          audioReader.readAsDataURL(newAudioFile);
-       }
-    } else {
-       finishEdit();
+      alert('✅ اثر ویرایش شد!');
+      document.getElementById('editItemModal').classList.add('hidden');
+      renderMyItems();
+    } catch (err) {
+      console.error(err);
+      alert('❌ ' + (err.message || 'خطا در ویرایش اثر.'));
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = oldText;
     }
   });
 
+  // 🙈 مخفی/نمایش → updateItemInCloud
   async function toggleMyItemVisibility(id) {
     if (!user) return;
-    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    const idx = items.findIndex(i => i.id === id);
-    if (idx !== -1) {
-      items[idx].isHidden = !items[idx].isHidden;
-      localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-      if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
-      alert(items[idx].isHidden ? '🙈 اثر مخفی شد.' : '👁️ اثر نمایش داده می‌شود.');
-      renderMyItems();
-    }
+    let items = getItemsCache();
+    const idx = items.findIndex(i => String(i.id) === String(id));
+    if (idx === -1) return;
+
+    items[idx].isHidden = !items[idx].isHidden;
+    localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
+
+    try {
+      if (window.updateItemInCloud) await window.updateItemInCloud(items[idx]);
+    } catch (e) { console.error(e); }
+
+    alert(items[idx].isHidden ? '🙈 اثر مخفی شد.' : '👁️ اثر نمایش داده می‌شود.');
+    renderMyItems();
   }
 
+  // 🗑️ حذف → deleteItemFromCloud
   async function deleteMyItem(id) {
     if (!user) return;
-    let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [];
-    const item = items.find(i => i.id === id);
+    let items = getItemsCache();
+    const item = items.find(i => String(i.id) === String(id));
     if (!item) return;
     if (!confirm(`🗑️ حذف «${item.title}»؟`)) return;
 
-    items = items.filter(i => i.id !== id);
+    try {
+      if (window.deleteItemFromCloud) await window.deleteItemFromCloud(id);
+    } catch (e) { console.error(e); }
+
+    items = items.filter(i => String(i.id) !== String(id));
     localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-    if (window.saveItemsToCloud) await window.saveItemsToCloud(items);
 
     alert('🗑️ حذف شد!');
     renderMyItems(); renderWallet();
   }
 
+  /* ------------------ اشتراک / کیف پول ------------------ */
   function renderSubscriptions() {
     if (!user) return;
     const list = document.getElementById('subscriptionsList');
@@ -1796,8 +1205,7 @@
           <strong>${escapeHtml(h.planLabel || h.planName || 'اشتراک')}</strong>
           <small><span class="subscription-badge ${isWallet ? 'badge-wallet' : 'badge-card'}">${isWallet ? '💰 کیف پول' : '🏦 کارت به کارت'}</span> ${new Date(h.time).toLocaleDateString('fa-IR')}</small>
         </div>
-        <span class="purchase-amount">-${formatMoney(h.price || 0)}</span>
-      `;
+        <span class="purchase-amount">-${formatMoney(h.price || 0)}</span>`;
       list.appendChild(row);
     });
   }
@@ -1864,8 +1272,7 @@
       row.className = 'purchase-row';
       row.innerHTML = `
         <div><strong>${isSender ? '📤 به' : '📥 از'} ${escapeHtml(otherName || 'کاربر')}</strong><small>${new Date(t.time).toLocaleDateString('fa-IR')}</small></div>
-        <span style="color:${isSender ? 'var(--red)' : 'var(--turquoise)'};font-weight:800;">${isSender ? '-' : '+'}${formatMoney(t.amount)}</span>
-      `;
+        <span style="color:${isSender ? 'var(--red)' : 'var(--turquoise)'};font-weight:800;">${isSender ? '-' : '+'}${formatMoney(t.amount)}</span>`;
       list.appendChild(row);
     });
   }
@@ -1910,7 +1317,6 @@
     nav.querySelector('#logoutNavBtn')?.addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
   }
 
-  // 💳 پرداخت
   window.openPayment = function(planName, price, days) {
     document.getElementById('subModal').classList.add('hidden');
     document.getElementById('paymentModal').classList.remove('hidden');
@@ -1919,20 +1325,21 @@
     document.getElementById('trackingNumber').value = '';
   };
 
-  document.getElementById('submitPaymentBtn')?.addEventListener('click', async () => {
+  document.getElementById('submitPaymentBtn')?.addEventListener('click', () => {
     const tracking = document.getElementById('trackingNumber').value.trim();
     if (!tracking || tracking.length < 5) return alert('❌ لطفاً شماره پیگیری معتبر وارد کنید!');
-    
+    if (!window.__pendingPayment) return alert('پلنی انتخاب نشده است.');
+
     const req = {
       id: Date.now(), userEmail: user.email, userName: user.fullname,
       plan: window.__pendingPayment.planName, price: window.__pendingPayment.price,
       days: window.__pendingPayment.days, trackingNumber: tracking, status: 'pending', time: Date.now()
     };
-    
+
     let requests = JSON.parse(localStorage.getItem('navaa_payment_requests') || '[]');
     requests.push(req);
     localStorage.setItem('navaa_payment_requests', JSON.stringify(requests));
-    
+
     alert('✅ رسید شما ثبت شد. پس از تایید مدیر فعال می‌شود.');
     document.getElementById('paymentModal').classList.add('hidden');
   });
@@ -1947,7 +1354,7 @@
     if (!amount) return;
     const amt = parseInt(amount);
     if (isNaN(amt) || amt < minWithdraw || amt > balance) return alert('❌ مبلغ نامعتبر!');
-    
+
     const cardNum = prompt('💳 شماره کارت:');
     if (!cardNum || cardNum.replace(/\D/g, '').length < 16) return alert('❌ شماره کارت نامعتبر!');
     if (!confirm(`💸 درخواست برداشت ${formatMoney(amt)} تومان ثبت شود؟`)) return;
@@ -1968,30 +1375,60 @@
     alert('✅ درخواست ثبت شد!'); renderWallet();
   });
 
-  document.getElementById('transferBtn').addEventListener('click', () => {
-    window.location.href = 'gallery.html';
-  });
-
+  document.getElementById('transferBtn').addEventListener('click', () => { window.location.href = 'gallery.html'; });
   document.getElementById('renewSubBtn').addEventListener('click', () => document.getElementById('subModal').classList.remove('hidden'));
   document.getElementById('logoutBtn2').addEventListener('click', () => { if (confirm('خارج بشی؟')) { localStorage.removeItem(CURRENT_KEY); window.location.href = 'home.html'; } });
   document.getElementById('cancelSubBtn')?.addEventListener('click', () => document.getElementById('subModal').classList.add('hidden'));
 
+  document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+    if (!user) return;
+    if (!confirm(`⚠️ آیا از حذف کامل حساب «${user.fullname}» مطمئن هستید؟\nاین عمل قابل بازگشت نیست!`)) return;
+    if (!confirm('❗️تایید نهایی: تمام آثار و اطلاعات شما حذف خواهد شد.')) return;
+
+    const email = user.email;
+
+    // حذف آثار کاربر از Firestore
+    const items = getItemsCache();
+    const mine = items.filter(i => i.uploadedByEmail === email || i.email === email);
+    for (const it of mine) {
+      try { if (window.deleteItemFromCloud) await window.deleteItemFromCloud(it.id); } catch (e) {}
+    }
+
+    // حذف کاربر
+    users = users.filter(u => u.email !== email);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    localStorage.removeItem(CURRENT_KEY);
+    localStorage.removeItem('navaa_avatar_' + email);
+
+    if (window.saveUsersToCloud) await window.saveUsersToCloud(users);
+
+    alert('✅ حساب شما حذف شد.');
+    window.location.href = 'home.html';
+  });
+
+  // به‌روزرسانی از Cloud (توسط ماژول فراخوانی می‌شود)
   window.updateUserDataFromCloud = function(cloudUsers) {
-      users = cloudUsers;
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-      const freshMe = users.find(u => u.email === user.email);
-      if (freshMe) {
-        user = freshMe; localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-        renderInfo(); renderWallet(); renderTransfers();
-      }
+    users = cloudUsers;
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    if (!user) return;
+    const freshMe = users.find(u => u.email === user.email);
+    if (freshMe) {
+      user = freshMe;
+      localStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+      renderInfo(); renderWallet(); renderTransfers(); renderPlanLimits(); renderBottomNav();
+    }
   };
 
   renderInfo(); renderMyItems(); renderSubscriptions(); renderWallet(); renderTransfers(); renderPlanLimits(); renderBottomNav();
   </script>
 
+  <!-- =============================================================
+       Firebase Module — Firestore + Storage
+       ============================================================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -2004,39 +1441,92 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
-    const docRefItems = doc(db, 'navaa_storage', 'navaa_items_v3');
+    const storage = getStorage(app);
 
-    window.saveUsersToCloud = async function(usersArray) {
-      const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
-      try { await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() }); } catch (e) {}
+    const docRefUsers = doc(db, 'navaa_storage', 'navaa_users');
+    const itemsCollection = collection(db, 'navaa_items');
+
+    /* 🌟 آپلود فایل به Firebase Storage */
+    window.uploadFileToStorage = async function (file, folder) {
+      try {
+        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+        const uniqueName = `${folder}/${Date.now()}_${safeName}`;
+        const storageRef = ref(storage, uniqueName);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      } catch (error) {
+        console.error('خطا در آپلود به Storage:', error);
+        throw new Error('آپلود به سرور ابری با خطا مواجه شد (احتمالاً Storage فعال نیست).');
+      }
     };
-    window.getUsersFromCloud = async function() {
-      const snap = await getDoc(docRefUsers);
-      if (snap.exists()) return JSON.parse(snap.data().value);
+
+    /* ---------- Users ---------- */
+    window.saveUsersToCloud = async function (usersArray) {
+      const users = usersArray || JSON.parse(localStorage.getItem('navaa_users')) || [];
+      try { await setDoc(docRefUsers, { value: JSON.stringify(users), updatedAt: Date.now() }); }
+      catch (e) { console.error('saveUsersToCloud:', e); }
+    };
+    window.getUsersFromCloud = async function () {
+      try {
+        const snap = await getDoc(docRefUsers);
+        if (snap.exists()) return JSON.parse(snap.data().value);
+      } catch (e) { console.error(e); }
       return [];
     };
-    window.saveItemsToCloud = async function(items) {
-      try { await setDoc(docRefItems, { value: JSON.stringify(items), updatedAt: Date.now() }); } catch (error) {}
+
+    /* ---------- Items (collection-based) ---------- */
+    window.updateItemInCloud = async function (item) {
+      try { await setDoc(doc(db, 'navaa_items', item.id.toString()), item); }
+      catch (e) { console.error('updateItemInCloud:', e); }
+    };
+    window.deleteItemFromCloud = async function (id) {
+      try { await deleteDoc(doc(db, 'navaa_items', id.toString())); }
+      catch (e) { console.error('deleteItemFromCloud:', e); }
+    };
+    window.addItemToCloud = async function (item) {
+      try { await setDoc(doc(db, 'navaa_items', item.id.toString()), item); return true; }
+      catch (e) { console.error('addItemToCloud:', e); return false; }
     };
 
+    /* ---------- Initial users load ---------- */
     async function loadInitialUsers() {
-        try {
-            const snap = await getDoc(docRefUsers);
-            if (snap.exists()) {
-                const cloudUsers = JSON.parse(snap.data().value);
-                if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
-            }
-        } catch(e) { console.error(e); }
+      try {
+        const snap = await getDoc(docRefUsers);
+        if (snap.exists()) {
+          const cloudUsers = JSON.parse(snap.data().value);
+          if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
+        }
+      } catch (e) { console.error(e); }
     }
     loadInitialUsers();
 
     onSnapshot(docRefUsers, (docSnap) => {
       if (docSnap.exists()) {
-        const cloudUsers = JSON.parse(docSnap.data().value);
-        if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
+        try {
+          const cloudUsers = JSON.parse(docSnap.data().value);
+          if (window.updateUserDataFromCloud) window.updateUserDataFromCloud(cloudUsers);
+        } catch (e) { console.error(e); }
       }
     });
+
+    /* ---------- Items snapshot (همگام با gallery.html) ---------- */
+    onSnapshot(itemsCollection, (snapshot) => {
+      const cloudItems = [];
+      snapshot.forEach(d => cloudItems.push(d.data()));
+      cloudItems.sort((a, b) => (b.time || 0) - (a.time || 0));
+
+      window.DB = window.DB || {};
+      window.DB.items = cloudItems;
+      localStorage.setItem('navaa_items_v3', JSON.stringify(cloudItems));
+
+      if (typeof window.renderMyItems === 'function') {
+        try { window.renderMyItems(); } catch (e) { console.error(e); }
+      }
+    }, (err) => {
+      console.warn('items snapshot error:', err);
+    });
+
+    console.log('✅ Firebase (Firestore + Storage) آماده است.');
   </script>
 
 </body>
