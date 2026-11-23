@@ -552,7 +552,6 @@
 
     .sub-content { background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)) !important; }
 
-    /* 🌟 استایل مدرن پلن‌های اشتراک */
     .plans .plan {
       background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)) !important;
       backdrop-filter: blur(24px) saturate(200%) !important;
@@ -642,7 +641,6 @@
     .btn-like:disabled { opacity: 0.6; cursor: wait; }
     .btn-like.liked { background: rgba(255,46,77,0.18); border-color: rgba(255,46,77,0.55); color: var(--red); box-shadow: 0 0 22px rgba(255,46,77,0.25); }
 
-    /* 💳 استایل درگاه پرداخت */
     .payment-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
     .card-number { font-size: 1.4rem; font-weight: 900; direction: ltr; color: #ffc93c; letter-spacing: 2px; margin: 1rem 0; text-shadow: 0 0 10px rgba(255,201,60,0.3); }
 
@@ -736,7 +734,6 @@
           <button id="modalDownload" class="btn-primary">⬇️ دانلود</button>
           <button id="modalLike" class="btn-like">❤️ <span id="modalLikes">0</span></button>
           <button id="modalShare" class="btn-like">🔗 اشتراک‌گذاری</button>
-          <!-- دکمه ویرایش اضافه شد -->
           <button id="modalEdit" class="btn-like" style="display:none; background:rgba(255,201,60,0.1); border-color:rgba(255,201,60,0.4); color:#ffc93c;">✏️ ویرایش</button>
           <button id="modalDelete" class="btn-danger hidden" style="display:none;">🗑️ حذف اثر</button>
         </div>
@@ -820,9 +817,6 @@
             <select name="category" id="catSelect" required></select>
           </div>
           
-          <!-- فیلد تگ‌ها کاملاً حذف شد -->
-
-          <!-- 🏷️ فیلد ۵ هشتگ اجباری -->
           <div class="upload-field">
             <label>
               هشتگ‌ها <span class="req">*</span>
@@ -1195,11 +1189,11 @@
     })();
   </script>
 
-  <!-- 🔥 آپدیت شده با Firebase Storage -->
+  <!-- 🔥 آپدیت شده با Firebase Storage و آپلود Resumable -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCdy1XEUDrVdgmyrr2r5nnvxaIP6A6y294",
@@ -1219,17 +1213,40 @@
 
     window.DB = window.DB || { items: [] };
 
-    // 🌟 تابع آپلود به فایربیس استوریج
-    window.uploadFileToStorage = async function(file, folder) {
-      try {
-        const uniqueName = `${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
-        const storageRef = ref(storage, uniqueName);
-        await uploadBytes(storageRef, file);
-        return await getDownloadURL(storageRef);
-      } catch (error) {
-        console.error('خطا در آپلود به Storage:', error);
-        throw new Error('آپلود به سرور ابری با خطا مواجه شد (احتمالا Storage فعال نیست).');
-      }
+    // 🌟 تابع آپلود به فایربیس استوریج (با قابلیت Resumable برای فایل‌های حجیم)
+    window.uploadFileToStorage = function (file, folder) {
+      return new Promise((resolve, reject) => {
+        try {
+          const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+          const uniqueName = `${folder}/${Date.now()}_${safeName}`;
+          const storageRef = ref(storage, uniqueName);
+
+          // استفاده از متد Resumable
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`در حال آپلود ${folder}: ${progress.toFixed(0)}%`);
+            }, 
+            (error) => {
+              console.error('خطای دقیق Storage:', error.code, error.message);
+              reject(new Error(`آپلود ناموفق بود (${error.code}). لطفاً اینترنت خود را بررسی کنید.`));
+            }, 
+            async () => {
+              try {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(downloadURL);
+              } catch (err) {
+                reject(err);
+              }
+            }
+          );
+        } catch (error) {
+          console.error('خطای غیرمنتظره:', error);
+          reject(new Error('خطا در فرآیند آپلود.'));
+        }
+      });
     };
 
     window.saveUsersToCloud = async function (usersArray) {
